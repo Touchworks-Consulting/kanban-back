@@ -49,6 +49,8 @@ const authenticateToken = (req, res, next) => {
 const authController = require('./controllers/simpleAuthController');
 const kanbanController = require('./controllers/simpleKanbanController');
 const leadController = require('./controllers/simpleLeadController');
+const campaignController = require('./controllers/campaignController');
+const webhookController = require('./controllers/webhookController');
 
 // Routes
 
@@ -76,6 +78,26 @@ app.post('/api/leads', authenticateToken, leadController.create);
 app.put('/api/leads/:id', authenticateToken, leadController.update);
 app.delete('/api/leads/:id', authenticateToken, leadController.delete);
 app.patch('/api/leads/:id/move', authenticateToken, leadController.move);
+
+// Campaign routes
+app.get('/api/campaigns', authenticateToken, campaignController.listCampaigns);
+app.get('/api/campaigns/:id', authenticateToken, campaignController.getCampaign);
+app.post('/api/campaigns', authenticateToken, campaignController.createCampaign);
+app.put('/api/campaigns/:id', authenticateToken, campaignController.updateCampaign);
+app.delete('/api/campaigns/:id', authenticateToken, campaignController.deleteCampaign);
+
+// Trigger phrase routes
+app.get('/api/campaigns/:campaignId/phrases', authenticateToken, campaignController.listTriggerPhrases);
+app.post('/api/campaigns/:campaignId/phrases', authenticateToken, campaignController.createTriggerPhrase);
+app.put('/api/phrases/:phraseId', authenticateToken, campaignController.updateTriggerPhrase);
+app.delete('/api/phrases/:phraseId', authenticateToken, campaignController.deleteTriggerPhrase);
+
+// Test phrase matching
+app.post('/api/campaigns/test-match', authenticateToken, campaignController.testPhraseMatch);
+
+// Webhook routes (sem autenticação para permitir webhooks externos)
+app.get('/api/webhook/whatsapp', webhookController.verifyWebhook);
+app.post('/api/webhook/whatsapp', webhookController.whatsappWebhook);
 
 // Error handling
 app.use((err, req, res, next) => {

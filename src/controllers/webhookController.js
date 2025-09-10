@@ -1,136 +1,130 @@
-const { Lead, KanbanColumn } = require('../models');
-const { asyncHandler } = require('../middleware/errorHandler');
-const PlatformDetectionService = require('../services/PlatformDetectionService');
+const memoryDb = require('../database/memory-db');
 
 const webhookController = {
-  // Receber lead via webhook
-  receiveLead: asyncHandler(async (req, res) => {
-    const apiKey = req.headers['x-api-key'];
-    
-    if (!apiKey) {
-      return res.status(401).json({
-        error: 'Chave API necessária'
+  whatsappWebhook: async (req, res) => {
+    try {
+      const webhookData = req.body;
+      
+      const logEntry = memoryDb.campaigns.createWebhookLog({
+        webhook_type: 'whatsapp',
+        raw_data: webhookData,
+        processed: false
       });
-    }
 
-    // A autenticação por API key já foi feita pelo middleware
-    const account = req.account;
+      console.log('WhatsApp Webhook received');
 
-    const {
-      name,
-      phone,
-      email,
-      message,
-      source_url,
-      campaign,
-      platform,
-      metadata = {}
-    } = req.body;
-
-    if (!name) {
-      return res.status(400).json({
-        error: 'Nome é obrigatório'
-      });
-    }
-
-    // Detectar plataforma se não fornecida
-    let detectedPlatform = platform;
-    let detectedCampaign = campaign;
-
-    if (!platform && (source_url || message)) {
-      const detection = await PlatformDetectionService.detectPlatform(
-        source_url,
-        message,
-        account.id
-      );
-      detectedPlatform = detection.platform;
-      if (!campaign) {
-        detectedCampaign = detection.campaign;
+      if (!webhookData.entry || !Array.isArray(webhookData.entry)) {
+        return res.status(400).json({ error: 'Estrutura inválida' });
       }
-    }
 
-    // Buscar coluna "Leads Entrantes" ou criar se não existir
-    let defaultColumn = await KanbanColumn.findOne({
-      where: {
-        account_id: account.id,
-        is_system: true
-      }
-    });
+      for (const entry of webhookData.entry) {
+        if (!entry.changes || !Array.isArray(entry.changes)) continue;
 
-    if (!defaultColumn) {
-      defaultColumn = await KanbanColumn.create({
-        account_id: account.id,
-        name: 'Leads Entrantes',
-        position: 0,
-        color: '#3b82f6',
-        is_system: true
-      });
-    }
+        for (const change of entry.changes) {
+          if (change.field !== 'messages') continue;
+          if (!change.value || !change.value.messages) continue;
 
-    // Obter próxima posição na coluna
-    const maxPosition = await Lead.max('position', {
-      where: {
-        account_id: account.id,
-        column_id: defaultColumn.id
-      }
-    }) || 0;
+          const { metadata, messages, contacts } = change.value;
+          const phone_id = metadata?.phone_number_id;
+          
+          if (!phone_id) continue;
 
-    // Criar lead
-    const lead = await Lead.create({
-      account_id: account.id,
-      name,
-      phone,
-      email,
-      message,
-      source_url,
-      campaign: detectedCampaign,
-      platform: detectedPlatform,
-      column_id: defaultColumn.id,
-      position: maxPosition + 1,
-      status: 'new',
-      metadata: {
-        ...metadata,
-        webhook_received_at: new Date().toISOString(),
-        source: 'webhook'
-      }
-    });
+          const whatsappAccount = memoryDb.campaigns.findWhatsappAccountByPhoneId(phone_id);
+          if (!whatsappAccount) continue;
 
-    // Buscar lead criado com relacionamentos
-    const createdLead = await Lead.findByPk(lead.id, {
-      include: [
-        {
-          model: KanbanColumn,
-          as: 'column',
-          attributes: ['id', 'name', 'color']
+          for (const message of messages) {
+            await processWhatsAppMessage(message, contacts, whatsappAccount, logEntry.id);
+          }
         }
-      ]
-    });
+      }
 
-    res.status(201).json({
-      message: 'Lead recebido com sucesso',
-      lead: createdLead
-    });
-  }),
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error('Webhook error:', error);
+      res.status(500).json({ error: 'Erro interno' });
+    }
+  },
 
-  // Webhook de teste (para verificar se está funcionando)
-  test: asyncHandler(async (req, res) => {
-    const apiKey = req.headers['x-api-key'];
+  verifyWebhook: (req, res) => {
+    const { 'hub.mode': mode, 'hub.verify_token': token, 'hub.challenge': challenge } = req.query;
+    const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'webhook_verify_token_123';
+
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      res.status(200).send(challenge);
+    } else {
+      res.status(403).json({ error: 'Token inválido' });
+    }
+  }
+};
+
+async function processWhatsAppMessage(message, contacts, whatsappAccount, logId) {
+  try {
+    if (message.type !== 'text' || !message.text?.body) return;
+
+    const messageText = message.text.body;
+    const fromNumber = message.from;
     
-    if (!apiKey) {
-      return res.status(401).json({
-        error: 'Chave API necessária'
-      });
+    const contact = contacts?.find(c => c.wa_id === fromNumber);
+    const contactName = contact?.profile?.name || `Lead ${fromNumber.slice(-4)}`;
+
+    const match = memoryDb.campaigns.matchPhrase(messageText, whatsappAccount.account_id);
+    let campaign = null;
+
+    if (match) {
+      campaign = memoryDb.campaigns.findCampaign({ id: match.phrase.campaign_id });
     }
 
-    res.json({
-      message: 'Webhook funcionando',
-      timestamp: new Date().toISOString(),
-      account: {
-        id: req.account.id,
-        name: req.account.name
+    const existingLead = memoryDb.findLeads({ account_id: whatsappAccount.account_id })
+      .find(lead => lead.phone === fromNumber);
+
+    if (existingLead) {
+      if (!existingLead.message || existingLead.message.length < messageText.length) {
+        memoryDb.updateLead(existingLead.id, { message: messageText });
       }
+      return;
+    }
+
+    const defaultColumn = memoryDb.findColumns({
+      account_id: whatsappAccount.account_id,
+      is_active: true
+    }).find(col => col.is_system);
+
+    if (!defaultColumn) return;
+
+    const leadsInColumn = memoryDb.findLeads({
+      account_id: whatsappAccount.account_id,
+      column_id: defaultColumn.id
     });
-  })
-};
+    const nextPosition = Math.max(...leadsInColumn.map(l => l.position), 0) + 1;
+
+    const leadData = {
+      name: contactName,
+      phone: fromNumber,
+      message: messageText,
+      platform: campaign?.platform || 'WhatsApp',
+      channel: campaign?.channel || 'WhatsApp',
+      campaign: campaign?.name || 'Não identificada',
+      status: 'new',
+      column_id: defaultColumn.id,
+      position: nextPosition,
+      account_id: whatsappAccount.account_id,
+      metadata: {
+        whatsapp_phone_id: whatsappAccount.phone_id,
+        webhook_log_id: logId,
+        campaign_match: match ? {
+          phrase: match.phrase.phrase,
+          confidence: match.confidence,
+          match_type: match.matchType
+        } : null
+      }
+    };
+
+    memoryDb.createLead(leadData);
+    console.log(`New lead created: ${contactName}`);
+
+  } catch (error) {
+    console.error('Error processing message:', error);
+  }
+}
 
 module.exports = webhookController;

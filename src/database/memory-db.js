@@ -1,4 +1,6 @@
 // Banco de dados em memória para desenvolvimento
+const CampaignModels = require('./campaign-models');
+
 class MemoryDatabase {
   constructor() {
     this.accounts = new Map();
@@ -6,6 +8,9 @@ class MemoryDatabase {
     this.columns = new Map();
     this.tags = new Map();
     this.leadTags = new Map();
+    
+    // Inicializar modelos de campanhas
+    this.campaigns = new CampaignModels(this);
     
     // Criar dados de exemplo
     this.initializeDefaultData();
