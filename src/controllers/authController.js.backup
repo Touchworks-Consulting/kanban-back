@@ -1,0 +1,144 @@
+const jwt = require('jsonwebtoken');
+const { Account } = require('../models');
+const { asyncHandler } = require('../middleware/errorHandler');
+
+const authController = {
+  // Login com email e API key
+  login: asyncHandler(async (req, res) => {
+    const { email, api_key } = req.body;
+
+    console.log('Login attempt:', { email, api_key });
+
+    // Teste individual de cada campo
+    console.log('Searching for email:', email.toLowerCase());
+    console.log('Searching for api_key:', api_key);
+    
+    // Raw SQL query para comparação
+    const { QueryTypes } = require('sequelize');
+    const { sequelize } = require('../database/connection');
+    
+    const rawAccounts = await sequelize.query(
+      'SELECT * FROM Account WHERE email = ? AND api_key = ? AND is_active = 1',
+      {
+        replacements: [email.toLowerCase(), api_key],
+        type: QueryTypes.SELECT
+      }
+    );
+    
+    console.log('Raw SQL result count:', rawAccounts.length);
+    if (rawAccounts.length > 0) {
+      console.log('Raw SQL found account:', {
+        id: rawAccounts[0].id,
+        email: rawAccounts[0].email,
+        api_key: rawAccounts[0].api_key,
+        is_active: rawAccounts[0].is_active
+      });
+    }
+    
+    // Primeiro, tentar encontrar por email apenas
+    const emailTest = await Account.findOne({
+      where: { email: email.toLowerCase() }
+    });
+    console.log('Found by email only:', !!emailTest);
+    
+    if (emailTest) {
+      console.log('Email account data:', {
+        email: emailTest.email,
+        api_key: emailTest.api_key,
+        is_active: emailTest.is_active,
+        email_type: typeof emailTest.email,
+        api_key_type: typeof emailTest.api_key,
+        is_active_type: typeof emailTest.is_active
+      });
+    }
+
+    // Buscar conta por email e API key
+    const account = await Account.findOne({
+      where: {
+        email: email.toLowerCase(),
+        api_key,
+        is_active: true
+      }
+    });
+
+    console.log('Account found:', !!account);
+    
+    if (account) {
+      console.log('Full account data:', {
+        id: account.id,
+        email: account.email,
+        api_key: account.api_key,
+        is_active: account.is_active
+      });
+    }
+
+    if (!account) {
+      return res.status(401).json({
+        error: 'Credenciais inválidas'
+      });
+    }
+
+    // Gerar JWT token
+    const token = jwt.sign(
+      { 
+        accountId: account.id,
+        email: account.email 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Retornar dados da conta (sem a API key por segurança)
+    const accountData = {
+      id: account.id,
+      name: account.name,
+      email: account.email,
+      settings: account.settings
+    };
+
+    res.json({
+      message: 'Login realizado com sucesso',
+      token,
+      account: accountData
+    });
+  }),
+
+  // Renovar token
+  refresh: asyncHandler(async (req, res) => {
+    const account = req.account; // Vem do middleware de autenticação
+
+    // Gerar novo token
+    const token = jwt.sign(
+      { 
+        accountId: account.id,
+        email: account.email 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Token renovado com sucesso',
+      token
+    });
+  }),
+
+  // Verificar token
+  verify: asyncHandler(async (req, res) => {
+    const account = req.account; // Vem do middleware de autenticação
+
+    const accountData = {
+      id: account.id,
+      name: account.name,
+      email: account.email,
+      settings: account.settings
+    };
+
+    res.json({
+      message: 'Token válido',
+      account: accountData
+    });
+  })
+};
+
+module.exports = authController;

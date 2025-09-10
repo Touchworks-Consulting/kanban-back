@@ -1,0 +1,119 @@
+
+> leads-crm-backend@1.0.0 dev
+> nodemon src/server.js
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/server.js`[39m
+Executing (default): SELECT 1+1 AS result
+✅ Conexão com banco de dados estabelecida
+Executing (default): SELECT name FROM sqlite_master WHERE type='table' AND name='Account';
+Executing (default): PRAGMA TABLE_INFO(`Account`);
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): PRAGMA INDEX_LIST(`Account`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_1`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_2`)
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): PRAGMA TABLE_INFO(`Account`);
+Executing (default): PRAGMA INDEX_LIST(`Account`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_1`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_2`)
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): CREATE TABLE IF NOT EXISTS `Account_backup` (`id` UUID UNIQUE PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `email` VARCHAR(255) NOT NULL UNIQUE, `api_key` VARCHAR(255), `password` VARCHAR(255), `is_active` TINYINT(1) DEFAULT 1, `settings` JSON DEFAULT '{}', `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL);
+Executing (default): INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;
+❌ Erro ao iniciar servidor: Error
+    at Database.<anonymous> (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:185:27)
+    at /mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:183:12)
+    at /mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/sequelize.js:315:28
+    at async SQLiteQueryInterface.changeColumn (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query-interface.js:43:7)
+    at async Account.sync (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/model.js:984:11)
+    at async Sequelize.sync (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/sequelize.js:377:9)
+    at async startServer (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/src/server.js:64:7) {
+  name: 'SequelizeUniqueConstraintError',
+  errors: [
+    ValidationErrorItem {
+      message: 'email must be unique',
+      type: 'unique violation',
+      path: 'email',
+      value: null,
+      origin: 'DB',
+      instance: null,
+      validatorKey: 'not_unique',
+      validatorName: null,
+      validatorArgs: []
+    }
+  ],
+  parent: [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Account_backup.email] {
+    errno: 19,
+    code: 'SQLITE_CONSTRAINT',
+    sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+  },
+  original: [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Account_backup.email] {
+    errno: 19,
+    code: 'SQLITE_CONSTRAINT',
+    sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+  },
+  fields: [ 'email' ],
+  sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+Executing (default): SELECT 1+1 AS result
+✅ Conexão com banco de dados estabelecida
+Executing (default): SELECT name FROM sqlite_master WHERE type='table' AND name='Account';
+Executing (default): PRAGMA TABLE_INFO(`Account`);
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): PRAGMA INDEX_LIST(`Account`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_1`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_2`)
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): PRAGMA TABLE_INFO(`Account`);
+Executing (default): PRAGMA INDEX_LIST(`Account`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_1`)
+Executing (default): PRAGMA INDEX_INFO(`sqlite_autoindex_Account_2`)
+Executing (default): PRAGMA foreign_key_list(`Account`)
+Executing (default): CREATE TABLE IF NOT EXISTS `Account_backup` (`id` UUID UNIQUE PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `email` VARCHAR(255) NOT NULL UNIQUE, `api_key` VARCHAR(255), `password` VARCHAR(255), `is_active` TINYINT(1) DEFAULT 1, `settings` JSON DEFAULT '{}', `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL);
+Executing (default): INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;
+❌ Erro ao iniciar servidor: Error
+    at Database.<anonymous> (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:185:27)
+    at /mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query.js:183:12)
+    at /mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/sequelize.js:315:28
+    at async SQLiteQueryInterface.changeColumn (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/dialects/sqlite/query-interface.js:43:7)
+    at async Account.sync (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/model.js:984:11)
+    at async Sequelize.sync (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/node_modules/sequelize/lib/sequelize.js:377:9)
+    at async startServer (/mnt/c/Users/wenen/Documents/kanban/kanban-touch/src/server.js:64:7) {
+  name: 'SequelizeUniqueConstraintError',
+  errors: [
+    ValidationErrorItem {
+      message: 'email must be unique',
+      type: 'unique violation',
+      path: 'email',
+      value: null,
+      origin: 'DB',
+      instance: null,
+      validatorKey: 'not_unique',
+      validatorName: null,
+      validatorArgs: []
+    }
+  ],
+  parent: [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Account_backup.email] {
+    errno: 19,
+    code: 'SQLITE_CONSTRAINT',
+    sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+  },
+  original: [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Account_backup.email] {
+    errno: 19,
+    code: 'SQLITE_CONSTRAINT',
+    sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+  },
+  fields: [ 'email' ],
+  sql: 'INSERT INTO `Account_backup` SELECT `id`, `name`, `email`, `api_key`, `password`, `is_active`, `settings`, `created_at`, `updated_at` FROM `Account`;'
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
