@@ -48,9 +48,10 @@ const authenticateToken = (req, res, next) => {
 // Controllers
 const authController = require('./controllers/simpleAuthController');
 const kanbanController = require('./controllers/simpleKanbanController');
+const whatsappAccountController = require('./controllers/whatsappAccountController')(memoryDb.campaigns);
+const webhookController = require('./controllers/webhookController');
 const leadController = require('./controllers/simpleLeadController');
 const campaignController = require('./controllers/campaignController');
-const webhookController = require('./controllers/webhookController');
 
 // Routes
 
@@ -99,6 +100,15 @@ app.post('/api/campaigns/test-match', authenticateToken, campaignController.test
 app.get('/api/webhook/whatsapp', webhookController.verifyWebhook);
 app.post('/api/webhook/whatsapp', webhookController.whatsappWebhook);
 
+// WhatsApp Accounts routes
+app.get('/api/whatsapp-accounts', authenticateToken, whatsappAccountController.getAccounts);
+app.get('/api/whatsapp-accounts/:id', authenticateToken, whatsappAccountController.getAccount);
+app.post('/api/whatsapp-accounts', authenticateToken, whatsappAccountController.createAccount);
+app.put('/api/whatsapp-accounts/:id', authenticateToken, whatsappAccountController.updateAccount);
+app.delete('/api/whatsapp-accounts/:id', authenticateToken, whatsappAccountController.deleteAccount);
+app.post('/api/whatsapp-accounts/:id/test-webhook', authenticateToken, whatsappAccountController.testWebhook);
+app.get('/api/whatsapp-accounts/:id/webhook-logs', authenticateToken, whatsappAccountController.getWebhookLogs);
+
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -112,8 +122,8 @@ app.use('*', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📊 API disponível em http://localhost:${PORT}/api`);
-  console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`👤 Login de teste: admin@admin.com / admin123`);
+  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`API disponível em http://localhost:${PORT}/api`);
+  console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`Login de teste: admin@admin.com / admin123`);
 });

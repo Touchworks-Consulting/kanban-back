@@ -3,21 +3,32 @@ const memoryDb = require('../database/memory-db');
 const webhookController = {
   whatsappWebhook: async (req, res) => {
     try {
-      const webhookData = req.body;
+      let webhookData = req.body;
+      console.log('WhatsApp Webhook received:', JSON.stringify(webhookData, null, 2));
       
-      const logEntry = memoryDb.campaigns.createWebhookLog({
-        webhook_type: 'whatsapp',
-        raw_data: webhookData,
-        processed: false
-      });
-
-      console.log('WhatsApp Webhook received');
-
-      if (!webhookData.entry || !Array.isArray(webhookData.entry)) {
+      let entries = [];
+      
+      // Check if webhook data is an array of entries
+      if (Array.isArray(webhookData)) {
+        entries = webhookData;
+      }
+      // Check if it's the full Meta format with entry array
+      else if (webhookData.entry && Array.isArray(webhookData.entry)) {
+        entries = webhookData.entry;
+      } 
+      // Check if it's a single entry format
+      else if (webhookData.changes && Array.isArray(webhookData.changes)) {
+        entries = [webhookData]; // Wrap single entry in array
+      } 
+      else {
+        console.log('Invalid webhook structure - no entry or changes found');
         return res.status(400).json({ error: 'Estrutura inválida' });
       }
 
-      for (const entry of webhookData.entry) {
+      let processedMessages = 0;
+      let leadsCreated = 0;
+
+      for (const entry of entries) {
         if (!entry.changes || !Array.isArray(entry.changes)) continue;
 
         for (const change of entry.changes) {
@@ -27,18 +38,65 @@ const webhookController = {
           const { metadata, messages, contacts } = change.value;
           const phone_id = metadata?.phone_number_id;
           
-          if (!phone_id) continue;
+          console.log(`Processing messages for phone_id: ${phone_id}`);
+          
+          if (!phone_id) {
+            console.log('No phone_id found in metadata');
+            continue;
+          }
 
+          // Find WhatsApp account by phone_id
           const whatsappAccount = memoryDb.campaigns.findWhatsappAccountByPhoneId(phone_id);
-          if (!whatsappAccount) continue;
+          if (!whatsappAccount) {
+            console.log(`No WhatsApp account found for phone_id: ${phone_id}`);
+            
+            // Log unprocessed webhook
+            memoryDb.campaigns.createWebhookLog({
+              phone_id: phone_id,
+              account_id: null,
+              event_type: 'message',
+              payload: webhookData,
+              processed: false,
+              campaign_matched: null,
+              lead_created: false,
+              error: 'Conta WhatsApp não encontrada'
+            });
+            continue;
+          }
+
+          console.log(`Found WhatsApp account: ${whatsappAccount.account_name}`);
 
           for (const message of messages) {
-            await processWhatsAppMessage(message, contacts, whatsappAccount, logEntry.id);
+            const result = await processWhatsAppMessage(message, contacts, whatsappAccount);
+            processedMessages++;
+            if (result.leadCreated) leadsCreated++;
+            
+            // Log processed webhook
+            memoryDb.campaigns.createWebhookLog({
+              phone_id: phone_id,
+              account_id: whatsappAccount.account_id,
+              event_type: 'message',
+              payload: {
+                message: message,
+                contacts: contacts,
+                metadata: metadata
+              },
+              processed: true,
+              campaign_matched: result.campaign?.name || null,
+              lead_created: result.leadCreated,
+              error: result.error || null
+            });
           }
         }
       }
 
-      res.status(200).json({ success: true });
+      console.log(`Webhook processed: ${processedMessages} messages, ${leadsCreated} leads created`);
+
+      res.status(200).json({ 
+        success: true,
+        processed_messages: processedMessages,
+        leads_created: leadsCreated
+      });
     } catch (error) {
       console.error('Webhook error:', error);
       res.status(500).json({ error: 'Erro interno' });
@@ -57,46 +115,77 @@ const webhookController = {
   }
 };
 
-async function processWhatsAppMessage(message, contacts, whatsappAccount, logId) {
+async function processWhatsAppMessage(message, contacts, whatsappAccount) {
   try {
-    if (message.type !== 'text' || !message.text?.body) return;
-
-    const messageText = message.text.body;
+    let messageText = '';
+    
+    // Extract message text based on message type
+    if (message.type === 'text' && message.text?.body) {
+      messageText = message.text.body;
+    } else if (message.type === 'interactive') {
+      if (message.interactive?.list_reply) {
+        messageText = message.interactive.list_reply.title || message.interactive.list_reply.description || '';
+      } else if (message.interactive?.button_reply) {
+        messageText = message.interactive.button_reply.title || '';
+      }
+    } else {
+      return { leadCreated: false, error: `Tipo de mensagem não suportado: ${message.type}` };
+    }
+    
+    if (!messageText.trim()) {
+      return { leadCreated: false, error: 'Mensagem vazia' };
+    }
     const fromNumber = message.from;
+    
+    console.log(`Processing text message from ${fromNumber}: "${messageText}"`);
     
     const contact = contacts?.find(c => c.wa_id === fromNumber);
     const contactName = contact?.profile?.name || `Lead ${fromNumber.slice(-4)}`;
 
+    // Try to match phrase
     const match = memoryDb.campaigns.matchPhrase(messageText, whatsappAccount.account_id);
     let campaign = null;
 
     if (match) {
       campaign = memoryDb.campaigns.findCampaign({ id: match.phrase.campaign_id });
+      console.log(`Message matched campaign: ${campaign?.name} with phrase: "${match.phrase.phrase}"`);
+    } else {
+      console.log('No campaign match found for message');
     }
 
+    // Check if lead already exists
     const existingLead = memoryDb.findLeads({ account_id: whatsappAccount.account_id })
       .find(lead => lead.phone === fromNumber);
 
     if (existingLead) {
+      console.log(`Lead already exists: ${existingLead.name}`);
+      // Update message if new one is longer
       if (!existingLead.message || existingLead.message.length < messageText.length) {
         memoryDb.updateLead(existingLead.id, { message: messageText });
+        console.log('Updated existing lead message');
       }
-      return;
+      return { leadCreated: false, campaign, error: null };
     }
 
+    // Find default column for new leads
     const defaultColumn = memoryDb.findColumns({
       account_id: whatsappAccount.account_id,
       is_active: true
     }).find(col => col.is_system);
 
-    if (!defaultColumn) return;
+    if (!defaultColumn) {
+      console.log('No default column found');
+      return { leadCreated: false, campaign, error: 'Coluna padrão não encontrada' };
+    }
 
+    // Calculate position
     const leadsInColumn = memoryDb.findLeads({
       account_id: whatsappAccount.account_id,
       column_id: defaultColumn.id
     });
     const nextPosition = Math.max(...leadsInColumn.map(l => l.position), 0) + 1;
 
+    // Create new lead
     const leadData = {
       name: contactName,
       phone: fromNumber,
@@ -110,20 +199,34 @@ async function processWhatsAppMessage(message, contacts, whatsappAccount, logId)
       account_id: whatsappAccount.account_id,
       metadata: {
         whatsapp_phone_id: whatsappAccount.phone_id,
-        webhook_log_id: logId,
+        whatsapp_account_name: whatsappAccount.account_name,
         campaign_match: match ? {
           phrase: match.phrase.phrase,
           confidence: match.confidence,
           match_type: match.matchType
-        } : null
+        } : null,
+        original_message: messageText,
+        contact_info: contact || null
       }
     };
 
-    memoryDb.createLead(leadData);
-    console.log(`New lead created: ${contactName}`);
+    const newLead = memoryDb.createLead(leadData);
+    console.log(`✅ New lead created: ${contactName} (${fromNumber})`);
+
+    return { 
+      leadCreated: true, 
+      campaign, 
+      error: null,
+      lead: newLead 
+    };
 
   } catch (error) {
     console.error('Error processing message:', error);
+    return { 
+      leadCreated: false, 
+      campaign: null, 
+      error: error.message 
+    };
   }
 }
 

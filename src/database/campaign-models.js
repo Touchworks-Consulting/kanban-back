@@ -244,6 +244,23 @@ class CampaignModels {
     return account;
   }
 
+  updateWhatsappAccount(id, data) {
+    const account = this.whatsappAccounts.get(id);
+    if (!account) return null;
+    
+    const updated = {
+      ...account,
+      ...data,
+      updated_at: new Date().toISOString()
+    };
+    this.whatsappAccounts.set(id, updated);
+    return updated;
+  }
+
+  deleteWhatsappAccount(id) {
+    return this.whatsappAccounts.delete(id);
+  }
+
   // Webhook Log methods
   createWebhookLog(data) {
     const id = data.id || this.generateId();
