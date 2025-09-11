@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Account } = require('../models');
+const { Account, User } = require('../models');
 
 const authenticateToken = async (req, res, next) => {
   try {
@@ -14,29 +14,22 @@ const authenticateToken = async (req, res, next) => {
 
   // Usar mesmo fallback do authController
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
-    const decodedId = decoded && (decoded.id || decoded.accountId || (decoded.user && decoded.user.id));
-    if (!decodedId) {
+    const decodedAccountId = decoded && (decoded.accountId || decoded.id);
+    if (!decodedAccountId) {
       return res.status(401).json({
         error: 'Token inválido'
       });
     }
-    
-    // Verificar se a conta ainda existe e está ativa
-    const account = await Account.findOne({
-      where: { 
-  // authController assina com { id, email, name }, mas damos fallback
-  id: decodedId,
-        is_active: true 
-      }
-    });
-
-    if (!account) {
-      return res.status(401).json({ 
-        error: 'Conta não encontrada ou inativa' 
-      });
+    const account = await Account.findOne({ where: { id: decodedAccountId, is_active: true } });
+    if (!account) return res.status(401).json({ error: 'Conta não encontrada ou inativa' });
+    let user = null;
+    if (decoded.userId) {
+      user = await User.findOne({ where: { id: decoded.userId, account_id: account.id, is_active: true } });
+    } else if (decoded.email) {
+      user = await User.findOne({ where: { email: decoded.email } });
     }
-
     req.account = account;
+    if (user) req.user = user;
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {

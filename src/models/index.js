@@ -8,6 +8,11 @@ const CronJob = require('./CronJob');
 const CronJobExecution = require('./CronJobExecution');
 const Automation = require('./Automation');
 const AutomationExecution = require('./AutomationExecution');
+const User = require('./User');
+const WhatsAppAccount = require('./WhatsAppAccount');
+const WebhookLog = require('./WebhookLog');
+const Campaign = require('./Campaign');
+const TriggerPhrase = require('./TriggerPhrase');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -16,6 +21,11 @@ Account.hasMany(Tag, { foreignKey: 'account_id', as: 'tags' });
 Account.hasMany(PlatformConfig, { foreignKey: 'account_id', as: 'platformConfigs' });
 Account.hasMany(CronJob, { foreignKey: 'account_id', as: 'cronJobs' });
 Account.hasMany(Automation, { foreignKey: 'account_id', as: 'automations' });
+Account.hasMany(User, { foreignKey: 'account_id', as: 'users' });
+Account.hasMany(WhatsAppAccount, { foreignKey: 'account_id', as: 'whatsappAccounts' });
+Account.hasMany(WebhookLog, { foreignKey: 'account_id', as: 'webhookLogs' });
+Account.hasMany(Campaign, { foreignKey: 'account_id', as: 'campaigns' });
+Account.hasMany(TriggerPhrase, { foreignKey: 'account_id', as: 'triggerPhrases' });
 
 // Lead associations
 Lead.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -58,8 +68,21 @@ Automation.hasMany(AutomationExecution, { foreignKey: 'automation_id', as: 'exec
 AutomationExecution.belongsTo(Automation, { foreignKey: 'automation_id', as: 'automation' });
 AutomationExecution.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
 
+User.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+WhatsAppAccount.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+WebhookLog.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+
+// Campaign associations
+Campaign.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+Campaign.hasMany(TriggerPhrase, { foreignKey: 'campaign_id', as: 'triggerPhrases' });
+
+// TriggerPhrase associations
+TriggerPhrase.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+TriggerPhrase.belongsTo(Campaign, { foreignKey: 'campaign_id', as: 'campaign' });
+
 module.exports = {
   Account,
+  User,
   Lead,
   KanbanColumn,
   Tag,
@@ -68,5 +91,9 @@ module.exports = {
   CronJob,
   CronJobExecution,
   Automation,
-  AutomationExecution
+  AutomationExecution,
+  WhatsAppAccount,
+  WebhookLog,
+  Campaign,
+  TriggerPhrase
 };

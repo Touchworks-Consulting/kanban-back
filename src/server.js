@@ -15,11 +15,22 @@ const AutomationService = require('./services/AutomationService');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.API_RATE_LIMIT || 100, // limit each IP to 100 requests per windowMs
-  message: 'Muitas requisições. Tente novamente em 15 minutos.'
+// Rate limiting (separa auth crítico de demais rotas)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.API_RATE_LIMIT) || 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Muitas requisições. Tente novamente em alguns minutos.'
+});
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minuto
+  max: 10, // evita loops de refresh
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.ip + '|' + (req.headers['user-agent'] || ''),
+  message: 'Limite de autenticação excedido. Aguarde um pouco.'
 });
 
 // Middleware
@@ -34,7 +45,14 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use('/api/', limiter);
+// Aplica limiter geral apenas a rotas de negócio, não nas rotas de auth basicas para diferenciar
+app.use('/api', (req, res, next) => {
+  if (req.path.startsWith('/auth/')) return next();
+  return apiLimiter(req, res, next);
+});
+
+// Limiter específico para refresh/logout/login/register
+app.use('/api/auth/:action(refresh|logout|login|register)', authLimiter);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -59,11 +77,8 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('✅ Conexão com banco de dados estabelecida');
 
-    // Sync database models
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('✅ Modelos sincronizados com o banco');
-    }
+    // Database models already synced - skip sync in production
+    console.log('✅ Usando modelos já sincronizados no PostgreSQL');
 
     // Inicializar serviços de automação
     await CronJobService.initialize();
@@ -73,9 +88,10 @@ async function startServer() {
       await AutomationService.processScheduledAutomations();
     }, 60000); // 1 minuto
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
-      console.log(`📊 Dashboard: http://localhost:${PORT}/health`);
+      console.log(`📊 Local: http://localhost:${PORT}/health`);
+      console.log(`📊 WSL: http://172.23.223.142:${PORT}/health`);
       console.log(`🔌 API: http://localhost:${PORT}/api`);
       console.log(`⚡ Automações: Ativas`);
     });

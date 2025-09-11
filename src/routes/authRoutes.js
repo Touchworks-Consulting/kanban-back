@@ -4,10 +4,10 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Login
 router.post('/login', authController.login);
-
-// Verificar token
+router.post('/register', authController.register);
+router.post('/refresh', authController.refresh);
+router.post('/logout', authController.logout);
 router.get('/verify', authenticateToken, authController.verify);
 
 module.exports = router;

@@ -8261,3 +8261,1853 @@ No campaign match found for message
 No default column found
 Webhook processed: 1 messages, 0 leads created
 ::1 - - [11/Sep/2025:00:55:32 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDOUU4MDFBRjMyNjc3MDlDRkQ2Q0ZCRjQzODE3MzFEAA==",
+              "referral": {
+                "body": "Você foi contratado como MEI, mas trabalha como se fosse CLT?\n\nSe você precisa bater ponto, cumprir carga horária e outras obrigações de um funcionário formal, a justiça do trabalho reconhece seu direito ao vínculo empregatício e a todos os benefícios da CLT, como 13º salário, férias remuneradas, FGTS, e muito mais.\n\n👉 Clique no botão abaixo e fale com um especialista para que possamos analisar seu caso e recuperar o que é seu por direito!",
+                "ctwa_clid": "AfdoDvFEAYvygt0yngfO4yZ3sQF4jhGkZdvh9ypBUuE_mrrkYPZhZNvthHsKds3LX02LO2o3WVr7oE93HXo1_ThkLGXrhOhKP1TpWIu4uTX9TleHYbUvSVMWNW9ynELNUPG6PXn_DQ",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120218584299280188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/4UugrsQgV",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/463881567_540502848919213_3549778009126177208_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=110&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=1Z7SEpfOHbwQ7kNvwHG9Ygk&_nc_oc=AdmJyaST8YY-IP6bIJWPZjde1rOWpTJTloaUoIbzHCTjRvTQJ_sCITBhihMj_0W8T9XgIA6tWyZyMWJ8fZz_5EQZ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=Q1fSJlG9PSCXCCtsYUXe8Q&oh=00_AfYacTohca8iACGdW7rEphgI98pLwRQlIA0nkoMzvcdskA&oe=68C7E20B",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/2049235595592453/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "2 - Olá, gostaria de conversar com um advogado especialista em MEI."
+              },
+              "timestamp": "1757552253",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "2 - Olá, gostaria de conversar com um advogado especialista em MEI."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:56:34 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDNzc5OUEzRDFCQUFGMDk1NURBRDNCMERGNkM3RUM1AA==",
+              "text": {
+                "body": "Me tira uma dúvida"
+              },
+              "timestamp": "1757552273",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Me tira uma dúvida"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:56:55 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDQUM4QjYzQkUxODdEODdCODhGNUVBRjE3Mjk4RDVBAA==",
+              "text": {
+                "body": "Eu fiz o curso de porteiro e controlado de acesso"
+              },
+              "timestamp": "1757552289",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Eu fiz o curso de porteiro e controlado de acesso"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:57:10 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDMDQxODdFRDdDQThFRDdGMkU0MDBCMzExQTI3RDRFAA==",
+              "text": {
+                "body": "E uma empresa me contratou pra mim fazer um teste de experiência para pega experiência na carteira"
+              },
+              "timestamp": "1757552325",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "E uma empresa me contratou pra mim fazer um teste de experiência para pega experiência na carteira"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:57:46 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:57:46 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:46 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:46 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:46 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:47 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:47 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:47 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:57:47 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:14 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:14 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:14 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:14 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDM0JDMkE1M0FFQ0RGRjFERDgzMkYyRDJBQ0JEQTQ3AA==",
+              "text": {
+                "body": "Estou lá fez 2 meses e vou completar 3 meses dia 28/09 está rolando um comentário que não vai renovar o meu contrato"
+              },
+              "timestamp": "1757552394",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Estou lá fez 2 meses e vou completar 3 meses dia 28/09 está rolando um comentário que não vai renovar o meu contrato"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:58:55 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:58:59 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:59 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:59 +0000] "GET /api/kanban/board HTTP/1.1" 200 674 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:58:59 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDNjI5OTVGQzUzM0I5RTU5QTZGMDdGMjk5NDk0NUM3AA==",
+              "text": {
+                "body": "Sabe me dizer oque eu tenho direito"
+              },
+              "timestamp": "1757552413",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Sabe me dizer oque eu tenho direito"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:59:15 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDMzdCQzJBQjMyMTIzRjNGQzk3RTY1MUI2OTJDMTNEAA==",
+              "text": {
+                "body": "A receber"
+              },
+              "timestamp": "1757552418",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "A receber"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:59:19 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Fabiana"
+              },
+              "wa_id": "5511963566198"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511963566198",
+              "id": "wamid.HBgNNTUxMTk2MzU2NjE5OBUCABIYIDU2RUY3MkVFNEZFNTU4QkE4QUJENTYxQkQ5ODUzQTYxAA==",
+              "referral": {
+                "body": "Você foi demitido e não tem certeza se recebeu tudo corretamente?\n\nMuitos trabalhadores acabam perdendo dinheiro porque não conferem os valores da rescisão.\n\n👉 Clique no botão abaixo e fale com um especialista para tirar essa dúvida agora.",
+                "ctwa_clid": "AfcNqYKhWW9QRrrPF5687bsiaGbqolmG5_4vkrHeuYdguGFgEY55W0PLOUwaPro4qhWvtj9I3Xl2z3Je3Q2S3qBtBx5PT9UsA6TCLzPVLkE2ohcs7OAraZi43ieBWO4Gsv680qBY3w",
+                "headline": "Salem Advogados - Trabalhista",
+                "media_type": "video",
+                "source_id": "120226224866640188",
+                "source_type": "ad",
+                "source_url": "https://www.instagram.com/p/DInArp1AfM6/",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/487847360_1686743058607879_6551344693820198701_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=v33N7uLg4LwQ7kNvwFXPSDN&_nc_oc=AdloJl0LLPQO-uV_ABakjybBtS1ZAgwhWahrmkWUmWOuCH5JsO61APAWFA9HVWwuft6dzf9U-JIEC5V8x5-etNPW&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=pDmDqkwv9KB3LG78ikyxww&oh=00_AfYGnLpPrupqLWpSbTOPFhDeOPMRsHlZ99dF7exfEkzIgQ&oe=68C7DA5D",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/2936111469884273/",
+                "welcome_message": {
+                  "text": "Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+              },
+              "timestamp": "1757552459",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511963566198: "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:00:01 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Fabiana"
+              },
+              "wa_id": "5511963566198"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511963566198",
+              "id": "wamid.HBgNNTUxMTk2MzU2NjE5OBUCABIYIDUxMkU5QjVCRThBRUJEQTE1QTk0OEY3MTcyRjgxMkMyAA==",
+              "text": {
+                "body": "Meu nome é fabiana"
+              },
+              "timestamp": "1757552503",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511963566198: "Meu nome é fabiana"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:00:44 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDMzA3Qzg1NzJGOUQxNDU0NzkwNzZCMzJFN0YyREUwAA==",
+              "text": {
+                "body": "2023.44 salário não tem periculosidade tem uma sexta básica disseram que tem um VR 23 reais mais uma hora corrida de almoçar paga Extra"
+              },
+              "timestamp": "1757552534",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "2023.44 salário não tem periculosidade tem uma sexta básica disseram que tem um VR 23 reais mais uma hora corrida de almoçar paga Extra"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:01:15 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Fabiana"
+              },
+              "wa_id": "5511963566198"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511963566198",
+              "id": "wamid.HBgNNTUxMTk2MzU2NjE5OBUCABIYIENBMjY4RUE5QkI1QTVGNDExQUI4QUQ4RDA0NDRCRkMzAA==",
+              "text": {
+                "body": "Eu fui registrada fia 14/01/"
+              },
+              "timestamp": "1757552538",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511963566198: "Eu fui registrada fia 14/01/"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:01:19 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Fabiana"
+              },
+              "wa_id": "5511963566198"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511963566198",
+              "id": "wamid.HBgNNTUxMTk2MzU2NjE5OBUCABIYIEIxRDBGNTg2MzczMDAwODFGOEY5RDZCRTVFRDlEMEE3AA==",
+              "text": {
+                "body": "Eu sai dia 02_/09"
+              },
+              "timestamp": "1757552559",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511963566198: "Eu sai dia 02_/09"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:01:41 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDMTNEQ0YzQzMzMUVDQjc5NUU3REYyQ0MwMUI5NkRDAA==",
+              "text": {
+                "body": "Ok"
+              },
+              "timestamp": "1757552568",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Ok"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:01:49 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "🌻"
+              },
+              "wa_id": "5511943264010"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511943264010",
+              "id": "wamid.HBgNNTUxMTk0MzI2NDAxMBUCABIYIEFDRjYzNjIwQzA3ODNCQjAwREEwQ0QzMTNGMkUzNkMwAA==",
+              "referral": {
+                "body": "Você foi contratado como MEI, mas trabalha como se fosse CLT?\n\nSe você precisa bater ponto, cumprir carga horária e outras obrigações de um funcionário formal, a justiça do trabalho reconhece seu direito ao vínculo empregatício e a todos os benefícios da CLT, como 13º salário, férias remuneradas, FGTS, e muito mais.\n\n👉 Clique no botão abaixo e fale com um especialista para que possamos analisar seu caso e recuperar o que é seu por direito!",
+                "ctwa_clid": "AfcdI0qbKa2G9TgaCSgxYnEKi0Eb0Q5lqmu0e0XzmsyphRT9BBI01JEBJMlsQxUWXQOfJTP_U9hInVR4XA1zFlecfwueaMJRCcOVwU-WA1zjqYzkdvj_P_SmZBrQX06QB4cNEHi_7A",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120217964760480188",
+                "source_type": "ad",
+                "source_url": "https://www.instagram.com/p/DD4VFYwAeYI/",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/463881567_540502848919213_3549778009126177208_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=110&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=1Z7SEpfOHbwQ7kNvwE5OU1V&_nc_oc=AdlJW2yjHKwyphyxULfHIcrrPpWSOwFPUuN3b8nEzp4CElz2uxbCWvxqyyi0uo9fyXQri2uPAgUuqGUQvLDgthjL&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=eXD0_euhWqaI5ZhinQkjgQ&oh=00_Afa-gOtghTPTIpDQpd3lHy_wwbyphjcWDoKUvLwT76hhIA&oe=68C7E20B",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/1101662431750057/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "3 - Olá, gostaria de conversar com um advogado especialista em MEI."
+              },
+              "timestamp": "1757552619",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511943264010: "3 - Olá, gostaria de conversar com um advogado especialista em MEI."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:02:41 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "edimarsilva87891@gmail.co"
+              },
+              "wa_id": "5511984802203"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511984802203",
+              "id": "wamid.HBgNNTUxMTk4NDgwMjIwMxUCABIYIEFDNTQxNENBQjlCNzZGREE1MzcwM0JEQUQ4QjlENkY2AA==",
+              "text": {
+                "body": "Obrigada pela atenção"
+              },
+              "timestamp": "1757552622",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511984802203: "Obrigada pela atenção"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:02:43 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Márcio  Vasconcelos"
+              },
+              "wa_id": "5511953737382"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511953737382",
+              "id": "wamid.HBgNNTUxMTk1MzczNzM4MhUCABIYIEFDQUVCMTQ0QTlERkM0RjdBQ0IxOUM0OUJDNTdCNUVGAA==",
+              "referral": {
+                "body": "Você foi demitido e não tem certeza se recebeu tudo corretamente?\n\nMuitos trabalhadores acabam perdendo dinheiro porque não conferem os valores da rescisão.\n\n👉 Clique no botão abaixo e fale com um especialista para tirar essa dúvida agora.",
+                "ctwa_clid": "Afc3gj6r9QcUAWLcqWNydEmVnzpS0zjcENNRuUrCNcZb6VmRp7QDV-71zLHIJNKQhMmfigmph0qpnvr9XdDLswRFHheIXNfOMU_TQrccz4XrgXxoqPGWeIRkmd5aU29iIx8y7HaQ6w",
+                "headline": "Salem Advogados - Trabalhista",
+                "media_type": "video",
+                "source_id": "120226225177850188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/5EenrEdvN",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/487847360_1686743058607879_6551344693820198701_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=v33N7uLg4LwQ7kNvwFfokDR&_nc_oc=AdktWsyEp8VqDVHl9G-vEqXeefUXHu8LpcL1mrIWSR9Pf-WJRhssGsG-nZYu4cRDmuevlliZDChV_7mXhnUeFqsr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=zVSZWOijZckOtEwY_nF6wA&oh=00_AfZ888PD4bpjektFBw-W_F1kqWNE7_TSTWqrcr2Hmrs3Tw&oe=68C7DA5D",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/599821669742758/",
+                "welcome_message": {
+                  "text": "Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "#V1 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+              },
+              "timestamp": "1757552633",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511953737382: "#V1 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:02:55 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "🌻"
+              },
+              "wa_id": "5511943264010"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511943264010",
+              "id": "wamid.HBgNNTUxMTk0MzI2NDAxMBUCABIYIEFDMjc0QTJERUJDQTIwRUQxMUZBQzQ3MEZGRjFBRjZBAA==",
+              "text": {
+                "body": "Ismeria"
+              },
+              "timestamp": "1757552684",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511943264010: "Ismeria"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:03:46 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "🌻"
+              },
+              "wa_id": "5511943264010"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511943264010",
+              "id": "wamid.HBgNNTUxMTk0MzI2NDAxMBUCABIYIEFDREJCNjdFQjcwMkM1N0NFMjY0NUQwNkVBQjk4OEM1AA==",
+              "text": {
+                "body": "Fez só um mês e hoje eu fui demitida"
+              },
+              "timestamp": "1757552696",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511943264010: "Fez só um mês e hoje eu fui demitida"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:03:57 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "🌻"
+              },
+              "wa_id": "5511943264010"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511943264010",
+              "id": "wamid.HBgNNTUxMTk0MzI2NDAxMBUCABIYIEFDNTEyOTJBNDc3NkQyRDFBODUxMEEyMEExRjRCNEVEAA==",
+              "text": {
+                "body": "1.991,32 só"
+              },
+              "timestamp": "1757552755",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511943264010: "1.991,32 só"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:04:56 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Wenendy Silva"
+              },
+              "wa_id": "5511947212865"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511947212865",
+              "id": "wamid.HBgNNTUxMTk0NzIxMjg2NRUCABIYFjNFQjA1NkQzNzY2OTExNUZDQ0QyMjUA",
+              "text": {
+                "body": "oi"
+              },
+              "timestamp": "1757552784",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511947212865: "oi"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:05:26 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "🌻"
+              },
+              "wa_id": "5511943264010"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511943264010",
+              "id": "wamid.HBgNNTUxMTk0MzI2NDAxMBUCABIYIEFDNzc0RDVDRTQ2MDNDMjNENkUzOTg4MzFENjRCMTI0AA==",
+              "text": {
+                "body": "Ok"
+              },
+              "timestamp": "1757552812",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511943264010: "Ok"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:05:53 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDQUZDNjA1RjMxQjM0Mzg4Nzc0OEIzN0QxNUYzMDE4AA==",
+              "referral": {
+                "body": "🚨Atenção, Mães!🚨\n\nVocê foi demitida enquanto estava grávida?\n\nA lei garante estabilidade no emprego desde a gravidez até 120 dias após o parto. Se você foi demitida nesse período, pode ter direito a uma indenização significativa!\n\n👉🏻Clique no botão abaixo para falar com um especialista em direitos das gestantes e descobrir como receber o que é seu por direito!",
+                "ctwa_clid": "Afc7KCzLVN4MlMtaZyNJLjKaSHMZdlU6lK69N922X4M4dsTjghL3kP9hTZra2Ea2NyThSdYix9Lyb3kGmcCOIDREvblrq5WRLLjJ5RlwsP_gtKcVNMekkpENf899c1r_RiHyJyKvZQ",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120219666672520188",
+                "source_type": "ad",
+                "source_url": "https://www.instagram.com/p/DF8cAG5gHXA/",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/479020069_1332207187906259_7919839116035817464_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=101&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=yx4JtyCns38Q7kNvwEMX389&_nc_oc=AdlOjDrqjGmelYFBbI1Quxaq-b2hIz6gIfyngmke05TZQ1mCKAuYNja2ixJptbnlikluHDEvCODwH1Xhod-5km89&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=22_G6JHbO8xBG8pSKue_nA&oh=00_AfbzY4gpJz1i5pjs5S3W2BRi5EdPFahw5ifrrCTxOEjh6Q&oe=68C80AB7",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/9199181413452258/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "1- Olá, gostaria de conversar com um advogado especialista em grávidas."
+              },
+              "timestamp": "1757552989",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "1- Olá, gostaria de conversar com um advogado especialista em grávidas."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:08:51 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDQ0E2MEIxMTUyQUZCRjMwMUQ4NzgwM0JCNTBDM0Q3AA==",
+              "text": {
+                "body": "Boa noite"
+              },
+              "timestamp": "1757552995",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "Boa noite"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:08:57 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDREQyRkE1Qzg3RThDNzY0OUM2RDk2MzA2RjE2QUFDAA==",
+              "text": {
+                "body": "Sim"
+              },
+              "timestamp": "1757553047",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "Sim"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:09:48 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDMUI0RkNGREQ2NzQ2NjhGMEM4NUVFNEQzQzAwRDBEAA==",
+              "text": {
+                "body": "Sim"
+              },
+              "timestamp": "1757553064",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "Sim"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:10:06 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDMTE0MzgxNkUyMkE0Mjc4QzVEN0U2ODI4NTFCQkM3AA==",
+              "text": {
+                "body": "👏👏👏"
+              },
+              "timestamp": "1757553088",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "👏👏👏"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:10:29 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Karen Costa"
+              },
+              "wa_id": "5511946830326"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511946830326",
+              "id": "wamid.HBgNNTUxMTk0NjgzMDMyNhUCABIYIEFDNTZBMzE5N0RDNkZCRTNFQzg5MkJBMjYzQTJBNDY4AA==",
+              "text": {
+                "body": "👍"
+              },
+              "timestamp": "1757553194",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511946830326: "👍"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:12:16 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:01:12:33 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:33 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:33 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:33 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:36 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:36 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:39 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:39 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:39 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:39 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:45 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:45 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:45 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:12:45 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:22 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:22 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:22 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:22 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:14:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "...."
+              },
+              "wa_id": "5511939401105"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511939401105",
+              "id": "wamid.HBgNNTUxMTkzOTQwMTEwNRUCABIYIEFDODQwMDNBMUE3NTUwRUZDNkFEODFGODUyQUUzOTVBAA==",
+              "referral": {
+                "body": "Você foi demitido e não tem certeza se recebeu tudo corretamente?\n\nMuitos trabalhadores acabam perdendo dinheiro porque não conferem os valores da rescisão.\n\n👉 Clique no botão abaixo e fale com um especialista para tirar essa dúvida agora.",
+                "ctwa_clid": "AffEf9a4dSxROGqft6_qreb5VqgGxxrMNE5ZJjeuxHjxMDPLXpSAqCJrVbBlpjWJUFPYI-imGl-HPXkEJu8vEwLr77T9NecJaefDDiOJIBUHrKLu6dgm385pr-PFNO1wsK92sheaMw",
+                "headline": "Salem Advogados - Trabalhista",
+                "media_type": "video",
+                "source_id": "120226224866640188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/5qadqaQQi",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/487847360_1686743058607879_6551344693820198701_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=v33N7uLg4LwQ7kNvwFoMTO9&_nc_oc=AdkEzc3EuLT39sQoEsKpsz5GK97E4rd7gynTCu3REv9PpaMesq0qKUpaDlabCSW6h1s1JSQga5BugV_EatFXSPf_&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=4RidbNEfs5Np8KXKyDhSzw&oh=00_AfbtA14LbHFUZAxqxnH7TdsMuTA0IJcrtPRY1Wzz3vBUeA&oe=68C7DA5D",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/2936111469884273/",
+                "welcome_message": {
+                  "text": "Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+              },
+              "timestamp": "1757553336",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511939401105: "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:14:37 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "...."
+              },
+              "wa_id": "5511939401105"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511939401105",
+              "id": "wamid.HBgNNTUxMTkzOTQwMTEwNRUCABIYIEFDQUU1NDYyNTVGMzdFQ0VBRDEyNEZDRDVEMzMyNjEwAA==",
+              "text": {
+                "body": "Alisson 15/06/2024"
+              },
+              "timestamp": "1757553368",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511939401105: "Alisson 15/06/2024"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:15:09 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:01:15:20 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:15:20 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:15:20 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:15:20 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "...."
+              },
+              "wa_id": "5511939401105"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511939401105",
+              "id": "wamid.HBgNNTUxMTkzOTQwMTEwNRUCABIYIEFDODJCRDQyODdGQUU2MjZGMjA5REFBM0RBQkQ1MjU0AA==",
+              "text": {
+                "body": "2.300"
+              },
+              "timestamp": "1757553432",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511939401105: "2.300"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:16:13 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:01:16:29 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:16:29 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:16:29 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:16:29 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "...."
+              },
+              "wa_id": "5511939401105"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511939401105",
+              "id": "wamid.HBgNNTUxMTkzOTQwMTEwNRUCABIYIEFDQzQwMzA0RTc5N0MwMkNBNkMzODA4MEY3NEI5NzQwAA==",
+              "text": {
+                "body": "Mandei errado"
+              },
+              "timestamp": "1757553459",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511939401105: "Mandei errado"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:16:41 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:01:18:53 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:18:53 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:18:53 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:18:53 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:01:20:40 +0000] "GET /api/kanban/columns HTTP/1.1" 403 27 "-" "curl/7.68.0"
+::1 - - [11/Sep/2025:01:21:59 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:21:59 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:21:59 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:21:59 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:01:22:00 +0000] "POST /api/health HTTP/1.1" 404 36 "-" "curl/7.68.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:01:22:04 +0000] "GET /api/health HTTP/1.1" 200 45 "-" "curl/7.68.0"
+::1 - - [11/Sep/2025:01:22:37 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:37 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:37 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:37 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:40 +0000] "OPTIONS /api/auth/logout HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:40 +0000] "POST /api/auth/logout HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:41 +0000] "OPTIONS /api/auth/login HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+Login attempt: { email: 'admin@touchworks.com', password: '***' }
+Account found: true
+Login successful for: admin@touchworks.com
+::1 - - [11/Sep/2025:01:22:41 +0000] "POST /api/auth/login HTTP/1.1" 200 303 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:41 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:41 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:43 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:43 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:43 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:43 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:45 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:45 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:45 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:45 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:47 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:47 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:47 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:47 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:55 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:55 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:55 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:22:55 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:02 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:02 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:02 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:02 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:22 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:22 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:22 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:22 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:24 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:24 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:24 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:23:24 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "serralheria R.S"
+              },
+              "wa_id": "5511968266978"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511968266978",
+              "id": "wamid.HBgNNTUxMTk2ODI2Njk3OBUCABIYIEFDQTM2RUREODM2OTI2QTFGMkVFQjQ3NkJBMjM3NTNBAA==",
+              "referral": {
+                "body": "Você foi contratado como MEI, mas trabalha como se fosse CLT?\n\nSe você precisa bater ponto, cumprir carga horária e outras obrigações de um funcionário formal, a justiça do trabalho reconhece seu direito ao vínculo empregatício e a todos os benefícios da CLT, como 13º salário, férias remuneradas, FGTS, e muito mais.\n\n👉 Clique no botão abaixo e fale com um especialista para que possamos analisar seu caso e recuperar o que é seu por direito!",
+                "ctwa_clid": "AfdcUY3iAeSvq6Q_oD1HChPcXZ7K_H2z63RLUGFv3dRYXjc-PdDd8q9p1fs80RZiEAI3FoVa1AiGrIeCbdhhVImeuQYRqCWxK3xGtVVneljR6BdI_PtLuiDhME79QHfxKeL6QUNcnw",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120217964760480188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/4VNPQrEwM",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/463881567_540502848919213_3549778009126177208_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=110&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=1Z7SEpfOHbwQ7kNvwFS6NZZ&_nc_oc=AdmVK0WHj9BCxJ0acdJBKZLn3Se4DG5j5hp0zoV9CB3eOpa8d7EKyETtF8DsBYMNnJat5uJwGlq0ft5cFObdDMsy&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=R8CQb1ThpWWGRy_uI-HfWg&oh=00_AfaSdlaZiGk2BZjl5912Pr0r2wSRhboZXv-MtnAj_DAuyQ&oe=68C7E20B",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/1101662431750057/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "3 - Olá, gostaria de conversar com um advogado especialista em MEI."
+              },
+              "timestamp": "1757554138",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511968266978: "3 - Olá, gostaria de conversar com um advogado especialista em MEI."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:27:59 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "serralheria R.S"
+              },
+              "wa_id": "5511968266978"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511968266978",
+              "id": "wamid.HBgNNTUxMTk2ODI2Njk3OBUCABIYIEFDODRGQ0IxMzRBMzRBODU2NzgwNUY3Qzk0MUUyMjUzAA==",
+              "text": {
+                "body": "Anderson Ramos"
+              },
+              "timestamp": "1757554165",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511968266978: "Anderson Ramos"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:28:26 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "GILVANIA"
+              },
+              "wa_id": "5511976907163"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511976907163",
+              "id": "wamid.HBgNNTUxMTk3NjkwNzE2MxUCABIYIEFDNDE2REUzRUVGODQwQzkxMDVCQTg0MTNCM0YxN0M3AA==",
+              "referral": {
+                "body": "Você foi demitido e não tem certeza se recebeu tudo corretamente?\n\nMuitos trabalhadores acabam perdendo dinheiro porque não conferem os valores da rescisão.\n\n👉 Clique no botão abaixo e fale com um especialista para tirar essa dúvida agora.",
+                "ctwa_clid": "AfevyRUIyk44y9xfq0XJcQahy6QiKK-UgNzxxVqwQTUpbx6jJnJXJdtD1V3KICDpDgXdiFSgoYz8zPxdHz2ZjNxk7NRdyR_lweTwQye-hPiV83kyZqvQ2wFxiI1cwDmzyl-kWgbXOw",
+                "headline": "Salem Advogados - Trabalhista",
+                "media_type": "video",
+                "source_id": "120226224866640188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/5qadqaQQi",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/487847360_1686743058607879_6551344693820198701_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=106&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=v33N7uLg4LwQ7kNvwEtdmnH&_nc_oc=AdntpfTKiCOcsKS-ZGmfgBBUAoswgFLI_0bUU4T4yF0AukTHdBhDwWFtbzY-tRWSMtTleIeuUL1kvhKzY9fxVtEZ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=fdU8DOYmVnfTz4dWbyJpNg&oh=00_Afaa_Nf4UjxaLrpKXzA8Kk9JbzS19tyi0Z0Y10cZG515_w&oe=68C8129D",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/2936111469884273/",
+                "welcome_message": {
+                  "text": "Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+              },
+              "timestamp": "1757554289",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511976907163: "#V2 - Olá, gostaria de falar com um especialista em verbas rescisórias."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:30:30 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "serralheria R.S"
+              },
+              "wa_id": "5511968266978"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511968266978",
+              "id": "wamid.HBgNNTUxMTk2ODI2Njk3OBUCABIYIEFDRDc1MkYyRjVDQUQzNjUwOTE0QzdDRjBDNUM2QjMwAA==",
+              "text": {
+                "body": "14 de julho 2025"
+              },
+              "timestamp": "1757554384",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511968266978: "14 de julho 2025"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:32:05 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "serralheria R.S"
+              },
+              "wa_id": "5511968266978"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511968266978",
+              "id": "wamid.HBgNNTUxMTk2ODI2Njk3OBUCABIYIEFDNDZCOEJBNTlGQjM3QzY1Q0YwMDBFQTM4QkYzQTg4AA==",
+              "text": {
+                "body": "4200"
+              },
+              "timestamp": "1757554421",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511968266978: "4200"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:32:43 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "serralheria R.S"
+              },
+              "wa_id": "5511968266978"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5511968266978",
+              "id": "wamid.HBgNNTUxMTk2ODI2Njk3OBUCABIYIEFDODMzM0JCNDJBNzIyMTE5NUJDRENBOEU1ODgxMjBCAA==",
+              "text": {
+                "body": "soldador"
+              },
+              "timestamp": "1757554432",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5511968266978: "soldador"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:01:32:55 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:01:33:26 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:26 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:26 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:26 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:50 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:50 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:50 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:33:50 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:01 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:01 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:01 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:01 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:03 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:03 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:03 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:03 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:08 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:08 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:08 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:08 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:11 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:11 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:11 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:11 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:15 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:15 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:15 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:15 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:18 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:21 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:21 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:33 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:33 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:38 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:38 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:38 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:38 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:52 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:52 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:52 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:52 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:54 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:54 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:54 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:34:54 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:35:47 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:35:47 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:35:47 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:01:35:47 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"

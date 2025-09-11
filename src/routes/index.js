@@ -6,6 +6,10 @@ const dashboardRoutes = require('./dashboardRoutes');
 const webhookRoutes = require('./webhookRoutes');
 const cronJobRoutes = require('./cronJobRoutes');
 const automationRoutes = require('./automationRoutes');
+// Novas rotas
+const campaignRoutes = require('./campaignRoutes');
+const whatsappAccountRoutes = require('./whatsappAccountRoutes');
+const userRoutes = require('./userRoutes');
 
 const router = express.Router();
 
@@ -21,7 +25,10 @@ router.get('/', (req, res) => {
       dashboard: '/api/dashboard',
       webhooks: '/api/webhooks',
       cronJobs: '/api/cron-jobs',
-      automations: '/api/automations'
+  automations: '/api/automations',
+  campaigns: '/api/campaigns',
+  whatsappAccounts: '/api/whatsapp-accounts',
+  users: '/api/users'
     },
     documentation: '/api/docs'
   });
@@ -35,5 +42,8 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/webhooks', webhookRoutes);
 router.use('/cron-jobs', cronJobRoutes);
 router.use('/automations', automationRoutes);
+router.use('/campaigns', campaignRoutes);
+router.use('/whatsapp-accounts', whatsappAccountRoutes);
+router.use('/users', userRoutes);
 
 module.exports = router;

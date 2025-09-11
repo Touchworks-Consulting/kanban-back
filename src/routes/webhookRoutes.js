@@ -1,17 +1,12 @@
 const express = require('express');
 const webhookController = require('../controllers/webhookController');
-const { authenticateApiKey } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Webhooks usam autenticação por API key
-router.use(authenticateApiKey);
+// Webhook verification (GET)
+router.get('/whatsapp', webhookController.verifyWebhook);
 
-// Receber lead
-router.post('/lead', webhookController.receiveLead);
-
-// Teste do webhook
-router.get('/test', webhookController.test);
-router.post('/test', webhookController.test);
+// WhatsApp webhook receiver (POST)
+router.post('/whatsapp', webhookController.whatsappWebhook);
 
 module.exports = router;

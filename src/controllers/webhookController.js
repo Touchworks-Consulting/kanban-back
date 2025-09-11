@@ -1,10 +1,17 @@
-const memoryDb = require('../database/memory-db');
+const { 
+  WhatsAppAccount, 
+  Campaign, 
+  TriggerPhrase, 
+  Lead, 
+  KanbanColumn, 
+  WebhookLog 
+} = require('../models');
 
 const webhookController = {
   whatsappWebhook: async (req, res) => {
     try {
       let webhookData = req.body;
-      console.log('WhatsApp Webhook received:', JSON.stringify(webhookData, null, 2));
+      console.log('🔴 WhatsApp Webhook PostgreSQL received:', JSON.stringify(webhookData, null, 2));
       
       let entries = [];
       
@@ -38,20 +45,24 @@ const webhookController = {
           const { metadata, messages, contacts } = change.value;
           const phone_id = metadata?.phone_number_id;
           
-          console.log(`Processing messages for phone_id: ${phone_id}`);
+          console.log(`🔍 Processing messages for phone_id: ${phone_id}`);
           
           if (!phone_id) {
             console.log('No phone_id found in metadata');
             continue;
           }
 
-          // Find WhatsApp account by phone_id
-          const whatsappAccount = memoryDb.campaigns.findWhatsappAccountByPhoneId(phone_id);
+          // Find WhatsApp account by phone_id usando PostgreSQL
+          const whatsappAccount = await WhatsAppAccount.findOne({
+            where: { phone_id, is_active: true },
+            include: [{ model: require('../models').Account, as: 'account' }]
+          });
+
           if (!whatsappAccount) {
-            console.log(`No WhatsApp account found for phone_id: ${phone_id}`);
+            console.log(`❌ No WhatsApp account found for phone_id: ${phone_id}`);
             
-            // Log unprocessed webhook
-            memoryDb.campaigns.createWebhookLog({
+            // Log unprocessed webhook no PostgreSQL
+            await WebhookLog.create({
               phone_id: phone_id,
               account_id: null,
               event_type: 'message',
@@ -64,15 +75,19 @@ const webhookController = {
             continue;
           }
 
-          console.log(`Found WhatsApp account: ${whatsappAccount.account_name}`);
+          console.log(`✅ Found WhatsApp account: ${whatsappAccount.account_name}`);
 
           for (const message of messages) {
-            const result = await processWhatsAppMessage(message, contacts, whatsappAccount);
+            const result = await processWhatsAppMessagePostgres(
+              message, 
+              contacts, 
+              whatsappAccount
+            );
             processedMessages++;
             if (result.leadCreated) leadsCreated++;
             
-            // Log processed webhook
-            memoryDb.campaigns.createWebhookLog({
+            // Log processed webhook no PostgreSQL
+            await WebhookLog.create({
               phone_id: phone_id,
               account_id: whatsappAccount.account_id,
               event_type: 'message',
@@ -90,7 +105,7 @@ const webhookController = {
         }
       }
 
-      console.log(`Webhook processed: ${processedMessages} messages, ${leadsCreated} leads created`);
+      console.log(`🎉 Webhook processed: ${processedMessages} messages, ${leadsCreated} leads created`);
 
       res.status(200).json({ 
         success: true,
@@ -98,7 +113,7 @@ const webhookController = {
         leads_created: leadsCreated
       });
     } catch (error) {
-      console.error('Webhook error:', error);
+      console.error('❌ Webhook error:', error);
       res.status(500).json({ error: 'Erro interno' });
     }
   },
@@ -115,7 +130,7 @@ const webhookController = {
   }
 };
 
-async function processWhatsAppMessage(message, contacts, whatsappAccount) {
+async function processWhatsAppMessagePostgres(message, contacts, whatsappAccount) {
   try {
     let messageText = '';
     
@@ -135,83 +150,113 @@ async function processWhatsAppMessage(message, contacts, whatsappAccount) {
     if (!messageText.trim()) {
       return { leadCreated: false, error: 'Mensagem vazia' };
     }
-    const fromNumber = message.from;
     
-    console.log(`Processing text message from ${fromNumber}: "${messageText}"`);
+    const fromNumber = message.from;
+    console.log(`📱 Processing text message from ${fromNumber}: "${messageText}"`);
     
     const contact = contacts?.find(c => c.wa_id === fromNumber);
     const contactName = contact?.profile?.name || `Lead ${fromNumber.slice(-4)}`;
 
-    // Try to match phrase
-    const match = memoryDb.campaigns.matchPhrase(messageText, whatsappAccount.account_id);
+    // 🔍 ALGORITMO DE MATCHING POSTGRESQL
+    const match = await matchPhrasePostgres(messageText, whatsappAccount.account_id);
     let campaign = null;
 
     if (match) {
-      campaign = memoryDb.campaigns.findCampaign({ id: match.phrase.campaign_id });
-      console.log(`Message matched campaign: ${campaign?.name} with phrase: "${match.phrase.phrase}"`);
+      console.log(`🎯 Message matched campaign: ${match.campaign.name} with phrase: "${match.triggerPhrase.phrase}"`);
+      campaign = match.campaign;
     } else {
-      console.log('No campaign match found for message');
+      console.log('❌ No campaign match found for message');
     }
 
     // Check if lead already exists
-    const existingLead = memoryDb.findLeads({ account_id: whatsappAccount.account_id })
-      .find(lead => lead.phone === fromNumber);
+    const existingLead = await Lead.findOne({
+      where: { 
+        account_id: whatsappAccount.account_id,
+        phone: fromNumber 
+      }
+    });
 
     if (existingLead) {
-      console.log(`Lead already exists: ${existingLead.name}`);
+      console.log(`🔄 Lead already exists: ${existingLead.name}`);
       // Update message if new one is longer
       if (!existingLead.message || existingLead.message.length < messageText.length) {
-        memoryDb.updateLead(existingLead.id, { message: messageText });
-        console.log('Updated existing lead message');
+        await existingLead.update({ message: messageText });
+        console.log('✅ Updated existing lead message');
       }
       return { leadCreated: false, campaign, error: null };
     }
 
-    // Find default column for new leads
-    const defaultColumn = memoryDb.findColumns({
-      account_id: whatsappAccount.account_id,
-      is_active: true
-    }).find(col => col.is_system);
+    // Find default column for new leads (system column first)
+    const defaultColumn = await KanbanColumn.findOne({
+      where: {
+        account_id: whatsappAccount.account_id,
+        is_active: true
+      },
+      order: [
+        ['is_system', 'DESC'], // System columns first
+        ['position', 'ASC']     // Then by position
+      ]
+    });
 
     if (!defaultColumn) {
-      console.log('No default column found');
-      return { leadCreated: false, campaign, error: 'Coluna padrão não encontrada' };
+      console.log('❌ No default column found - no active columns exist');
+      return { leadCreated: false, campaign, error: 'Nenhuma coluna ativa encontrada' };
     }
 
     // Calculate position
-    const leadsInColumn = memoryDb.findLeads({
-      account_id: whatsappAccount.account_id,
-      column_id: defaultColumn.id
+    const leadsInColumn = await Lead.count({
+      where: {
+        account_id: whatsappAccount.account_id,
+        column_id: defaultColumn.id
+      }
     });
-    const nextPosition = Math.max(...leadsInColumn.map(l => l.position), 0) + 1;
 
-    // Create new lead
+    // Create new lead no PostgreSQL
     const leadData = {
       name: contactName,
       phone: fromNumber,
       message: messageText,
       platform: campaign?.platform || 'WhatsApp',
-      channel: campaign?.channel || 'WhatsApp',
       campaign: campaign?.name || 'Não identificada',
       status: 'new',
       column_id: defaultColumn.id,
-      position: nextPosition,
+      position: leadsInColumn,
       account_id: whatsappAccount.account_id,
       metadata: {
         whatsapp_phone_id: whatsappAccount.phone_id,
         whatsapp_account_name: whatsappAccount.account_name,
         campaign_match: match ? {
-          phrase: match.phrase.phrase,
+          phrase: match.triggerPhrase.phrase,
           confidence: match.confidence,
-          match_type: match.matchType
+          match_type: match.matchType,
+          campaign_id: match.campaign.id,
+          trigger_phrase_id: match.triggerPhrase.id
         } : null,
         original_message: messageText,
         contact_info: contact || null
       }
     };
 
-    const newLead = memoryDb.createLead(leadData);
-    console.log(`✅ New lead created: ${contactName} (${fromNumber})`);
+    const newLead = await Lead.create(leadData);
+
+    // Update trigger phrase statistics
+    if (match) {
+      await TriggerPhrase.update(
+        { 
+          total_matches: match.triggerPhrase.total_matches + 1,
+          last_matched_at: new Date()
+        },
+        { where: { id: match.triggerPhrase.id } }
+      );
+
+      // Update campaign statistics
+      await Campaign.increment('total_leads', { 
+        by: 1, 
+        where: { id: match.campaign.id } 
+      });
+    }
+
+    console.log(`🎉 New lead created: ${contactName} (${fromNumber}) -> ${campaign?.name || 'No campaign'}`);
 
     return { 
       leadCreated: true, 
@@ -221,12 +266,73 @@ async function processWhatsAppMessage(message, contacts, whatsappAccount) {
     };
 
   } catch (error) {
-    console.error('Error processing message:', error);
+    console.error('❌ Error processing message:', error);
     return { 
       leadCreated: false, 
       campaign: null, 
       error: error.message 
     };
+  }
+}
+
+// 🔍 ALGORITMO DE MATCHING POSTGRESQL
+async function matchPhrasePostgres(message, accountId) {
+  try {
+    const messageLower = message.toLowerCase();
+
+    // Buscar frases ativas por prioridade
+    const triggerPhrases = await TriggerPhrase.findAll({
+      where: { 
+        account_id: accountId, 
+        is_active: true 
+      },
+      include: [{
+        model: Campaign,
+        as: 'campaign',
+        where: { is_active: true }
+      }],
+      order: [['priority', 'ASC']] // Prioridade 1 = primeira
+    });
+
+    for (const triggerPhrase of triggerPhrases) {
+      // 1. EXACT MATCH
+      if (messageLower.includes(triggerPhrase.phrase.toLowerCase())) {
+        console.log(`🎯 EXACT match: "${triggerPhrase.phrase}"`);
+        return { 
+          triggerPhrase, 
+          campaign: triggerPhrase.campaign,
+          confidence: 1.0, 
+          matchType: 'exact' 
+        };
+      }
+
+      // 2. KEYWORD MATCH
+      const keywords = triggerPhrase.keywords || [];
+      const keywordMatches = keywords.filter(keyword => 
+        messageLower.includes(keyword.toLowerCase())
+      );
+
+      if (keywordMatches.length > 0) {
+        const confidence = keywordMatches.length / keywords.length;
+        
+        // Check minimum confidence
+        if (confidence >= triggerPhrase.min_confidence) {
+          console.log(`🎯 KEYWORD match: ${keywordMatches.join(', ')} (${confidence.toFixed(2)})`);
+          return { 
+            triggerPhrase,
+            campaign: triggerPhrase.campaign,
+            confidence, 
+            matchType: 'keyword',
+            matchedKeywords: keywordMatches
+          };
+        }
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error('❌ Error in phrase matching:', error);
+    return null;
   }
 }
 
