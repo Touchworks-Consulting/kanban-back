@@ -7735,3 +7735,529 @@ Webhook processed: 1 messages, 0 leads created
 ::1 - - [11/Sep/2025:00:33:51 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
 ::1 - - [11/Sep/2025:00:33:51 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
 ::1 - - [11/Sep/2025:00:33:51 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:03 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:04 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:04 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:04 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:05 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:05 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:05 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:05 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:39 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:39 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:39 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:39 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:58 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:58 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:58 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:58 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:59 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:59 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:59 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:37:59 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:04 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:04 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:04 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:04 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:15 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:15 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:15 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:15 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:23 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:23 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:26 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:26 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:27 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:27 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:27 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:27 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:32 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:32 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:32 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:38:32 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+Login attempt: { email: 'admin@admin.com', password: '***' }
+Account found: true
+Login successful for: admin@admin.com
+::ffff:127.0.0.1 - - [11/Sep/2025:00:39:46 +0000] "POST /api/auth/login HTTP/1.1" 200 347 "-" "curl/7.68.0"
+::1 - - [11/Sep/2025:00:39:51 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:51 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:51 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:51 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:53 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:53 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:53 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:39:53 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:00:39:54 +0000] "GET /api/kanban/columns HTTP/1.1" 200 2634 "-" "curl/7.68.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:00:40:10 +0000] "POST /api/kanban/columns HTTP/1.1" 201 295 "-" "curl/7.68.0"
+::1 - - [11/Sep/2025:00:40:16 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:16 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:16 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:16 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:41 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:41 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:41 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:41 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:51 +0000] "OPTIONS /api/kanban/columns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:40:51 +0000] "POST /api/kanban/columns HTTP/1.1" 201 263 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:31 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:31 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:31 +0000] "GET /api/kanban/board HTTP/1.1" 200 296 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:31 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:34 +0000] "OPTIONS /api/auth/logout HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:34 +0000] "POST /api/auth/logout HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:36 +0000] "OPTIONS /api/auth/login HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+Login attempt: { email: 'admin@touchworks.com', password: '***' }
+Account found: true
+Login successful for: admin@touchworks.com
+::1 - - [11/Sep/2025:00:41:36 +0000] "POST /api/auth/login HTTP/1.1" 200 303 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:41:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:16 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:16 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:16 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:16 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:18 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:18 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:18 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:18 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:42:20 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:03 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:03 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:03 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:03 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:37 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:37 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:49 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:49 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:49 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:49 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:57 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:43:57 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDNjc2ODJDRTgwQkJFN0EwQUE5NUJGNzA3QzBCOEEzAA==",
+              "referral": {
+                "body": "🚨Se você sofreu acidente de trabalho e ficou com sequelas, pode ter direito a pensão vitalícia, estabilidade no emprego e indenizações.\n\nClique no botão abaixo e fale com nosso time de especialistas. 📲",
+                "ctwa_clid": "AffJBcfYsUedgga8RVJA6E2zxZh5I94Bg2O52-k1VJyTnAkJMr9ntM6lQOiD3P5-np-uetuJ-qqXbdd9g7-oufJMCn8Jj021PY6dAqD2GBErs6mI3Ohf0UjWRSMXoTkiKgllVJWh",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120236501267370188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/5ZRKT4cIN",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/536001037_1101757171456996_2364006952601491405_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=103&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=64fNWo2POfcQ7kNvwFPHqIU&_nc_oc=Adn1WqlOUEWx9K28uexxTxWUUW1GpAY3zlQeLK46TjL9BOPRT_z37dLylqTQ_sB0ghsoFbc4lsxqL85KOF9ilgCp&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=drCyPTmqzCXLl2ieNd7D0A&oh=00_AfaFCn4TKqa4J9ycQkwYMemBlpAiaH_q_sODDaFVKua3CA&oe=68C7EFBE",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/1420782395887718/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "2- Olá, gostaria de falar com um advogado especialista em acidentes de trabalho."
+              },
+              "timestamp": "1757551496",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "2- Olá, gostaria de falar com um advogado especialista em acidentes de trabalho."
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:43:59 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:44:06 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:06 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:17 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:17 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDMDdGRjMyNjUyNDZDREYyRUVGMUM5NDc1NDY4ODFDAA==",
+              "text": {
+                "body": "Boa Noite osvaldina Tavares de Santana"
+              },
+              "timestamp": "1757551539",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "Boa Noite osvaldina Tavares de Santana"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:44:41 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:44:52 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:52 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:52 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:44:52 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:03 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:03 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:03 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:03 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Benedito E Ana"
+              },
+              "wa_id": "5519999070032"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5519999070032",
+              "id": "wamid.HBgNNTUxOTk5OTA3MDAzMhUCABIYIEFDQzk3RTFBNzMyNDdFMDREQTg2RjkyM0MwQURGNTU3AA==",
+              "referral": {
+                "body": "🚨Se você sofreu acidente de trabalho e ficou com sequelas, pode ter direito a pensão vitalícia, estabilidade no emprego e indenizações.\n\nClique no botão abaixo e fale com nosso time de especialistas. 📲",
+                "ctwa_clid": "Afe1-ef4l_9l1UlXb8wWDfJAG1xIvNTzqvy67sidW664dlrBMCNYSqrpJrBT-iV0gyrlEAjwPmAYvfzcsJS7_xB5ZdPe5mc1DiD2I2zYU59xkdZbc2Sq0170lLAFoFw3vIh2vt6VoA",
+                "headline": "Converse conosco",
+                "media_type": "video",
+                "source_id": "120236501267370188",
+                "source_type": "ad",
+                "source_url": "https://fb.me/5ZRKT4cIN",
+                "thumbnail_url": "https://scontent.xx.fbcdn.net/v/t15.5256-10/536001037_1101757171456996_2364006952601491405_n.jpg?stp=dst-jpg_p180x540_tt6&_nc_cat=103&ccb=1-7&_nc_sid=40cf1a&_nc_ohc=64fNWo2POfcQ7kNvwEODxJB&_nc_oc=AdnWTvXjIabBKmvpKJZZ1HE12ikjGnkQwpWK1nNVf6x0Akfaf3gowycok2O19e9nAwL6srH3z40dHNK_cKQUZS3M&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=f6PKhuu4XZZakGVE1pNrAA&oh=00_AfbW5vuNn4AzvwBn3Dyq5WZq7Dp3ea0tBOTkem47LPz5-g&oe=68C7EFBE",
+                "video_url": "https://www.facebook.com/trabalhista.salem.advogados/videos/1420782395887718/",
+                "welcome_message": {
+                  "text": "🟢 Online - Olá! Diga como podemos ajudar você."
+                }
+              },
+              "text": {
+                "body": "Boa noite"
+              },
+              "timestamp": "1757551582",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5519999070032: "Boa noite"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:45:24 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:00:45:27 +0000] "POST /api/leads HTTP/1.1" 201 467 "-" "curl/7.68.0"
+::1 - - [11/Sep/2025:00:45:35 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:35 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:35 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:35 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:36 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:36 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:36 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:37 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:37 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:37 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:37 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:39 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:39 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:39 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 200 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:45:39 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:01 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:01 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:01 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:01 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:06 +0000] "OPTIONS /api/auth/logout HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:06 +0000] "POST /api/auth/logout HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:08 +0000] "POST /api/auth/refresh HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:08 +0000] "POST /api/auth/refresh HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:08 +0000] "POST /api/auth/logout HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:08 +0000] "POST /api/auth/logout HTTP/1.1" 404 36 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:11 +0000] "OPTIONS /api/auth/login HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+Login attempt: { email: 'admin@touchworks.com', password: '***' }
+Account found: true
+Login successful for: admin@touchworks.com
+::1 - - [11/Sep/2025:00:46:11 +0000] "POST /api/auth/login HTTP/1.1" 200 303 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:11 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:11 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:11 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:11 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:35 +0000] "OPTIONS /api/leads HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:35 +0000] "POST /api/leads HTTP/1.1" 201 488 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:50 +0000] "OPTIONS /api/leads/id-8s29cjvqd/move HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:50 +0000] "PATCH /api/leads/id-8s29cjvqd/move HTTP/1.1" 200 488 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:50 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:46:50 +0000] "GET /api/kanban/board HTTP/1.1" 200 671 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:47:59 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:47:59 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:47:59 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:47:59 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:00 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:00 +0000] "OPTIONS /api/whatsapp-accounts HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:00 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:00 +0000] "GET /api/whatsapp-accounts HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:03 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:03 +0000] "OPTIONS /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:03 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:03 +0000] "GET /api/whatsapp-accounts/id-j5gis76x2/webhook-logs HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:23 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:23 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:23 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:29 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:29 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:42 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:42 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:42 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:42 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:53 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:48:53 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDOEJFODU5OTA3NTREOTdFMjExNTYxNDk4MTNBRTIyAA==",
+              "text": {
+                "body": "Sofre um acidente de trabalho na câmera fria do restaurante cortou os tendões dá mão esquerda teve que passar pelo uma serugia ainda estou afastada tô recebendo como axilo doença pós a empresa não quer fornecer o cat"
+              },
+              "timestamp": "1757551792",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "Sofre um acidente de trabalho na câmera fria do restaurante cortou os tendões dá mão esquerda teve que passar pelo uma serugia ainda estou afastada tô recebendo como axilo doença pós a empresa não quer fornecer o cat"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:48:54 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:49:05 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:49:05 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::ffff:127.0.0.1 - - [11/Sep/2025:00:49:32 +0000] "PUT /api/leads/id-pgwwbbxcn HTTP/1.1" 200 481 "-" "curl/7.68.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDMUQ0MTJCRDNBNzk3MTYxNDY4NTc0MDFEQUIzQ0I3AA==",
+              "text": {
+                "body": "2 anos e 4 meses"
+              },
+              "timestamp": "1757551844",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "2 anos e 4 meses"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:49:45 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:50:44 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:50:44 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:50:44 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:50:44 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:00 +0000] "OPTIONS /api/leads/id-8s29cjvqd HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:00 +0000] "PUT /api/leads/id-8s29cjvqd HTTP/1.1" 200 495 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDNDc4MjQ4MTNGRkI2RDU3RUVGOUExQTQzNTg4M0QzAA==",
+              "text": {
+                "body": "Sim  amanhã tenho retorno médico cirurgião"
+              },
+              "timestamp": "1757551920",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "Sim  amanhã tenho retorno médico cirurgião"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:51:02 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
+::1 - - [11/Sep/2025:00:51:21 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:21 +0000] "OPTIONS /api/campaigns HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:21 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:21 +0000] "GET /api/campaigns HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:22 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:22 +0000] "OPTIONS /api/kanban/board HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:22 +0000] "GET /api/kanban/board HTTP/1.1" 200 674 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:22 +0000] "GET /api/kanban/board HTTP/1.1" 304 - "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:50 +0000] "OPTIONS /api/leads/id-8s29cjvqd HTTP/1.1" 204 0 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+::1 - - [11/Sep/2025:00:51:50 +0000] "PUT /api/leads/id-8s29cjvqd HTTP/1.1" 200 495 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"
+WhatsApp Webhook received: [
+  {
+    "changes": [
+      {
+        "field": "messages",
+        "value": {
+          "contacts": [
+            {
+              "profile": {
+                "name": "Branca Tavares 🌻🌹🌞🙌"
+              },
+              "wa_id": "5513996837266"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5513996837266",
+              "id": "wamid.HBgNNTUxMzk5NjgzNzI2NhUCABIYIEFDNDY5Q0JBRjQ5ODIyNkI3NTdDQkI5NDA1MDAzQ0ZFAA==",
+              "text": {
+                "body": "adequere uma dor forte na lombar trabalhando dopada de medicação pra dor fui no médico pedio um exames fes estou com artrose e  2 hérnia de disco  de não conseguir andar  oque eu faço"
+              },
+              "timestamp": "1757552191",
+              "type": "text"
+            }
+          ],
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "551151942974",
+            "phone_number_id": "405066926013488"
+          }
+        }
+      }
+    ],
+    "id": "361602383707665"
+  }
+]
+Processing messages for phone_id: 405066926013488
+Found WhatsApp account: Salem
+Processing text message from 5513996837266: "adequere uma dor forte na lombar trabalhando dopada de medicação pra dor fui no médico pedio um exames fes estou com artrose e  2 hérnia de disco  de não conseguir andar  oque eu faço"
+No campaign match found for message
+No default column found
+Webhook processed: 1 messages, 0 leads created
+::1 - - [11/Sep/2025:00:55:32 +0000] "POST /api/webhook/whatsapp HTTP/1.1" 200 57 "-" "MessageBird Flows API/2.0"
