@@ -14,6 +14,7 @@ router.delete('/:id', authenticateToken, campaignController.deleteCampaign);
 // Relatórios de campanha
 router.get('/:campaignId/effective-phrases', authenticateToken, campaignController.getMostEffectivePhrases);
 router.get('/:campaignId/debug-reports', authenticateToken, campaignController.debugCampaignReports);
+router.get('/:campaignId/chart-data', authenticateToken, campaignController.getCampaignChartData);
 
 // Frases gatilho
 router.get('/:campaignId/phrases', authenticateToken, campaignController.listTriggerPhrases);

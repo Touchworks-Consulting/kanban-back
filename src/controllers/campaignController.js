@@ -764,6 +764,102 @@ const campaignController = {
       console.error('Error debugging campaign reports:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
+  },
+
+  // 📊 DADOS DOS GRÁFICOS DE RELATÓRIO
+  getCampaignChartData: async (req, res) => {
+    try {
+      const { campaignId } = req.params;
+      const { date_range = '30' } = req.query; // dias
+      const accountId = req.account.id;
+
+      // Verificar se a campanha pertence à conta
+      const campaign = await Campaign.findOne({
+        where: { id: campaignId, account_id: accountId }
+      });
+
+      if (!campaign) {
+        return res.status(404).json({ error: 'Campanha não encontrada' });
+      }
+
+      // Data de início baseada no range
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(date_range));
+
+      // 📈 LEADS POR DIA - Dados reais
+      const dailyLeads = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          created_at: {
+            [require('sequelize').Op.gte]: startDate
+          }
+        },
+        attributes: [
+          [require('sequelize').literal('DATE("created_at")'), 'date'],
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'leads']
+        ],
+        group: [require('sequelize').literal('DATE("created_at")')],
+        order: [[require('sequelize').literal('DATE("created_at")'), 'ASC']],
+        raw: true
+      });
+
+      // Preencher dias sem leads com 0
+      const dailyData = [];
+      for (let i = parseInt(date_range) - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        const existingData = dailyLeads.find(d => d.date === dateStr);
+        dailyData.push({
+          date: dateStr,
+          leads: existingData ? parseInt(existingData.leads) : 0,
+          day: date.getDate().toString()
+        });
+      }
+
+      // 🕐 LEADS POR HORA - Dados reais
+      const hourlyLeads = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          created_at: {
+            [require('sequelize').Op.gte]: startDate
+          }
+        },
+        attributes: [
+          [require('sequelize').literal('EXTRACT(HOUR FROM "created_at")'), 'hour'],
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'leads']
+        ],
+        group: [require('sequelize').literal('EXTRACT(HOUR FROM "created_at")')],
+        order: [[require('sequelize').literal('EXTRACT(HOUR FROM "created_at")'), 'ASC']],
+        raw: true
+      });
+
+      // Preencher todas as 24 horas
+      const hourlyData = [];
+      for (let hour = 0; hour < 24; hour++) {
+        const existingData = hourlyLeads.find(d => parseInt(d.hour) === hour);
+        hourlyData.push({
+          hour: hour.toString().padStart(2, '0') + 'h',
+          leads: existingData ? parseInt(existingData.leads) : 0,
+          hourNumber: hour
+        });
+      }
+
+      res.json({
+        campaign_name: campaign.name,
+        date_range: `${date_range} dias`,
+        daily_data: dailyData,
+        hourly_data: hourlyData,
+        total_leads: dailyData.reduce((sum, day) => sum + day.leads, 0),
+        peak_hour: hourlyData.reduce((prev, current) => prev.leads > current.leads ? prev : current)
+      });
+    } catch (error) {
+      console.error('Error getting campaign chart data:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
   }
 };
 
