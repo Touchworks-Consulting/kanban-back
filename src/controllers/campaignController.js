@@ -759,10 +759,25 @@ const campaignController = {
 
       console.log(`📈 CRESCIMENTO DEBUG: Atual: ${recentLeads}, Anterior: ${previousPeriodLeads}, Taxa: ${growthRate.toFixed(1)}%`);
 
-      // Simular cálculo de mensagens - SUBSTITUIR por métrica mais valiosa
-      // Sugestão: Total de interações, tempo médio de resposta, ou custo por lead
-      const totalInteractions = leads.length * 2.5; // Mock: cada lead = ~2.5 interações
-      const avgResponseTime = Math.floor(Math.random() * 120) + 30; // Mock: 30-150 minutos
+      // ⏰ CALCULAR TEMPO MÉDIO DE CONVERSÃO
+      // Apenas para leads com status 'won' (convertidos)
+      const convertedLeads = leads.filter(lead => lead.status === 'won');
+      let avgConversionTime = 0;
+      
+      if (convertedLeads.length > 0) {
+        const totalConversionTime = convertedLeads.reduce((sum, lead) => {
+          const leadCreatedAt = new Date(lead.created_at);
+          const leadConvertedAt = new Date(lead.updated_at); // Data da última atualização (conversão)
+          const conversionTimeHours = (leadConvertedAt - leadCreatedAt) / (1000 * 60 * 60); // em horas
+          return sum + conversionTimeHours;
+        }, 0);
+        
+        avgConversionTime = totalConversionTime / convertedLeads.length;
+      }
+
+      console.log(`⏰ CONVERSÃO DEBUG: ${convertedLeads.length} leads convertidos, tempo médio: ${avgConversionTime.toFixed(1)} horas`);
+
+      const avgResponseTime = Math.floor(Math.random() * 120) + 30; // Mock: 30-150 minutos - MANTER POR ENQUANTO
 
       // Taxa de conversão real baseada nos dados
       const conversionRate = comparativeConversionRate;
@@ -777,7 +792,8 @@ const campaignController = {
         },
         metrics: {
           total_leads: leads.length,
-          total_interactions: Math.round(totalInteractions), // NOVA MÉTRICA: Total de interações
+          avg_conversion_time: parseFloat(avgConversionTime.toFixed(1)), // NOVA MÉTRICA: Tempo médio de conversão (horas)
+          converted_leads_count: convertedLeads.length, // Quantos leads converteram
           avg_response_time: avgResponseTime, // NOVA MÉTRICA: Tempo médio de resposta (mock)
           comparative_conversion_rate: conversionRate, // NOVA: Taxa comparativa vs todas campanhas
           growth_rate: parseFloat(growthRate.toFixed(1)), // NOVA: Crescimento vs período anterior

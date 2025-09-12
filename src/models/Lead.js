@@ -27,12 +27,24 @@ const Lead = sequelize.define('Lead', {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      isEmail: true
+      isValidEmail(value) {
+        if (value && value.trim() !== '') {
+          // Só aplica validação de email se não for vazio
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            throw new Error('Email deve ter um formato válido');
+          }
+        }
+      }
     }
   },
   platform: {
     type: DataTypes.STRING,
     allowNull: true // facebook, instagram, google, etc.
+  },
+  channel: {
+    type: DataTypes.STRING,
+    allowNull: true // WhatsApp, Email, SMS, etc.
   },
   campaign: {
     type: DataTypes.STRING,

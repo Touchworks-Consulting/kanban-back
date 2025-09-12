@@ -15,13 +15,19 @@ const createLeadSchema = Joi.object({
     .messages({
       'string.pattern.base': 'Telefone deve conter apenas números e caracteres especiais válidos'
     }),
-  email: Joi.string()
-    .email()
-    .allow('')
+  email: Joi.alternatives()
+    .try(
+      Joi.string().email(),
+      Joi.string().allow(''),
+      Joi.allow(null)
+    )
+    .optional()
     .messages({
       'string.email': 'Email deve ter um formato válido'
     }),
   platform: Joi.string()
+    .allow(''),
+  channel: Joi.string()
     .allow(''),
   campaign: Joi.string()
     .allow(''),
@@ -40,12 +46,8 @@ const createLeadSchema = Joi.object({
       'string.uuid': 'ID da coluna deve ser um UUID válido'
     }),
   value: Joi.number()
-    .positive()
     .precision(2)
-    .allow(null)
-    .messages({
-      'number.positive': 'Valor deve ser positivo'
-    }),
+    .allow(null, '', 0), // Totalmente opcional
   notes: Joi.string()
     .allow(''),
   tags: Joi.array()
@@ -63,10 +65,16 @@ const updateLeadSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^[\d\s\-\+\(\)]+$/)
     .allow(''),
-  email: Joi.string()
-    .email()
-    .allow(''),
+  email: Joi.alternatives()
+    .try(
+      Joi.string().email(),
+      Joi.string().allow(''),
+      Joi.allow(null)
+    )
+    .optional(),
   platform: Joi.string()
+    .allow(''),
+  channel: Joi.string()
     .allow(''),
   campaign: Joi.string()
     .allow(''),
@@ -88,9 +96,8 @@ const updateLeadSchema = Joi.object({
   lost_reason: Joi.string()
     .allow(''),
   value: Joi.number()
-    .positive()
     .precision(2)
-    .allow(null),
+    .allow(null, '', 0), // Totalmente opcional
   notes: Joi.string()
     .allow(''),
   tags: Joi.array()
