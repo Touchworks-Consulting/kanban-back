@@ -137,8 +137,17 @@ const campaignController = {
         target_audience,
         campaign_settings,
         start_date,
-        end_date
+        end_date,
+        trigger_phrases
       } = req.body;
+
+      console.log('📊 Creating campaign with data:', {
+        name,
+        platform,
+        channel,
+        trigger_phrases: trigger_phrases ? trigger_phrases.length : 0,
+        trigger_phrases_data: trigger_phrases
+      });
 
       // Validação básica
       if (!name || !platform || !channel) {
@@ -147,22 +156,96 @@ const campaignController = {
         });
       }
 
-      const campaign = await Campaign.create({
-        account_id: accountId,
-        name,
-        platform,
-        channel,
-        description,
-        budget,
-        target_audience: target_audience || {},
-        campaign_settings: campaign_settings || {},
-        start_date: start_date || null,
-        end_date: end_date || null
+      // Usar transação para garantir que campanha e frases sejam criadas juntas
+      const { sequelize } = require('../database/connection');
+      const result = await sequelize.transaction(async (t) => {
+        // Criar a campanha
+        const campaign = await Campaign.create({
+          account_id: accountId,
+          name,
+          platform,
+          channel,
+          description,
+          budget,
+          target_audience: target_audience || {},
+          campaign_settings: campaign_settings || {},
+          start_date: start_date || null,
+          end_date: end_date || null
+        }, { transaction: t });
+
+        console.log('✅ Campaign created:', campaign.id);
+
+        // Criar as frases gatilho se fornecidas
+        if (trigger_phrases && trigger_phrases.length > 0) {
+          const triggerPhrasesData = trigger_phrases.map((phrase, index) => ({
+            account_id: accountId,
+            campaign_id: campaign.id,
+            phrase: phrase.phrase,
+            creative_code: phrase.creative_code || null,
+            priority: phrase.priority || (index + 1),
+            match_type: 'contains', // valor padrão
+            is_active: true
+          }));
+
+          console.log('📝 Creating trigger phrases:', triggerPhrasesData);
+          const createdPhrases = await TriggerPhrase.bulkCreate(triggerPhrasesData, { transaction: t });
+          console.log('✅ Trigger phrases created:', createdPhrases.length);
+        } else {
+          console.log('⚠️ No trigger phrases provided');
+        }
+
+        // Buscar a campanha com as frases criadas
+        const campaignWithPhrases = await Campaign.findByPk(campaign.id, {
+          include: [
+            {
+              model: TriggerPhrase,
+              as: 'triggerPhrases',
+              order: [['priority', 'ASC']]
+            }
+          ],
+          transaction: t
+        });
+
+        return campaignWithPhrases;
+      });
+
+      // Buscar estatísticas de leads para a nova campanha
+      const leadStats = await Lead.findAll({
+        where: { 
+          account_id: accountId,
+          campaign: result.name
+        },
+        attributes: [
+          'status',
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'count']
+        ],
+        group: ['status'],
+        raw: true
+      });
+
+      // Calculate stats (same as getCampaign)
+      const totalPhrases = result.triggerPhrases ? result.triggerPhrases.length : 0;
+      const activePhrases = result.triggerPhrases ? result.triggerPhrases.filter(p => p.is_active).length : 0;
+      const totalLeads = leadStats.reduce((sum, stat) => sum + parseInt(stat.count), 0);
+
+      const campaignWithStats = {
+        ...result.toJSON(),
+        lead_stats: leadStats,
+        stats: {
+          total_phrases: totalPhrases,
+          active_phrases: activePhrases,
+          total_leads: totalLeads
+        }
+      };
+
+      console.log('🎉 Campaign creation completed with stats:', { 
+        phrases: campaignWithStats.stats.total_phrases,
+        leads: campaignWithStats.stats.total_leads 
       });
 
       res.status(201).json({ 
         message: 'Campanha criada com sucesso',
-        campaign 
+        campaign: campaignWithStats 
       });
     } catch (error) {
       console.error('Error creating campaign:', error);
