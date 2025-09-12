@@ -15,6 +15,7 @@ router.delete('/:id', authenticateToken, campaignController.deleteCampaign);
 router.get('/:campaignId/effective-phrases', authenticateToken, campaignController.getMostEffectivePhrases);
 router.get('/:campaignId/debug-reports', authenticateToken, campaignController.debugCampaignReports);
 router.get('/:campaignId/chart-data', authenticateToken, campaignController.getCampaignChartData);
+router.get('/debug/all-campaigns-leads', authenticateToken, campaignController.debugAllCampaignsLeads);
 
 // Frases gatilho
 router.get('/:campaignId/phrases', authenticateToken, campaignController.listTriggerPhrases);

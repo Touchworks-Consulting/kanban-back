@@ -689,15 +689,25 @@ const campaignController = {
       });
 
       // 📊 CALCULAR MÉTRICAS COMPARATIVAS
-      // Total de leads de todas as campanhas da conta
+      // Total de leads de campanhas identificadas apenas (excluir "Não identificada")
       const totalLeadsAllCampaigns = await Lead.count({
-        where: { account_id: accountId }
+        where: { 
+          account_id: accountId,
+          campaign: { [require('sequelize').Op.ne]: 'Não identificada' }
+        }
       });
 
-      // Taxa de conversão comparativa (% desta campanha vs todas)
+      console.log(`🔍 CONVERSÃO DEBUG - Campanha: ${campaign.name}`);
+      console.log(`📊 Leads desta campanha: ${leads.length}`);
+      console.log(`📊 Total leads campanhas identificadas: ${totalLeadsAllCampaigns}`);
+
+      // Taxa de conversão comparativa (% desta campanha vs campanhas identificadas)
       const comparativeConversionRate = totalLeadsAllCampaigns > 0 
         ? ((leads.length / totalLeadsAllCampaigns) * 100).toFixed(1)
         : '0.0';
+
+      console.log(`📊 Taxa calculada: ${comparativeConversionRate}%`);
+      console.log(`📊 Fórmula: (${leads.length} / ${totalLeadsAllCampaigns}) * 100 = ${comparativeConversionRate}%`);
 
       // Ticket médio (se houver campo value nos leads)
       const avgTicket = await Lead.findOne({
@@ -725,6 +735,30 @@ const campaignController = {
         }
       });
 
+      // 📈 CÁLCULO DO CRESCIMENTO VS PERÍODO ANTERIOR
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+      
+      const previousPeriodLeads = await Lead.count({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          created_at: { 
+            [require('sequelize').Op.between]: [sixtyDaysAgo, thirtyDaysAgo] 
+          }
+        }
+      });
+
+      // Cálculo da taxa de crescimento
+      let growthRate = 0;
+      if (previousPeriodLeads > 0) {
+        growthRate = ((recentLeads - previousPeriodLeads) / previousPeriodLeads) * 100;
+      } else if (recentLeads > 0) {
+        growthRate = 100; // Se não havia leads no período anterior mas há agora
+      }
+
+      console.log(`📈 CRESCIMENTO DEBUG: Atual: ${recentLeads}, Anterior: ${previousPeriodLeads}, Taxa: ${growthRate.toFixed(1)}%`);
+
       // Simular cálculo de mensagens - SUBSTITUIR por métrica mais valiosa
       // Sugestão: Total de interações, tempo médio de resposta, ou custo por lead
       const totalInteractions = leads.length * 2.5; // Mock: cada lead = ~2.5 interações
@@ -746,6 +780,7 @@ const campaignController = {
           total_interactions: Math.round(totalInteractions), // NOVA MÉTRICA: Total de interações
           avg_response_time: avgResponseTime, // NOVA MÉTRICA: Tempo médio de resposta (mock)
           comparative_conversion_rate: conversionRate, // NOVA: Taxa comparativa vs todas campanhas
+          growth_rate: parseFloat(growthRate.toFixed(1)), // NOVA: Crescimento vs período anterior
           total_leads_all_campaigns: totalLeadsAllCampaigns, // Para contexto
           total_phrases: campaign.triggerPhrases ? campaign.triggerPhrases.length : 0,
           active_phrases: campaign.triggerPhrases ? campaign.triggerPhrases.filter(p => p.is_active).length : 0,
@@ -858,6 +893,48 @@ const campaignController = {
       });
     } catch (error) {
       console.error('Error getting campaign chart data:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  },
+
+  // 🔍 DEBUG: TODAS AS CAMPANHAS E LEADS
+  debugAllCampaignsLeads: async (req, res) => {
+    try {
+      const accountId = req.account.id;
+      
+      // Buscar todas as campanhas
+      const campaigns = await Campaign.findAll({
+        where: { account_id: accountId }
+      });
+
+      // Buscar leads agrupados por campanha
+      const leadsPerCampaign = await Lead.findAll({
+        where: { account_id: accountId },
+        attributes: [
+          'campaign',
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'lead_count']
+        ],
+        group: ['campaign'],
+        raw: true
+      });
+
+      // Total de leads
+      const totalLeads = await Lead.count({
+        where: { account_id: accountId }
+      });
+
+      console.log('🔍 DEBUG ALL CAMPAIGNS:');
+      console.log('📊 Campanhas registradas:', campaigns.map(c => ({ name: c.name, id: c.id })));
+      console.log('📊 Leads por campanha:', leadsPerCampaign);
+      console.log('📊 Total de leads:', totalLeads);
+
+      res.json({
+        campaigns: campaigns.map(c => ({ id: c.id, name: c.name, is_active: c.is_active })),
+        leads_per_campaign: leadsPerCampaign,
+        total_leads: totalLeads
+      });
+    } catch (error) {
+      console.error('Error debugging all campaigns leads:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
