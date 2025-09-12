@@ -1,5 +1,6 @@
 const { KanbanColumn, Lead } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
+const { processSequelizeResponse } = require('../utils/dateSerializer');
 
 const kanbanController = {
   // Listar colunas
@@ -55,7 +56,7 @@ const kanbanController = {
       order: [['position', 'ASC']]
     });
 
-    res.json({ columns });
+    res.json({ columns: processSequelizeResponse(columns) });
   }),
 
   // Criar coluna

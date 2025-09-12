@@ -3,6 +3,7 @@ const { asyncHandler } = require('../middleware/errorHandler');
 const PlatformDetectionService = require('../services/PlatformDetectionService');
 const AutomationService = require('../services/AutomationService');
 const { Op } = require('sequelize');
+const { processSequelizeResponse } = require('../utils/dateSerializer');
 
 const leadController = {
   // Listar leads com filtros e paginação
@@ -57,7 +58,7 @@ const leadController = {
     });
 
     res.json({
-      leads,
+      leads: processSequelizeResponse(leads),
       pagination: {
         total: count,
         page: parseInt(page),
@@ -97,7 +98,7 @@ const leadController = {
       });
     }
 
-    res.json({ lead });
+    res.json({ lead: processSequelizeResponse(lead) });
   }),
 
   // Criar novo lead

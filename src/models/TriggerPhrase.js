@@ -27,18 +27,18 @@ const TriggerPhrase = sequelize.define('TriggerPhrase', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  keywords: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    defaultValue: []
+  creative_code: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'Código criativo da frase gatilho (opcional)'
   },
   priority: {
     type: DataTypes.INTEGER,
     defaultValue: 1
   },
   match_type: {
-    type: DataTypes.ENUM('exact', 'keyword', 'fuzzy'),
-    defaultValue: 'keyword'
+    type: DataTypes.ENUM('exact', 'keyword', 'fuzzy', 'contains', 'starts_with', 'ends_with', 'regex'),
+    defaultValue: 'contains'
   },
   case_sensitive: {
     type: DataTypes.BOOLEAN,

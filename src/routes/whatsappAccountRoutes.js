@@ -1,6 +1,6 @@
 const express = require('express');
 const { authenticateToken } = require('../middleware/auth');
-const wa = require('../controllers/whatsappAccountDbController');
+const wa = require('../controllers/whatsappAccountController');
 
 const router = express.Router();
 

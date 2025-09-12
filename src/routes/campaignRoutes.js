@@ -1,7 +1,6 @@
 const express = require('express');
 const { authenticateToken } = require('../middleware/auth');
-// Usando controller PostgreSQL
-const campaignController = require('../controllers/campaignPostgresController');
+const campaignController = require('../controllers/campaignController');
 
 const router = express.Router();
 

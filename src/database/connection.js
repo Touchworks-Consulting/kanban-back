@@ -9,10 +9,21 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  timezone: '-03:00', // America/Sao_Paulo timezone
+  dialectOptions: {
+    timezone: 'America/Sao_Paulo',
+    useUTC: false // Use local timezone for dates
+  },
   define: {
     timestamps: true,
     underscored: true,
-    freezeTableName: true
+    freezeTableName: true,
+    // Ensure dates are serialized as ISO strings
+    defaultScope: {
+      attributes: {
+        exclude: []
+      }
+    }
   },
   pool: {
     max: 5,
@@ -20,6 +31,40 @@ const sequelize = new Sequelize({
     acquire: 30000,
     idle: 10000
   }
+});
+
+// Global hook para serialização de datas
+sequelize.addHook('afterFind', (instances, options) => {
+  if (!instances) return;
+  
+  const dateFields = ['createdAt', 'updatedAt', 'created_at', 'updated_at', 'start_date', 'end_date', 'last_login_at', 'last_run_at', 'last_matched_at'];
+  
+  const processInstance = (instance) => {
+    if (!instance) return;
+    
+    if (Array.isArray(instance)) {
+      instance.forEach(processInstance);
+      return;
+    }
+    
+    // Processar dataValues
+    if (instance.dataValues) {
+      dateFields.forEach(field => {
+        if (instance.dataValues[field] instanceof Date) {
+          instance.dataValues[field] = instance.dataValues[field].toISOString();
+        }
+      });
+    }
+    
+    // Processar propriedades diretas
+    dateFields.forEach(field => {
+      if (instance[field] instanceof Date) {
+        instance[field] = instance[field].toISOString();
+      }
+    });
+  };
+  
+  processInstance(instances);
 });
 
 module.exports = { sequelize };

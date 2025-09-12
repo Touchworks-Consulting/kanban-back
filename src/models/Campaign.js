@@ -29,11 +29,6 @@ const Campaign = sequelize.define('Campaign', {
     allowNull: false,
     comment: 'Instagram, Facebook, Google Ads, YouTube, etc.'
   },
-  creative_code: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    comment: 'Código criativo da campanha'
-  },
   description: {
     type: DataTypes.TEXT,
     allowNull: true
@@ -92,10 +87,6 @@ const Campaign = sequelize.define('Campaign', {
     },
     {
       fields: ['is_active']
-    },
-    {
-      fields: ['creative_code'],
-      unique: true
     }
   ]
 });

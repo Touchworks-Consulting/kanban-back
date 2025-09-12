@@ -1,40 +1,66 @@
-const memoryDb = require('../database/memory-db');
+const { Campaign, TriggerPhrase, Lead } = require('../models');
+const { Op } = require('sequelize');
+const { processSequelizeResponse } = require('../utils/dateSerializer');
 
 const campaignController = {
   // Listar campanhas
   listCampaigns: async (req, res) => {
     try {
       const accountId = req.account.id;
-      const { platform, is_active } = req.query;
+      const { platform, is_active, search } = req.query;
 
-      const campaigns = memoryDb.campaigns.findCampaigns({
-        account_id: accountId,
-        platform,
-        is_active: is_active !== undefined ? is_active === 'true' : undefined
+      const where = { account_id: accountId };
+      
+      if (platform) where.platform = platform;
+      if (is_active !== undefined) where.is_active = is_active === 'true';
+      if (search) {
+        where[Op.or] = [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { description: { [Op.iLike]: `%${search}%` } }
+        ];
+      }
+
+      const campaigns = await Campaign.findAll({
+        where,
+        include: [
+          {
+            model: TriggerPhrase,
+            as: 'triggerPhrases',
+            required: false
+          }
+        ],
+        order: [['created_at', 'DESC']]
       });
 
       // Adicionar estatísticas para cada campanha
-      const campaignsWithStats = campaigns.map(campaign => {
-        const phrases = memoryDb.campaigns.findTriggerPhrases({
-          campaign_id: campaign.id,
-          is_active: true
+      const campaignsWithStats = await Promise.all(campaigns.map(async campaign => {
+        const totalPhrases = await TriggerPhrase.count({
+          where: { campaign_id: campaign.id }
         });
 
-        // Contar leads desta campanha (simples busca por campanha no campo campaign)
-        const leads = memoryDb.findLeads({ account_id: accountId })
-          .filter(lead => lead.campaign === campaign.name);
+        const activePhrases = await TriggerPhrase.count({
+          where: { campaign_id: campaign.id, is_active: true }
+        });
+
+        // Contar leads desta campanha
+        const totalLeads = await Lead.count({
+          where: { 
+            account_id: accountId,
+            campaign: campaign.name
+          }
+        });
 
         return {
-          ...campaign,
+          ...campaign.toJSON(),
           stats: {
-            total_phrases: phrases.length,
-            total_leads: leads.length,
-            active_phrases: phrases.filter(p => p.is_active).length
+            total_phrases: totalPhrases,
+            active_phrases: activePhrases,
+            total_leads: totalLeads
           }
         };
-      });
+      }));
 
-      res.json({ campaigns: campaignsWithStats });
+      res.json({ campaigns: processSequelizeResponse(campaignsWithStats) });
     } catch (error) {
       console.error('Error listing campaigns:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
@@ -47,24 +73,51 @@ const campaignController = {
       const { id } = req.params;
       const accountId = req.account.id;
 
-      const campaign = memoryDb.campaigns.findCampaign({ id });
+      const campaign = await Campaign.findOne({
+        where: { id, account_id: accountId },
+        include: [
+          {
+            model: TriggerPhrase,
+            as: 'triggerPhrases',
+            order: [['priority', 'ASC']]
+          }
+        ]
+      });
 
-      if (!campaign || campaign.account_id !== accountId) {
+      if (!campaign) {
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      // Buscar frases gatilho desta campanha
-      const phrases = memoryDb.campaigns.findTriggerPhrases({
-        campaign_id: id,
-        account_id: accountId
+      // Buscar estatísticas de leads
+      const leadStats = await Lead.findAll({
+        where: { 
+          account_id: accountId,
+          campaign: campaign.name
+        },
+        attributes: [
+          'status',
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'count']
+        ],
+        group: ['status'],
+        raw: true
       });
 
-      res.json({ 
-        campaign: {
-          ...campaign,
-          trigger_phrases: phrases
+      // Calculate stats
+      const totalPhrases = campaign.triggerPhrases ? campaign.triggerPhrases.length : 0;
+      const activePhrases = campaign.triggerPhrases ? campaign.triggerPhrases.filter(p => p.is_active).length : 0;
+      const totalLeads = leadStats.reduce((sum, stat) => sum + parseInt(stat.count), 0);
+
+      const campaignWithStats = {
+        ...campaign.toJSON(),
+        lead_stats: leadStats,
+        stats: {
+          total_phrases: totalPhrases,
+          active_phrases: activePhrases,
+          total_leads: totalLeads
         }
-      });
+      };
+
+      res.json({ campaign: campaignWithStats });
     } catch (error) {
       console.error('Error getting campaign:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
@@ -75,55 +128,50 @@ const campaignController = {
   createCampaign: async (req, res) => {
     try {
       const accountId = req.account.id;
-      const { name, platform, channel, creative_code, description, trigger_phrases } = req.body;
+      const { 
+        name, 
+        platform, 
+        channel, 
+        description, 
+        budget,
+        target_audience,
+        campaign_settings,
+        start_date,
+        end_date
+      } = req.body;
 
+      // Validação básica
       if (!name || !platform || !channel) {
-        return res.status(400).json({
-          error: 'Nome, plataforma e canal são obrigatórios'
+        return res.status(400).json({ 
+          error: 'Nome, plataforma e canal são obrigatórios' 
         });
       }
 
-      // Verificar se já existe campanha com mesmo nome
-      const existingCampaigns = memoryDb.campaigns.findCampaigns({ account_id: accountId });
-      if (existingCampaigns.some(c => c.name === name)) {
-        return res.status(409).json({
-          error: 'Já existe uma campanha com este nome'
-        });
-      }
-
-      // Criar campanha
-      const campaign = memoryDb.campaigns.createCampaign({
+      const campaign = await Campaign.create({
+        account_id: accountId,
         name,
         platform,
         channel,
-        creative_code: creative_code || `CR${Date.now()}`,
-        description: description || '',
-        is_active: true,
-        account_id: accountId
+        description,
+        budget,
+        target_audience: target_audience || {},
+        campaign_settings: campaign_settings || {},
+        start_date: start_date || null,
+        end_date: end_date || null
       });
 
-      // Criar frases gatilho se fornecidas
-      if (trigger_phrases && Array.isArray(trigger_phrases)) {
-        for (const phraseData of trigger_phrases) {
-          if (phraseData.phrase) {
-            memoryDb.campaigns.createTriggerPhrase({
-              phrase: phraseData.phrase,
-              keywords: phraseData.keywords || [],
-              campaign_id: campaign.id,
-              priority: phraseData.priority || 1,
-              is_active: true,
-              account_id: accountId
-            });
-          }
-        }
-      }
-
-      res.status(201).json({
+      res.status(201).json({ 
         message: 'Campanha criada com sucesso',
-        campaign
+        campaign 
       });
     } catch (error) {
       console.error('Error creating campaign:', error);
+      if (error.name === 'SequelizeValidationError') {
+        return res.status(400).json({ 
+          error: 'Dados inválidos',
+          details: error.errors.map(e => e.message)
+        });
+      }
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   },
@@ -133,20 +181,21 @@ const campaignController = {
     try {
       const { id } = req.params;
       const accountId = req.account.id;
-      const updateData = { ...req.body };
-      delete updateData.account_id; // Não permitir alterar account_id
+      const updateData = req.body;
 
-      const campaign = memoryDb.campaigns.findCampaign({ id });
+      const campaign = await Campaign.findOne({
+        where: { id, account_id: accountId }
+      });
 
-      if (!campaign || campaign.account_id !== accountId) {
+      if (!campaign) {
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      const updatedCampaign = memoryDb.campaigns.updateCampaign(id, updateData);
+      await campaign.update(updateData);
 
-      res.json({
+      res.json({ 
         message: 'Campanha atualizada com sucesso',
-        campaign: updatedCampaign
+        campaign 
       });
     } catch (error) {
       console.error('Error updating campaign:', error);
@@ -160,22 +209,26 @@ const campaignController = {
       const { id } = req.params;
       const accountId = req.account.id;
 
-      const campaign = memoryDb.campaigns.findCampaign({ id });
+      const campaign = await Campaign.findOne({
+        where: { id, account_id: accountId }
+      });
 
-      if (!campaign || campaign.account_id !== accountId) {
+      if (!campaign) {
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      // Verificar se há frases gatilho associadas
-      const phrases = memoryDb.campaigns.findTriggerPhrases({ campaign_id: id });
-      if (phrases.length > 0) {
-        return res.status(400).json({
-          error: `Não é possível deletar a campanha. Há ${phrases.length} frase(s) gatilho associada(s).`,
-          details: 'Remova as frases gatilho antes de deletar a campanha.'
+      // Verificar se há frases vinculadas
+      const phraseCount = await TriggerPhrase.count({
+        where: { campaign_id: id }
+      });
+
+      if (phraseCount > 0) {
+        return res.status(400).json({ 
+          error: 'Não é possível deletar campanha com frases vinculadas. Delete as frases primeiro.' 
         });
       }
 
-      memoryDb.campaigns.deleteCampaign(id);
+      await campaign.destroy();
 
       res.json({ message: 'Campanha deletada com sucesso' });
     } catch (error) {
@@ -184,21 +237,26 @@ const campaignController = {
     }
   },
 
-  // Listar frases gatilho de uma campanha
+  // FRASES GATILHO
+
+  // Listar frases de uma campanha
   listTriggerPhrases: async (req, res) => {
     try {
       const { campaignId } = req.params;
       const accountId = req.account.id;
 
-      // Verificar se a campanha existe e pertence à conta
-      const campaign = memoryDb.campaigns.findCampaign({ id: campaignId });
-      if (!campaign || campaign.account_id !== accountId) {
+      // Verificar se a campanha pertence à conta
+      const campaign = await Campaign.findOne({
+        where: { id: campaignId, account_id: accountId }
+      });
+
+      if (!campaign) {
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      const phrases = memoryDb.campaigns.findTriggerPhrases({
-        campaign_id: campaignId,
-        account_id: accountId
+      const phrases = await TriggerPhrase.findAll({
+        where: { campaign_id: campaignId },
+        order: [['priority', 'ASC'], ['created_at', 'DESC']]
       });
 
       res.json({ phrases });
@@ -213,30 +271,46 @@ const campaignController = {
     try {
       const { campaignId } = req.params;
       const accountId = req.account.id;
-      const { phrase, keywords, priority } = req.body;
+      const { 
+        phrase, 
+        creative_code,
+        priority, 
+        match_type, 
+        case_sensitive, 
+        min_confidence, 
+        notes 
+      } = req.body;
 
-      if (!phrase) {
-        return res.status(400).json({ error: 'Frase é obrigatória' });
-      }
+      // Verificar se a campanha pertence à conta
+      const campaign = await Campaign.findOne({
+        where: { id: campaignId, account_id: accountId }
+      });
 
-      // Verificar se a campanha existe e pertence à conta
-      const campaign = memoryDb.campaigns.findCampaign({ id: campaignId });
-      if (!campaign || campaign.account_id !== accountId) {
+      if (!campaign) {
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
 
-      const triggerPhrase = memoryDb.campaigns.createTriggerPhrase({
-        phrase,
-        keywords: keywords || [],
+      if (!phrase) {
+        return res.status(400).json({ 
+          error: 'Frase é obrigatória' 
+        });
+      }
+
+      const triggerPhrase = await TriggerPhrase.create({
+        account_id: accountId,
         campaign_id: campaignId,
+        phrase,
+        creative_code,
         priority: priority || 1,
-        is_active: true,
-        account_id: accountId
+        match_type: match_type || 'keyword',
+        case_sensitive: case_sensitive || false,
+        min_confidence: min_confidence || 0.5,
+        notes
       });
 
-      res.status(201).json({
+      res.status(201).json({ 
         message: 'Frase gatilho criada com sucesso',
-        phrase: triggerPhrase
+        phrase: triggerPhrase 
       });
     } catch (error) {
       console.error('Error creating trigger phrase:', error);
@@ -247,22 +321,26 @@ const campaignController = {
   // Atualizar frase gatilho
   updateTriggerPhrase: async (req, res) => {
     try {
-      const { phraseId } = req.params;
+      const { campaignId, phraseId } = req.params;
       const accountId = req.account.id;
-      const updateData = { ...req.body };
-      delete updateData.account_id;
 
-      const phrase = memoryDb.campaigns.findTriggerPhrase({ id: phraseId });
+      const triggerPhrase = await TriggerPhrase.findOne({
+        where: { 
+          id: phraseId, 
+          campaign_id: campaignId, 
+          account_id: accountId 
+        }
+      });
 
-      if (!phrase || phrase.account_id !== accountId) {
+      if (!triggerPhrase) {
         return res.status(404).json({ error: 'Frase gatilho não encontrada' });
       }
 
-      const updatedPhrase = memoryDb.campaigns.updateTriggerPhrase(phraseId, updateData);
+      await triggerPhrase.update(req.body);
 
-      res.json({
+      res.json({ 
         message: 'Frase gatilho atualizada com sucesso',
-        phrase: updatedPhrase
+        phrase: triggerPhrase 
       });
     } catch (error) {
       console.error('Error updating trigger phrase:', error);
@@ -273,16 +351,22 @@ const campaignController = {
   // Deletar frase gatilho
   deleteTriggerPhrase: async (req, res) => {
     try {
-      const { phraseId } = req.params;
+      const { campaignId, phraseId } = req.params;
       const accountId = req.account.id;
 
-      const phrase = memoryDb.campaigns.findTriggerPhrase({ id: phraseId });
+      const triggerPhrase = await TriggerPhrase.findOne({
+        where: { 
+          id: phraseId, 
+          campaign_id: campaignId, 
+          account_id: accountId 
+        }
+      });
 
-      if (!phrase || phrase.account_id !== accountId) {
+      if (!triggerPhrase) {
         return res.status(404).json({ error: 'Frase gatilho não encontrada' });
       }
 
-      memoryDb.campaigns.deleteTriggerPhrase(phraseId);
+      await triggerPhrase.destroy();
 
       res.json({ message: 'Frase gatilho deletada com sucesso' });
     } catch (error) {
@@ -291,35 +375,61 @@ const campaignController = {
     }
   },
 
-  // Testar correspondência de frase
+  // Testar matching de uma frase
   testPhraseMatch: async (req, res) => {
     try {
-      const accountId = req.account.id;
+      const { campaignId, phraseId } = req.params;
       const { message } = req.body;
+      const accountId = req.account.id;
 
       if (!message) {
         return res.status(400).json({ error: 'Mensagem é obrigatória' });
       }
 
-      const match = memoryDb.campaigns.matchPhrase(message, accountId);
+      const triggerPhrase = await TriggerPhrase.findOne({
+        where: { 
+          id: phraseId, 
+          campaign_id: campaignId, 
+          account_id: accountId 
+        },
+        include: [{
+          model: Campaign,
+          as: 'campaign'
+        }]
+      });
 
-      if (match) {
-        const campaign = memoryDb.campaigns.findCampaign({ id: match.phrase.campaign_id });
-        
-        res.json({
-          match_found: true,
-          phrase: match.phrase,
-          campaign,
-          confidence: match.confidence,
-          match_type: match.matchType,
-          matched_keywords: match.matchedKeywords
-        });
-      } else {
-        res.json({
-          match_found: false,
-          message: 'Nenhuma frase gatilho encontrada para esta mensagem'
-        });
+      if (!triggerPhrase) {
+        return res.status(404).json({ error: 'Frase gatilho não encontrada' });
       }
+
+      const messageLower = message.toLowerCase();
+      let match = null;
+
+      // Test exact match
+      if (messageLower.includes(triggerPhrase.phrase.toLowerCase())) {
+        match = { 
+          type: 'exact', 
+          confidence: 1.0,
+          matched_text: triggerPhrase.phrase
+        };
+      } else {
+        // Test phrase contains match
+        if (messageLower.includes(triggerPhrase.phrase.toLowerCase())) {
+          match = { 
+            type: 'contains', 
+            confidence: 0.8
+          };
+        }
+      }
+
+      res.json({ 
+        message: 'Teste realizado',
+        input_message: message,
+        phrase: triggerPhrase.phrase,
+        creative_code: triggerPhrase.creative_code,
+        match: match,
+        would_trigger: match !== null
+      });
     } catch (error) {
       console.error('Error testing phrase match:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
