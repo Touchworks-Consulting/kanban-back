@@ -78,8 +78,16 @@ const Lead = sequelize.define('Lead', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  won_at: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
   lost_reason: {
     type: DataTypes.STRING,
+    allowNull: true
+  },
+  lost_at: {
+    type: DataTypes.DATE,
     allowNull: true
   },
   value: {

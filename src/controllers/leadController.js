@@ -223,6 +223,24 @@ const leadController = {
       column_id: lead.column_id
     };
 
+    // ⏰ RASTREAR DATA DE CONVERSÃO
+    // Se o status está mudando para 'won' ou 'lost', registrar quando aconteceu
+    if (updateData.status && updateData.status !== lead.status) {
+      if (updateData.status === 'won') {
+        updateData.won_at = new Date();
+        updateData.lost_at = null; // Limpar lost_at se estava perdido antes
+      } else if (updateData.status === 'lost') {
+        updateData.lost_at = new Date();
+        updateData.won_at = null; // Limpar won_at se estava ganho antes
+      } else {
+        // Se mudou para outro status que não seja won/lost, limpar ambos
+        if (lead.status === 'won' || lead.status === 'lost') {
+          updateData.won_at = null;
+          updateData.lost_at = null;
+        }
+      }
+    }
+
     await lead.update(updateData);
 
     // Atualizar tags se fornecidas

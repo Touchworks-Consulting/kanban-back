@@ -44,6 +44,18 @@ const dashboardController = {
     });
   }),
 
+  // Tempo médio até conversão por campanha
+  getAverageConversionTimeByCampaign: asyncHandler(async (req, res) => {
+    const { start_date, end_date } = req.query;
+    
+    const conversionMetrics = await DashboardService.getAverageConversionTimeByCampaign(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ conversionMetrics });
+  }),
+
   // Dashboard completo
   getDashboard: asyncHandler(async (req, res) => {
     const { start_date, end_date, timeframe = 'week' } = req.query;
@@ -53,10 +65,11 @@ const dashboardController = {
       endDate: end_date
     };
 
-    const [metrics, funnel, timeline] = await Promise.all([
+    const [metrics, funnel, timeline, conversionMetrics] = await Promise.all([
       DashboardService.getMetrics(req.account.id, dateRange),
       DashboardService.getConversionFunnel(req.account.id, dateRange),
-      DashboardService.getLeadsByTimeframe(req.account.id, timeframe)
+      DashboardService.getLeadsByTimeframe(req.account.id, timeframe),
+      DashboardService.getAverageConversionTimeByCampaign(req.account.id, dateRange)
     ]);
 
     res.json({
@@ -67,6 +80,7 @@ const dashboardController = {
           timeframe,
           data: timeline
         },
+        conversionMetrics,
         account: {
           id: req.account.id,
           name: req.account.name

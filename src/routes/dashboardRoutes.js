@@ -14,5 +14,6 @@ router.get('/', dashboardController.getDashboard);
 router.get('/metrics', dashboardController.getMetrics);
 router.get('/funnel', dashboardController.getConversionFunnel);
 router.get('/timeline', dashboardController.getLeadsByTimeframe);
+router.get('/conversion-time-by-campaign', dashboardController.getAverageConversionTimeByCampaign);
 
 module.exports = router;

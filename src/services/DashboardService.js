@@ -191,6 +191,74 @@ class DashboardService {
     return data;
   }
 
+  // Nova métrica: Tempo médio até conversão por campanha
+  static async getAverageConversionTimeByCampaign(accountId, dateRange = {}) {
+    const { startDate, endDate } = this.getDateRange(dateRange);
+    
+    const whereClause = {
+      account_id: accountId,
+      status: 'won',
+      won_at: { [Op.not]: null },
+      campaign: { [Op.not]: null },
+      ...(startDate && endDate && {
+        won_at: {
+          [Op.between]: [startDate, endDate]
+        }
+      })
+    };
+
+    const wonLeads = await Lead.findAll({
+      where: whereClause,
+      attributes: [
+        'campaign',
+        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('id')), 'total_conversions'],
+        // Calcular diferença em segundos entre created_at e won_at
+        [
+          Lead.sequelize.fn(
+            'AVG', 
+            Lead.sequelize.fn(
+              'EXTRACT',
+              Lead.sequelize.literal("EPOCH FROM (won_at - created_at)")
+            )
+          ), 
+          'avg_seconds_to_conversion'
+        ]
+      ],
+      group: ['campaign'],
+      raw: true
+    });
+
+    return wonLeads.map(lead => ({
+      campaign: lead.campaign,
+      totalConversions: parseInt(lead.total_conversions),
+      averageTimeToConversion: {
+        seconds: Math.round(parseFloat(lead.avg_seconds_to_conversion || 0)),
+        minutes: Math.round(parseFloat(lead.avg_seconds_to_conversion || 0) / 60),
+        hours: Math.round(parseFloat(lead.avg_seconds_to_conversion || 0) / 3600),
+        days: Math.round(parseFloat(lead.avg_seconds_to_conversion || 0) / 86400),
+        formatted: this.formatDuration(parseFloat(lead.avg_seconds_to_conversion || 0))
+      }
+    }));
+  }
+
+  // Função auxiliar para formatar duração
+  static formatDuration(seconds) {
+    if (seconds < 60) {
+      return `${Math.round(seconds)}s`;
+    } else if (seconds < 3600) {
+      const minutes = Math.round(seconds / 60);
+      return `${minutes}min`;
+    } else if (seconds < 86400) {
+      const hours = Math.round(seconds / 3600);
+      const remainingMinutes = Math.round((seconds % 3600) / 60);
+      return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+    } else {
+      const days = Math.round(seconds / 86400);
+      const remainingHours = Math.round((seconds % 86400) / 3600);
+      return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+    }
+  }
+
   static getDateRange(dateRange) {
     const { startDate, endDate } = dateRange;
     

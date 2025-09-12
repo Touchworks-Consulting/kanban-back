@@ -760,15 +760,16 @@ const campaignController = {
       console.log(`📈 CRESCIMENTO DEBUG: Atual: ${recentLeads}, Anterior: ${previousPeriodLeads}, Taxa: ${growthRate.toFixed(1)}%`);
 
       // ⏰ CALCULAR TEMPO MÉDIO DE CONVERSÃO
-      // Apenas para leads com status 'won' (convertidos)
-      const convertedLeads = leads.filter(lead => lead.status === 'won');
+      // Apenas para leads com status 'won' E com won_at definido
+      const convertedLeads = leads.filter(lead => lead.status === 'won' && lead.won_at);
       let avgConversionTime = 0;
       
       if (convertedLeads.length > 0) {
         const totalConversionTime = convertedLeads.reduce((sum, lead) => {
           const leadCreatedAt = new Date(lead.created_at);
-          const leadConvertedAt = new Date(lead.updated_at); // Data da última atualização (conversão)
+          const leadConvertedAt = new Date(lead.won_at); // ✅ USA won_at ao invés de updated_at
           const conversionTimeHours = (leadConvertedAt - leadCreatedAt) / (1000 * 60 * 60); // em horas
+          console.log(`🔍 Lead ${lead.name}: Criado ${leadCreatedAt.toISOString()}, Ganho ${leadConvertedAt.toISOString()}, Tempo: ${conversionTimeHours.toFixed(1)}h`);
           return sum + conversionTimeHours;
         }, 0);
         
