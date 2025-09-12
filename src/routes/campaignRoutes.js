@@ -11,6 +11,10 @@ router.post('/', authenticateToken, campaignController.createCampaign);
 router.put('/:id', authenticateToken, campaignController.updateCampaign);
 router.delete('/:id', authenticateToken, campaignController.deleteCampaign);
 
+// Relatórios de campanha
+router.get('/:campaignId/effective-phrases', authenticateToken, campaignController.getMostEffectivePhrases);
+router.get('/:campaignId/debug-reports', authenticateToken, campaignController.debugCampaignReports);
+
 // Frases gatilho
 router.get('/:campaignId/phrases', authenticateToken, campaignController.listTriggerPhrases);
 router.post('/:campaignId/phrases', authenticateToken, campaignController.createTriggerPhrase);

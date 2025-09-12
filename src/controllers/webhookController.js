@@ -133,6 +133,7 @@ const webhookController = {
 async function processWhatsAppMessagePostgres(message, contacts, whatsappAccount) {
   try {
     let messageText = '';
+    let effectivePhrase = null;
     
     // Extract message text based on message type
     if (message.type === 'text' && message.text?.body) {
@@ -145,6 +146,15 @@ async function processWhatsAppMessagePostgres(message, contacts, whatsappAccount
       }
     } else {
       return { leadCreated: false, error: `Tipo de mensagem não suportado: ${message.type}` };
+    }
+    
+    // 🎯 CAPTURAR FRASE EFICAZ - Priorizar referral.body sobre text.body
+    if (message.referral?.body) {
+      effectivePhrase = message.referral.body;
+      console.log(`📈 Effective phrase from referral: "${effectivePhrase.substring(0, 100)}..."`);
+    } else if (messageText) {
+      effectivePhrase = messageText;
+      console.log(`📈 Effective phrase from message text: "${effectivePhrase}"`);
     }
     
     if (!messageText.trim()) {
@@ -225,6 +235,8 @@ async function processWhatsAppMessagePostgres(message, contacts, whatsappAccount
       metadata: {
         whatsapp_phone_id: whatsappAccount.phone_id,
         whatsapp_account_name: whatsappAccount.account_name,
+        effective_phrase: effectivePhrase, // 🎯 FRASE EFICAZ CAPTURADA
+        referral_data: message.referral || null, // 🎯 DADOS COMPLETOS DO REFERRAL
         campaign_match: match ? {
           phrase: match.triggerPhrase.phrase,
           confidence: match.confidence,

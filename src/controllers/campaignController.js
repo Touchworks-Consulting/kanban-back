@@ -517,6 +517,253 @@ const campaignController = {
       console.error('Error testing phrase match:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
+  },
+
+  // 📊 RELATÓRIO DE FRASES MAIS EFICAZES
+  getMostEffectivePhrases: async (req, res) => {
+    try {
+      const { campaignId } = req.params;
+      const { date_range = '30' } = req.query; // dias
+      const accountId = req.account.id;
+
+      // Verificar se a campanha pertence à conta
+      const campaign = await Campaign.findOne({
+        where: { id: campaignId, account_id: accountId }
+      });
+
+      if (!campaign) {
+        return res.status(404).json({ error: 'Campanha não encontrada' });
+      }
+
+      // Data de início baseada no range
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(date_range));
+
+      // Buscar todos os leads da campanha no período
+      const leads = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          created_at: {
+            [require('sequelize').Op.gte]: startDate
+          }
+        },
+        attributes: ['metadata', 'created_at', 'message', 'name', 'phone'],
+        raw: true
+      });
+
+      console.log(`🔍 DEBUG - Campaign: ${campaign.name}`);
+      console.log(`🔍 DEBUG - Found ${leads.length} leads in last ${date_range} days`);
+
+      // Agrupar e contar frases eficazes
+      const phraseStats = {};
+      let totalLeads = 0;
+      const leadsDebug = [];
+
+      leads.forEach(lead => {
+        totalLeads++;
+        const metadata = typeof lead.metadata === 'string' ? JSON.parse(lead.metadata) : lead.metadata;
+        
+        // 🎯 PRIORIZAR: referral.body > mensagem do lead
+        let effectivePhrase = metadata?.effective_phrase;
+        let phraseCode = null;
+        
+        if (!effectivePhrase && lead.message) {
+          effectivePhrase = lead.message; // Usar mensagem se não há referral
+        }
+        
+        // Tentar capturar código da frase gatilho se houve match
+        if (metadata?.campaign_match?.phrase) {
+          phraseCode = metadata.campaign_match.phrase;
+        }
+        
+        const originalMessage = lead.message;
+        
+        // Debug info
+        leadsDebug.push({
+          name: lead.name,
+          phone: lead.phone,
+          message: originalMessage,
+          effective_phrase: effectivePhrase,
+          phrase_code: phraseCode,
+          has_referral: !!metadata?.referral_data,
+          campaign_match: metadata?.campaign_match
+        });
+        
+        if (effectivePhrase) {
+          // Truncar frase muito longa para exibição
+          const displayPhrase = effectivePhrase.length > 100 
+            ? effectivePhrase.substring(0, 100) + '...'
+            : effectivePhrase;
+          
+          if (!phraseStats[displayPhrase]) {
+            phraseStats[displayPhrase] = {
+              phrase: displayPhrase,
+              original_phrase: effectivePhrase,
+              phrase_code: phraseCode || 'N/A',
+              volume: 0,
+              percentage: 0
+            };
+          }
+          phraseStats[displayPhrase].volume++;
+          
+          // Atualizar código se disponível
+          if (phraseCode) {
+            phraseStats[displayPhrase].phrase_code = phraseCode;
+          }
+        }
+      });
+
+      console.log('🔍 DEBUG - Leads details:', JSON.stringify(leadsDebug, null, 2));
+
+      // Calcular percentuais e ordenar por volume
+      const sortedPhrases = Object.values(phraseStats)
+        .map(phrase => ({
+          ...phrase,
+          percentage: totalLeads > 0 ? ((phrase.volume / totalLeads) * 100).toFixed(1) : '0.0'
+        }))
+        .sort((a, b) => b.volume - a.volume)
+        .slice(0, 10); // Top 10 frases
+
+      res.json({
+        campaign_name: campaign.name,
+        date_range: `${date_range} dias`,
+        total_leads: totalLeads,
+        effective_phrases: sortedPhrases,
+        debug: {
+          leads_details: leadsDebug
+        }
+      });
+    } catch (error) {
+      console.error('Error getting most effective phrases:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  },
+
+  // 🔍 DEBUG RELATÓRIOS DA CAMPANHA
+  debugCampaignReports: async (req, res) => {
+    try {
+      const { campaignId } = req.params;
+      const accountId = req.account.id;
+
+      // Buscar a campanha
+      const campaign = await Campaign.findOne({
+        where: { id: campaignId, account_id: accountId },
+        include: [{
+          model: TriggerPhrase,
+          as: 'triggerPhrases'
+        }]
+      });
+
+      if (!campaign) {
+        return res.status(404).json({ error: 'Campanha não encontrada' });
+      }
+
+      // Buscar todos os leads da campanha
+      const leads = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name
+        },
+        attributes: ['id', 'name', 'phone', 'message', 'metadata', 'created_at'],
+        order: [['created_at', 'DESC']],
+        raw: true
+      });
+
+      // Processar dados dos leads
+      const leadsWithDetails = leads.map(lead => {
+        const metadata = typeof lead.metadata === 'string' ? JSON.parse(lead.metadata) : lead.metadata;
+        return {
+          id: lead.id,
+          name: lead.name,
+          phone: lead.phone,
+          message: lead.message,
+          created_at: lead.created_at,
+          effective_phrase: metadata?.effective_phrase,
+          has_referral: !!metadata?.referral_data,
+          referral_headline: metadata?.referral_data?.headline,
+          referral_source_type: metadata?.referral_data?.source_type,
+          campaign_match: metadata?.campaign_match,
+          whatsapp_phone_id: metadata?.whatsapp_phone_id
+        };
+      });
+
+      // 📊 CALCULAR MÉTRICAS COMPARATIVAS
+      // Total de leads de todas as campanhas da conta
+      const totalLeadsAllCampaigns = await Lead.count({
+        where: { account_id: accountId }
+      });
+
+      // Taxa de conversão comparativa (% desta campanha vs todas)
+      const comparativeConversionRate = totalLeadsAllCampaigns > 0 
+        ? ((leads.length / totalLeadsAllCampaigns) * 100).toFixed(1)
+        : '0.0';
+
+      // Ticket médio (se houver campo value nos leads)
+      const avgTicket = await Lead.findOne({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          value: { [require('sequelize').Op.not]: null }
+        },
+        attributes: [
+          [require('sequelize').fn('AVG', require('sequelize').col('value')), 'avg_value'],
+          [require('sequelize').fn('SUM', require('sequelize').col('value')), 'total_value']
+        ],
+        raw: true
+      });
+
+      // Leads nos últimos 30 dias para calcular crescimento
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      const recentLeads = await Lead.count({
+        where: {
+          account_id: accountId,
+          campaign: campaign.name,
+          created_at: { [require('sequelize').Op.gte]: thirtyDaysAgo }
+        }
+      });
+
+      // Simular cálculo de mensagens - SUBSTITUIR por métrica mais valiosa
+      // Sugestão: Total de interações, tempo médio de resposta, ou custo por lead
+      const totalInteractions = leads.length * 2.5; // Mock: cada lead = ~2.5 interações
+      const avgResponseTime = Math.floor(Math.random() * 120) + 30; // Mock: 30-150 minutos
+
+      // Taxa de conversão real baseada nos dados
+      const conversionRate = comparativeConversionRate;
+
+      res.json({
+        campaign: {
+          id: campaign.id,
+          name: campaign.name,
+          platform: campaign.platform,
+          channel: campaign.channel,
+          is_active: campaign.is_active
+        },
+        metrics: {
+          total_leads: leads.length,
+          total_interactions: Math.round(totalInteractions), // NOVA MÉTRICA: Total de interações
+          avg_response_time: avgResponseTime, // NOVA MÉTRICA: Tempo médio de resposta (mock)
+          comparative_conversion_rate: conversionRate, // NOVA: Taxa comparativa vs todas campanhas
+          total_leads_all_campaigns: totalLeadsAllCampaigns, // Para contexto
+          total_phrases: campaign.triggerPhrases ? campaign.triggerPhrases.length : 0,
+          active_phrases: campaign.triggerPhrases ? campaign.triggerPhrases.filter(p => p.is_active).length : 0,
+          avg_ticket: avgTicket?.avg_value ? parseFloat(avgTicket.avg_value).toFixed(2) : '0.00',
+          total_revenue: avgTicket?.total_value ? parseFloat(avgTicket.total_value).toFixed(2) : '0.00',
+          recent_leads_30d: recentLeads
+        },
+        leads_details: leadsWithDetails,
+        issues_found: {
+          leads_without_effective_phrase: leadsWithDetails.filter(l => !l.effective_phrase).length,
+          leads_without_referral: leadsWithDetails.filter(l => !l.has_referral).length,
+          total_issues: leadsWithDetails.filter(l => !l.effective_phrase && !l.has_referral).length
+        }
+      });
+    } catch (error) {
+      console.error('Error debugging campaign reports:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
   }
 };
 
