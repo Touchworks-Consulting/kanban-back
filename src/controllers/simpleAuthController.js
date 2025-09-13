@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { signToken, verifyToken as verifyJWT } = require('../utils/jwtUtils');
 const memoryDb = require('../database/memory-db');
 
 const login = async (req, res) => {
@@ -32,13 +32,12 @@ const login = async (req, res) => {
     }
 
     // Gerar token JWT
-    const token = jwt.sign(
-      { 
+    const token = signToken(
+      {
         id: account.id,
         email: account.email,
-        name: account.name 
+        name: account.name
       },
-      process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '24h' }
     );
 
@@ -75,7 +74,7 @@ const verifyToken = async (req, res) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
+    const decoded = verifyJWT(token);
     
     const account = memoryDb.findAccount({ id: decoded.id });
     

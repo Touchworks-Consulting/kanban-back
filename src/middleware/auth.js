@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { verifyToken: verifyJWT } = require('../utils/jwtUtils');
 const { Account, User, UserAccount } = require('../models');
 
 const authenticateToken = async (req, res, next) => {
@@ -12,7 +12,7 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
+    const decoded = verifyJWT(token);
     
     if (!decoded.userId && !decoded.email) {
       return res.status(401).json({ error: 'Token inválido' });
@@ -44,8 +44,15 @@ const authenticateToken = async (req, res, next) => {
       return res.status(401).json({ error: 'Usuário não encontrado ou inativo' });
     }
 
-    // Se não há conta atual definida, definir a primeira conta do usuário
-    if (!user.current_account_id) {
+    // Buscar informações da conta atual e permissões
+    let currentAccount = user.currentAccount;
+    let userRole = 'member';
+    let userPermissions = {};
+
+    // Se não há conta atual definida, buscar a primeira conta ativa do usuário
+    if (!currentAccount || !user.current_account_id) {
+      console.log(`🔍 Usuário ${user.email} sem conta atual definida, buscando primeira conta ativa...`);
+
       const firstUserAccount = await UserAccount.findOne({
         where: { user_id: user.id, is_active: true },
         include: [{
@@ -56,17 +63,17 @@ const authenticateToken = async (req, res, next) => {
       });
 
       if (firstUserAccount) {
+        console.log(`✅ Definindo conta ${firstUserAccount.account.name} como atual para ${user.email}`);
         await user.update({ current_account_id: firstUserAccount.account.id });
-        user.currentAccount = firstUserAccount.account;
+        currentAccount = firstUserAccount.account;
+        userRole = firstUserAccount.role;
+        userPermissions = firstUserAccount.permissions || {};
+      } else {
+        console.log(`❌ Nenhuma conta ativa encontrada para usuário ${user.email}`);
+        return res.status(401).json({ error: 'Usuário não possui acesso a nenhuma conta ativa' });
       }
-    }
-
-    // Buscar informações da conta atual e permissões
-    let currentAccount = user.currentAccount;
-    let userRole = 'member';
-    let userPermissions = {};
-
-    if (currentAccount) {
+    } else {
+      // Buscar permissões da conta atual
       const userAccount = await UserAccount.findOne({
         where: {
           user_id: user.id,
@@ -78,6 +85,9 @@ const authenticateToken = async (req, res, next) => {
       if (userAccount) {
         userRole = userAccount.role;
         userPermissions = userAccount.permissions || {};
+      } else {
+        console.log(`❌ Usuário ${user.email} não tem acesso à conta ${currentAccount.name}`);
+        return res.status(403).json({ error: 'Acesso negado à conta atual' });
       }
     }
 
@@ -87,20 +97,26 @@ const authenticateToken = async (req, res, next) => {
     req.userPermissions = userPermissions;
     next();
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ 
-        error: 'Token inválido' 
+    if (error.message.includes('Token expired')) {
+      return res.status(401).json({
+        error: 'Token expirado'
       });
     }
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ 
-        error: 'Token expirado' 
+    if (error.message.includes('Invalid token') || error.message.includes('Token verification failed')) {
+      return res.status(401).json({
+        error: 'Token inválido'
       });
     }
-    
+    if (error.message.includes('JWT_SECRET must be set')) {
+      console.error('CRITICAL: JWT_SECRET environment variable is not set');
+      return res.status(500).json({
+        error: 'Configuração de segurança inválida'
+      });
+    }
+
     console.error('Erro na autenticação:', error);
-    return res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    return res.status(500).json({
+      error: 'Erro interno do servidor'
     });
   }
 };

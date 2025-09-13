@@ -6,6 +6,15 @@ const { Op } = require('sequelize');
 const kanbanController = {
   // Listar colunas
   listColumns: asyncHandler(async (req, res) => {
+    console.log(`🏗️ listColumns: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      console.log('❌ req.account é null ou sem id:', req.account);
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
     // Ensure default columns exist for the account
     const existingCount = await KanbanColumn.count({
       where: { account_id: req.account.id }

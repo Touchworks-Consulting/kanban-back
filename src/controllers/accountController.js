@@ -229,6 +229,31 @@ const getCurrentAccount = async (req, res) => {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
 
+    console.log(`🔍 getCurrentAccount: Buscando conta atual para usuário ${req.user?.email}`);
+
+    // Usar a conta já validada pelo middleware de autenticação
+    if (req.account) {
+      console.log(`✅ Conta já validada pelo middleware: ${req.account.name}`);
+
+      res.json({
+        account: {
+          id: req.account.id,
+          name: req.account.name,
+          display_name: req.account.display_name || req.account.name,
+          description: req.account.description,
+          avatar_url: req.account.avatar_url,
+          plan: req.account.plan,
+          role: req.userRole || 'member',
+          permissions: req.userPermissions || {},
+          is_active: req.account.is_active
+        }
+      });
+      return;
+    }
+
+    // Fallback: Buscar conta manualmente se não foi definida pelo middleware
+    console.log('⚠️ Conta não definida pelo middleware, buscando manualmente...');
+
     const user = await User.findByPk(userId, {
       include: [{
         model: Account,
@@ -237,17 +262,61 @@ const getCurrentAccount = async (req, res) => {
       }]
     });
 
-    if (!user || !user.currentAccount) {
-      return res.status(404).json({ error: 'Conta atual não encontrada' });
+    if (!user) {
+      console.log(`❌ Usuário ${userId} não encontrado`);
+      return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
+    // Se não tem conta atual, buscar primeira conta ativa
+    if (!user.currentAccount || !user.current_account_id) {
+      console.log('🔍 Buscando primeira conta ativa do usuário...');
+
+      const firstUserAccount = await UserAccount.findOne({
+        where: { user_id: userId, is_active: true },
+        include: [{
+          model: Account,
+          as: 'account',
+          where: { is_active: true }
+        }]
+      });
+
+      if (firstUserAccount) {
+        console.log(`✅ Definindo conta ${firstUserAccount.account.name} como atual`);
+        await user.update({ current_account_id: firstUserAccount.account.id });
+
+        res.json({
+          account: {
+            id: firstUserAccount.account.id,
+            name: firstUserAccount.account.name,
+            display_name: firstUserAccount.account.display_name || firstUserAccount.account.name,
+            description: firstUserAccount.account.description,
+            avatar_url: firstUserAccount.account.avatar_url,
+            plan: firstUserAccount.account.plan,
+            role: firstUserAccount.role,
+            permissions: firstUserAccount.permissions || {},
+            is_active: firstUserAccount.account.is_active
+          }
+        });
+        return;
+      } else {
+        console.log(`❌ Nenhuma conta ativa encontrada para usuário ${user.email}`);
+        return res.status(404).json({ error: 'Nenhuma conta ativa encontrada' });
+      }
+    }
+
+    // Buscar permissões da conta atual
     const userAccount = await UserAccount.findOne({
-      where: { 
+      where: {
         user_id: userId,
         account_id: user.current_account_id,
-        is_active: true 
+        is_active: true
       }
     });
+
+    if (!userAccount) {
+      console.log(`❌ Usuário não tem acesso à conta ${user.current_account_id}`);
+      return res.status(403).json({ error: 'Acesso negado à conta atual' });
+    }
 
     const account = user.currentAccount;
     res.json({
@@ -258,11 +327,12 @@ const getCurrentAccount = async (req, res) => {
         description: account.description,
         avatar_url: account.avatar_url,
         plan: account.plan,
-        role: userAccount?.role || 'member',
-        permissions: userAccount?.permissions || {},
+        role: userAccount.role,
+        permissions: userAccount.permissions || {},
         is_active: account.is_active
       }
     });
+
   } catch (error) {
     console.error('Error fetching current account:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

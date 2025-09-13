@@ -17,8 +17,8 @@ const PORT = process.env.PORT || 3000;
 
 // Rate limiting (separa auth crítico de demais rotas)
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: Number(process.env.API_RATE_LIMIT) || 1000, // Aumentar para dashboard
+  windowMs: 5 * 60 * 1000, // 5 minutos (mais curto)
+  max: Number(process.env.API_RATE_LIMIT) || 500, // Mais permissivo para app usage
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Muitas requisições. Tente novamente em alguns minutos.'
@@ -27,15 +27,24 @@ const apiLimiter = rateLimit({
 // Rate limiter específico para dashboard (mais permissivo)
 const dashboardLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 100, // Permitir mais requests para dashboard
+  max: 200, // Dobrar para múltiplas requisições simultâneas
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Muitas requisições ao dashboard. Aguarde um momento.'
 });
 
+// Rate limiter para rotas de app (accounts, users, kanban)
+const appLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 300, // Muito permissivo para uso normal do app
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Muitas requisições à aplicação. Aguarde um momento.'
+});
+
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minuto
-  max: 10, // evita loops de refresh
+  max: 50, // Permitir mais tentativas para fluxo normal
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => req.ip + '|' + (req.headers['user-agent'] || ''),
@@ -54,15 +63,34 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-// Aplicar rate limiters específicos
+// Aplicar rate limiters específicos ANTES das rotas
+// Auth tem seu próprio limiter mais permissivo
+app.use('/api/auth', authLimiter);
+
+// Dashboard tem limiter mais permissivo para múltiplas requisições
+app.use('/api/dashboard', dashboardLimiter);
+
+// Rotas da aplicação (accounts, users, kanban) - mais permissivas
+app.use('/api/accounts', appLimiter);
+app.use('/api/users', appLimiter);
+app.use('/api/kanban', appLimiter);
+app.use('/api/leads', appLimiter);
+app.use('/api/tags', appLimiter);
+
+// Demais rotas da API (mais restritivas)
 app.use('/api', (req, res, next) => {
-  if (req.path.startsWith('/auth/')) return next();
-  if (req.path.startsWith('/dashboard/')) return dashboardLimiter(req, res, next);
+  // Se já passou pelos limiters específicos acima, pula
+  if (req.path.startsWith('/auth/') ||
+      req.path.startsWith('/dashboard/') ||
+      req.path.startsWith('/accounts/') ||
+      req.path.startsWith('/users/') ||
+      req.path.startsWith('/kanban/') ||
+      req.path.startsWith('/leads/') ||
+      req.path.startsWith('/tags/')) {
+    return next();
+  }
   return apiLimiter(req, res, next);
 });
-
-// Limiter específico para refresh/logout/login/register
-app.use('/api/auth/:action(refresh|logout|login|register)', authLimiter);
 
 // Health check
 app.get('/health', (req, res) => {

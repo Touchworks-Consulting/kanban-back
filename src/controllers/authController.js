@@ -1,34 +1,58 @@
-const jwt = require('jsonwebtoken');
+const { signToken, verifyToken: verifyJWT } = require('../utils/jwtUtils');
 const { Account, User } = require('../models');
 
 // Login somente para contas previamente registradas (sem criação automática)
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(`🔐 LOGIN: Tentativa de login para: ${email}`);
+
     if (!email || !password) {
+      console.log('❌ Email ou senha não fornecidos');
       return res.status(400).json({ success: false, message: 'Email e senha são obrigatórios' });
     }
 
     // Procurar usuário existente (pré-registrado)
+    console.log(`🔍 Buscando usuário: ${email}`);
     const user = await User.findOne({ where: { email, is_active: true } });
+
     if (!user) {
+      console.log(`❌ Usuário não encontrado ou inativo: ${email}`);
       // Não criar nada – reforça necessidade de registro prévio
       return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
     }
 
+    console.log(`✅ Usuário encontrado: ${user.name} (ID: ${user.id})`);
+    console.log(`📋 Detalhes: role=${user.role}, account_id=${user.account_id}, current_account_id=${user.current_account_id}`);
+
+    console.log(`🏢 Buscando conta: ${user.account_id}`);
     const account = await Account.findByPk(user.account_id);
-    if (!account || !account.is_active) {
+    if (!account) {
+      console.log(`❌ Conta não encontrada: ${user.account_id}`);
+      return res.status(401).json({ success: false, message: 'Conta não encontrada' });
+    }
+
+    if (!account.is_active) {
+      console.log(`❌ Conta inativa: ${account.name} (ID: ${account.id})`);
       return res.status(401).json({ success: false, message: 'Conta inativa' });
     }
 
+    console.log(`✅ Conta encontrada e ativa: ${account.name} (ID: ${account.id})`);
+
+    console.log('🔑 Validando senha...');
     const isMatch = await user.validPassword(password);
     if (!isMatch) {
+      console.log('❌ Senha inválida');
       return res.status(401).json({ success: false, message: 'Credenciais inválidas' });
     }
 
+    console.log('✅ Senha válida');
+
+    console.log('💾 Atualizando last_login_at...');
     user.last_login_at = new Date();
     await user.save();
 
+    console.log('🎫 Criando token JWT...');
     const tokenPayload = {
       id: account.id,
       accountId: account.id,
@@ -37,8 +61,11 @@ const login = async (req, res) => {
       name: user.name,
       role: user.role
     };
-    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET || 'default_secret', { expiresIn: '24h' });
 
+    console.log('📝 Token payload:', tokenPayload);
+    const token = signToken(tokenPayload, { expiresIn: '24h' });
+
+    console.log('✅ Login realizado com sucesso para:', user.email);
     return res.json({
       token,
       user: {
@@ -77,7 +104,7 @@ const register = async (req, res) => {
     const user = await User.create({ account_id: account.id, name, email, password, role: 'owner' });
 
     const tokenPayload = { id: account.id, accountId: account.id, userId: user.id, email: user.email, name: user.name, role: user.role };
-    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET || 'default_secret', { expiresIn: '24h' });
+    const token = signToken(tokenPayload, { expiresIn: '24h' });
 
     return res.status(201).json({ token, user: { id: account.id, account_id: account.id, user_id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (error) {
@@ -86,27 +113,75 @@ const register = async (req, res) => {
   }
 };
 
-// Refresh token simples (re-issue)
+// Refresh token - agora com validação adequada de expiração
 const refresh = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ message: 'Token necessário' });
+    if (!authHeader) {
+      return res.status(401).json({ message: 'Token necessário' });
+    }
+
     const token = authHeader.replace('Bearer ', '');
     let decoded;
+
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret', { ignoreExpiration: true });
-    } catch {
+      // Permitir tokens expirados APENAS para refresh (janela de graça de 24h)
+      decoded = verifyJWT(token, { ignoreExpiration: true });
+
+      // Verificar se o token não está muito expirado (máximo 24h após expiração)
+      const now = Math.floor(Date.now() / 1000);
+      const maxAge = decoded.exp + (24 * 60 * 60); // 24h após expiração
+
+      if (now > maxAge) {
+        return res.status(401).json({ message: 'Token expirado há muito tempo. Faça login novamente.' });
+      }
+
+    } catch (error) {
+      console.error('Token verification failed in refresh:', error);
       return res.status(401).json({ message: 'Token inválido' });
     }
+
+    // Validar se conta e usuário ainda existem e estão ativos
     const account = await Account.findByPk(decoded.accountId || decoded.id);
-    if (!account || !account.is_active) return res.status(401).json({ message: 'Conta inativa' });
+    if (!account || !account.is_active) {
+      return res.status(401).json({ message: 'Conta inativa' });
+    }
+
     const user = await User.findByPk(decoded.userId);
-    if (!user || !user.is_active) return res.status(401).json({ message: 'Usuário inativo' });
-    const newToken = jwt.sign({ id: account.id, accountId: account.id, userId: user.id, email: user.email, name: user.name, role: user.role }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '24h' });
-    res.json({ token: newToken });
-  } catch (e) {
-    console.error('Refresh error:', e);
-    res.status(500).json({ message: 'Erro interno' });
+    if (!user || !user.is_active) {
+      return res.status(401).json({ message: 'Usuário inativo' });
+    }
+
+    // Gerar novo token com expiração renovada
+    const tokenPayload = {
+      id: account.id,
+      accountId: account.id,
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role
+    };
+
+    const newToken = signToken(tokenPayload, { expiresIn: '24h' });
+
+    res.json({
+      token: newToken,
+      user: {
+        id: account.id,
+        account_id: account.id,
+        user_id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error('Refresh error:', error);
+    if (error.message.includes('JWT_SECRET must be set')) {
+      return res.status(500).json({ message: 'Configuração de segurança inválida' });
+    }
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };
 
@@ -116,7 +191,7 @@ const logout = async (_req, res) => {
 };
 
 // Verificar token
-const verifyToken = async (req, res) => {
+const verifyTokenEndpoint = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -127,7 +202,7 @@ const verifyToken = async (req, res) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
+    const decoded = verifyJWT(token);
     
     const account = await Account.findByPk(decoded.id);
     
@@ -155,5 +230,5 @@ module.exports = {
   register,
   refresh,
   logout,
-  verify: verifyToken
+  verify: verifyTokenEndpoint
 };
