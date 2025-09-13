@@ -248,7 +248,7 @@ const kanbanController = {
 
   // Obter board completo (colunas + leads)
   getBoard: asyncHandler(async (req, res) => {
-    const { search, platform, period, dateStart, dateEnd, valueRange, tags } = req.query;
+    const { search, platform, period, dateStart, dateEnd, valueRange, tags, sortBy = 'updated_desc' } = req.query;
     
     console.log('Backend getBoard - parâmetros recebidos:', {
       search,
@@ -257,7 +257,8 @@ const kanbanController = {
       dateStart,
       dateEnd,
       valueRange,
-      tags
+      tags,
+      sortBy
     });
     
     // Ensure defaults if none exist yet
@@ -396,8 +397,7 @@ const kanbanController = {
           attributes: ['id', 'name', 'color'],
           through: { attributes: [] }
         }
-      ],
-      order: [['position', 'ASC'], ['created_at', 'DESC']]
+      ]
     };
 
     // Tag filter (more complex, requires join)
@@ -408,6 +408,40 @@ const kanbanController = {
       };
       leadInclude.include[0].required = true;
     }
+
+    // Function to convert sortBy parameter to Sequelize order
+    const getSortOrder = (sortBy) => {
+      switch (sortBy) {
+        case 'updated_desc':
+          return [['updated_at', 'DESC']];
+        case 'updated_asc':
+          return [['updated_at', 'ASC']];
+        case 'activity_asc':
+          // Using updated_at as proxy for "next activity"
+          return [['updated_at', 'ASC']];
+        case 'activity_desc':
+          return [['updated_at', 'DESC']];
+        case 'title_asc':
+          return [['name', 'ASC']];
+        case 'title_desc':
+          return [['name', 'DESC']];
+        case 'value_desc':
+          return [['value', 'DESC'], ['created_at', 'DESC']];
+        case 'value_asc':
+          return [['value', 'ASC'], ['created_at', 'ASC']];
+        case 'created_desc':
+          return [['created_at', 'DESC']];
+        case 'created_asc':
+          return [['created_at', 'ASC']];
+        default:
+          // Default: updated_desc
+          return [['updated_at', 'DESC']];
+      }
+    };
+
+    // Apply dynamic sorting but preserve position as primary sort
+    const dynamicOrder = getSortOrder(sortBy);
+    leadInclude.order = [['position', 'ASC'], ...dynamicOrder];
 
     const columns = await KanbanColumn.findAll({
       where: {
