@@ -1,6 +1,7 @@
-const { KanbanColumn, Lead } = require('../models');
+const { KanbanColumn, Lead, Tag } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { processSequelizeResponse } = require('../utils/dateSerializer');
+const { Op } = require('sequelize');
 
 const kanbanController = {
   // Listar colunas
@@ -238,6 +239,18 @@ const kanbanController = {
 
   // Obter board completo (colunas + leads)
   getBoard: asyncHandler(async (req, res) => {
+    const { search, platform, period, dateStart, dateEnd, valueRange, tags } = req.query;
+    
+    console.log('Backend getBoard - parâmetros recebidos:', {
+      search,
+      platform,
+      period,
+      dateStart,
+      dateEnd,
+      valueRange,
+      tags
+    });
+    
     // Ensure defaults if none exist yet
     const count = await KanbanColumn.count({ where: { account_id: req.account.id } });
     if (count === 0) {
@@ -252,32 +265,153 @@ const kanbanController = {
       await Promise.all(defaults.map((c) => KanbanColumn.create({ ...c, account_id: req.account.id })));
     }
 
+    // Build lead filters
+    const leadFilters = {};
+
+    // Search filter
+    if (search) {
+      // Verificar se é busca numérica (apenas dígitos)
+      const isNumericSearch = /^\d+$/.test(search);
+      
+      if (isNumericSearch) {
+        // Para busca numérica, buscar apenas em telefone (sem formatação)
+        leadFilters[Op.or] = [
+          { phone: { [Op.like]: `%${search}%` } }
+        ];
+      } else {
+        // Para busca de texto, buscar em todos os campos
+        leadFilters[Op.or] = [
+          { name: { [Op.like]: `%${search}%` } },
+          { phone: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } },
+          { message: { [Op.like]: `%${search}%` } }
+        ];
+      }
+    }
+
+    // Platform filter
+    if (platform && platform !== 'all') {
+      leadFilters.platform = platform;
+    }
+
+    // Value range filter
+    if (valueRange && valueRange !== 'all') {
+      switch (valueRange) {
+        case '0-500':
+          leadFilters.value = { [Op.between]: [0, 500] };
+          break;
+        case '500-2000':
+          leadFilters.value = { [Op.between]: [500, 2000] };
+          break;
+        case '2000-5000':
+          leadFilters.value = { [Op.between]: [2000, 5000] };
+          break;
+        case '5000+':
+          leadFilters.value = { [Op.gte]: 5000 };
+          break;
+      }
+    }
+
+    // Period filter
+    if (period && period !== 'all') {
+      console.log('Backend - processando filtro de período:', { period, dateStart, dateEnd });
+      
+      if (period === 'custom' && dateStart && dateEnd) {
+        // Custom date range
+        const startDate = new Date(dateStart);
+        const endDate = new Date(dateEnd);
+        endDate.setHours(23, 59, 59, 999); // Include full end date
+        
+        console.log('Backend - filtro customizado de data:', {
+          originalDateStart: dateStart,
+          originalDateEnd: dateEnd,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        });
+        
+        leadFilters.created_at = { 
+          [Op.between]: [startDate, endDate] 
+        };
+        
+        console.log('Backend - filtro aplicado:', leadFilters);
+      } else {
+        // Predefined periods
+        const now = new Date();
+        let startDate;
+        
+        switch (period) {
+          case 'today':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            break;
+          case 'week':
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - 7);
+            break;
+          case 'month':
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            break;
+          case '3months':
+            startDate = new Date(now);
+            startDate.setMonth(now.getMonth() - 3);
+            break;
+          case 'year':
+            startDate = new Date(now.getFullYear(), 0, 1);
+            break;
+        }
+        
+        if (startDate) {
+          leadFilters.created_at = { [Op.gte]: startDate };
+        }
+      }
+    } else if (dateStart && dateEnd) {
+      // Direct date range without period parameter (fallback)
+      const startDate = new Date(dateStart);
+      const endDate = new Date(dateEnd);
+      endDate.setHours(23, 59, 59, 999);
+      
+      leadFilters.created_at = { 
+        [Op.between]: [startDate, endDate] 
+      };
+    }
+
+    // Build include for leads with filters
+    const leadInclude = {
+      model: Lead,
+      as: 'leads',
+      where: Object.keys(leadFilters).length > 0 ? leadFilters : undefined,
+      required: false, // Use LEFT JOIN to include columns even without leads
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ],
+      order: [['position', 'ASC'], ['created_at', 'DESC']]
+    };
+
+    // Tag filter (more complex, requires join)
+    if (tags && tags.length > 0) {
+      const tagIds = Array.isArray(tags) ? tags : tags.split(',');
+      leadInclude.include[0].where = {
+        id: { [Op.in]: tagIds }
+      };
+      leadInclude.include[0].required = true;
+    }
+
     const columns = await KanbanColumn.findAll({
       where: {
         account_id: req.account.id,
         is_active: true
       },
-      include: [
-        {
-          model: Lead,
-          as: 'leads',
-          include: [
-            {
-              model: require('../models').Tag,
-              as: 'tags',
-              attributes: ['id', 'name', 'color'],
-              through: { attributes: [] }
-            }
-          ],
-          order: [['position', 'ASC'], ['created_at', 'DESC']]
-        }
-      ],
+      include: [leadInclude],
       order: [['position', 'ASC']]
     });
 
     res.json({ 
       board: {
-        columns,
+        columns: processSequelizeResponse(columns),
         account: {
           id: req.account.id,
           name: req.account.name

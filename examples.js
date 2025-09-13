@@ -4,7 +4,7 @@ const { Account, CronJob, Automation, Lead, Tag, KanbanColumn } = require('./src
 
 async function createExamples() {
     try {
-        console.log('🔍 Buscando conta padrão...');
+        
         
         // Buscar conta existente
         const account = await Account.findOne({
