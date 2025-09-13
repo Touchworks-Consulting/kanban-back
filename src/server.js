@@ -17,11 +17,20 @@ const PORT = process.env.PORT || 3000;
 
 // Rate limiting (separa auth crítico de demais rotas)
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: Number(process.env.API_RATE_LIMIT) || 300,
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: Number(process.env.API_RATE_LIMIT) || 1000, // Aumentar para dashboard
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Muitas requisições. Tente novamente em alguns minutos.'
+});
+
+// Rate limiter específico para dashboard (mais permissivo)
+const dashboardLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 100, // Permitir mais requests para dashboard
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Muitas requisições ao dashboard. Aguarde um momento.'
 });
 
 const authLimiter = rateLimit({
@@ -45,9 +54,10 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-// Aplica limiter geral apenas a rotas de negócio, não nas rotas de auth basicas para diferenciar
+// Aplicar rate limiters específicos
 app.use('/api', (req, res, next) => {
   if (req.path.startsWith('/auth/')) return next();
+  if (req.path.startsWith('/dashboard/')) return dashboardLimiter(req, res, next);
   return apiLimiter(req, res, next);
 });
 

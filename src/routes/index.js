@@ -3,6 +3,7 @@ const authRoutes = require('./authRoutes');
 const leadRoutes = require('./leadRoutes');
 const kanbanRoutes = require('./kanbanRoutes');
 const dashboardRoutes = require('./dashboardRoutes');
+const optimizedDashboardRoutes = require('./optimizedDashboardRoutes');
 const webhookRoutes = require('./webhookRoutes');
 const cronJobRoutes = require('./cronJobRoutes');
 const automationRoutes = require('./automationRoutes');
@@ -42,6 +43,7 @@ router.use('/accounts', accountRoutes);
 router.use('/leads', leadRoutes);
 router.use('/kanban', kanbanRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/dashboard', optimizedDashboardRoutes); // Rotas otimizadas
 router.use('/webhooks', webhookRoutes);
 router.use('/cron-jobs', cronJobRoutes);
 router.use('/automations', automationRoutes);
