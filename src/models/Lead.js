@@ -70,6 +70,10 @@ const Lead = sequelize.define('Lead', {
       key: 'id'
     }
   },
+  assigned_to_user_id: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   position: {
     type: DataTypes.INTEGER,
     defaultValue: 0

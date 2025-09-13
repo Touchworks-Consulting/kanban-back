@@ -55,6 +55,12 @@ const createLeadSchema = Joi.object({
     .default([])
     .messages({
       'string.uuid': 'IDs das tags devem ser UUIDs válidos'
+    }),
+  assigned_to_user_id: Joi.string()
+    .uuid()
+    .allow('', null)
+    .messages({
+      'string.uuid': 'ID do usuário deve ser um UUID válido'
     })
 });
 
@@ -101,12 +107,21 @@ const updateLeadSchema = Joi.object({
   notes: Joi.string()
     .allow(''),
   tags: Joi.array()
-    .items(Joi.string().uuid())
+    .items(Joi.string().uuid()),
+  assigned_to_user_id: Joi.string()
+    .uuid()
+    .allow('', null)
+    .messages({
+      'string.uuid': 'ID do usuário deve ser um UUID válido'
+    })
 });
 
 const validateCreateLead = (req, res, next) => {
-  const { error } = createLeadSchema.validate(req.body);
-  
+  const { error } = createLeadSchema.validate(req.body, {
+    allowUnknown: true,
+    stripUnknown: true
+  });
+
   if (error) {
     return res.status(400).json({
       error: 'Dados inválidos',
@@ -116,13 +131,16 @@ const validateCreateLead = (req, res, next) => {
       }))
     });
   }
-  
+
   next();
 };
 
 const validateUpdateLead = (req, res, next) => {
-  const { error } = updateLeadSchema.validate(req.body);
-  
+  const { error } = updateLeadSchema.validate(req.body, {
+    allowUnknown: true,
+    stripUnknown: true
+  });
+
   if (error) {
     return res.status(400).json({
       error: 'Dados inválidos',
@@ -132,7 +150,7 @@ const validateUpdateLead = (req, res, next) => {
       }))
     });
   }
-  
+
   next();
 };
 

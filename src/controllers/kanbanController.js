@@ -1,4 +1,4 @@
-const { KanbanColumn, Lead, Tag } = require('../models');
+const { KanbanColumn, Lead, Tag, LeadHistory } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { processSequelizeResponse } = require('../utils/dateSerializer');
 const { Op } = require('sequelize');
@@ -34,11 +34,30 @@ const kanbanController = {
       // Create a few sample leads in first column to visualize the board quickly
       const inbox = await KanbanColumn.findOne({ where: { account_id: req.account.id, position: 0 } });
       if (inbox) {
-        await Promise.all([
-          Lead.create({ account_id: req.account.id, name: 'João Silva', phone: '11999999999', platform: 'google', campaign: 'Orçamento', status: 'new', column_id: inbox.id, position: 1, value: 1500.0 }),
-          Lead.create({ account_id: req.account.id, name: 'Maria Souza', email: 'maria@example.com', platform: 'facebook', campaign: 'Curso Online', status: 'new', column_id: inbox.id, position: 2, value: 0 }),
-          Lead.create({ account_id: req.account.id, name: 'Empresa XYZ', phone: '1133334444', platform: 'linkedin', campaign: 'Consultoria', status: 'new', column_id: inbox.id, position: 3, value: 5000.0 })
-        ]);
+        const sampleLeads = [
+          { account_id: req.account.id, name: 'João Silva', phone: '11999999999', platform: 'google', campaign: 'Orçamento', status: 'new', column_id: inbox.id, position: 1, value: 1500.0 },
+          { account_id: req.account.id, name: 'Maria Souza', email: 'maria@example.com', platform: 'facebook', campaign: 'Curso Online', status: 'new', column_id: inbox.id, position: 2, value: 0 },
+          { account_id: req.account.id, name: 'Empresa XYZ', phone: '1133334444', platform: 'linkedin', campaign: 'Consultoria', status: 'new', column_id: inbox.id, position: 3, value: 5000.0 }
+        ];
+
+        for (const leadData of sampleLeads) {
+          const lead = await Lead.create(leadData);
+
+          // 📊 REGISTRAR HISTÓRICO: Lead criado em uma coluna
+          await LeadHistory.create({
+            lead_id: lead.id,
+            account_id: req.account.id,
+            from_column_id: null, // null indica criação
+            to_column_id: leadData.column_id,
+            action_type: 'created',
+            moved_at: new Date(),
+            metadata: {
+              leadName: lead.name,
+              initialStatus: leadData.status,
+              createdBy: 'system'
+            }
+          });
+        }
       }
     }
 

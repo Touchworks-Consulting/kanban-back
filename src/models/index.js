@@ -14,6 +14,8 @@ const WhatsAppAccount = require('./WhatsAppAccount');
 const WebhookLog = require('./WebhookLog');
 const Campaign = require('./Campaign');
 const TriggerPhrase = require('./TriggerPhrase');
+const LeadHistory = require('./LeadHistory');
+const LeadActivity = require('./LeadActivity');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -27,20 +29,27 @@ Account.hasMany(WhatsAppAccount, { foreignKey: 'account_id', as: 'whatsappAccoun
 Account.hasMany(WebhookLog, { foreignKey: 'account_id', as: 'webhookLogs' });
 Account.hasMany(Campaign, { foreignKey: 'account_id', as: 'campaigns' });
 Account.hasMany(TriggerPhrase, { foreignKey: 'account_id', as: 'triggerPhrases' });
+Account.hasMany(LeadHistory, { foreignKey: 'account_id', as: 'leadHistories' });
+Account.hasMany(LeadActivity, { foreignKey: 'account_id', as: 'leadActivities' });
 
 // Lead associations
 Lead.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 Lead.belongsTo(KanbanColumn, { foreignKey: 'column_id', as: 'column' });
-Lead.belongsToMany(Tag, { 
-  through: LeadTag, 
-  foreignKey: 'lead_id', 
+Lead.belongsToMany(Tag, {
+  through: LeadTag,
+  foreignKey: 'lead_id',
   otherKey: 'tag_id',
   as: 'tags'
 });
+Lead.hasMany(LeadHistory, { foreignKey: 'lead_id', as: 'histories' });
+Lead.hasMany(LeadActivity, { foreignKey: 'lead_id', as: 'activities' });
+Lead.belongsTo(User, { foreignKey: 'assigned_to_user_id', as: 'assignedTo' });
 
 // KanbanColumn associations
 KanbanColumn.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 KanbanColumn.hasMany(Lead, { foreignKey: 'column_id', as: 'leads' });
+KanbanColumn.hasMany(LeadHistory, { foreignKey: 'to_column_id', as: 'leadHistories' });
+KanbanColumn.hasMany(LeadHistory, { foreignKey: 'from_column_id', as: 'leadHistoriesFrom' });
 
 // Tag associations
 Tag.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -91,6 +100,10 @@ UserAccount.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 // Current account association
 User.belongsTo(Account, { foreignKey: 'current_account_id', as: 'currentAccount' });
 
+// User sales associations
+User.hasMany(Lead, { foreignKey: 'assigned_to_user_id', as: 'assignedLeads' });
+User.hasMany(LeadActivity, { foreignKey: 'user_id', as: 'activities' });
+
 // Legacy associations (manter por compatibilidade)
 User.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 WhatsAppAccount.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -103,6 +116,17 @@ Campaign.hasMany(TriggerPhrase, { foreignKey: 'campaign_id', as: 'triggerPhrases
 // TriggerPhrase associations
 TriggerPhrase.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 TriggerPhrase.belongsTo(Campaign, { foreignKey: 'campaign_id', as: 'campaign' });
+
+// LeadHistory associations
+LeadHistory.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+LeadHistory.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
+LeadHistory.belongsTo(KanbanColumn, { foreignKey: 'from_column_id', as: 'fromColumn' });
+LeadHistory.belongsTo(KanbanColumn, { foreignKey: 'to_column_id', as: 'toColumn' });
+
+// LeadActivity associations
+LeadActivity.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+LeadActivity.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
+LeadActivity.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = {
   Account,
@@ -120,5 +144,7 @@ module.exports = {
   WhatsAppAccount,
   WebhookLog,
   Campaign,
-  TriggerPhrase
+  TriggerPhrase,
+  LeadHistory,
+  LeadActivity
 };

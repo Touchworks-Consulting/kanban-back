@@ -75,10 +75,164 @@ const dashboardController = {
     res.json({ conversionMetrics });
   }),
 
+  // Novo endpoint: Métricas de tempo por estágio
+  getStageTimingMetrics: asyncHandler(async (req, res) => {
+    console.log(`📊 getStageTimingMetrics: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      console.log('❌ req.account é null ou sem id:', req.account);
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const stageMetrics = await DashboardService.getStageTimingMetrics(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ stageMetrics });
+  }),
+
+  // Novo endpoint: Taxa de conversão entre estágios
+  getStageConversionRates: asyncHandler(async (req, res) => {
+    console.log(`📊 getStageConversionRates: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const conversionRates = await DashboardService.getStageConversionRates(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ conversionRates });
+  }),
+
+  // Novo endpoint: Leads estagnados
+  getStagnantLeads: asyncHandler(async (req, res) => {
+    console.log(`📊 getStagnantLeads: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { days_threshold = 7 } = req.query;
+    const daysThreshold = parseInt(days_threshold, 10);
+
+    if (isNaN(daysThreshold) || daysThreshold < 1) {
+      return res.status(400).json({
+        error: 'days_threshold deve ser um número positivo'
+      });
+    }
+
+    const stagnantLeads = await DashboardService.getStagnantLeads(req.account.id, daysThreshold);
+
+    res.json({
+      stagnantLeads,
+      threshold: daysThreshold
+    });
+  }),
+
+  // Novo endpoint: Métricas detalhadas combinadas
+  getDetailedStageMetrics: asyncHandler(async (req, res) => {
+    console.log(`📊 getDetailedStageMetrics: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const detailedMetrics = await DashboardService.getDetailedStageMetrics(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ detailedMetrics });
+  }),
+
+  // ===============================
+  // NOVOS ENDPOINTS: RANKING DE VENDEDORES
+  // ===============================
+
+  // Dados completos da tabela de ranking
+  getSalesRanking: asyncHandler(async (req, res) => {
+    console.log(`📊 getSalesRanking: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const salesRanking = await DashboardService.getSalesRankingData(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ salesRanking });
+  }),
+
+  // Dados para gráfico de barras de performance
+  getSalesPerformanceChart: asyncHandler(async (req, res) => {
+    console.log(`📊 getSalesPerformanceChart: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const chartData = await DashboardService.getSalesPerformanceChart(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ chartData });
+  }),
+
+  // Dados para gráfico de dispersão (atividades vs conversão)
+  getActivityConversionScatter: asyncHandler(async (req, res) => {
+    console.log(`📊 getActivityConversionScatter: Usuário ${req.user?.email}, Account: ${req.account?.name || 'null'}`);
+
+    if (!req.account || !req.account.id) {
+      return res.status(400).json({
+        error: 'Conta não definida. Verifique se você tem acesso a uma conta ativa.'
+      });
+    }
+
+    const { start_date, end_date } = req.query;
+
+    const scatterData = await DashboardService.getActivityVsConversionData(req.account.id, {
+      startDate: start_date,
+      endDate: end_date
+    });
+
+    res.json({ scatterData });
+  }),
+
+  // ===============================
+
   // Dashboard completo
   getDashboard: asyncHandler(async (req, res) => {
     const { start_date, end_date, timeframe = 'week' } = req.query;
-    
+
     const dateRange = {
       startDate: start_date,
       endDate: end_date

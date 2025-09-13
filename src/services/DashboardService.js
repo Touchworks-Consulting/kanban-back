@@ -1,4 +1,4 @@
-const { Lead, KanbanColumn, Tag } = require('../models');
+const { Lead, KanbanColumn, Tag, LeadHistory, LeadActivity, User } = require('../models');
 const { Op } = require('sequelize');
 
 class DashboardService {
@@ -259,9 +259,382 @@ class DashboardService {
     }
   }
 
+  // Novo método: Métricas de tempo por estágio do kanban
+  static async getStageTimingMetrics(accountId, dateRange = {}) {
+    const { startDate, endDate } = this.getDateRange(dateRange);
+
+    // Buscar todas as colunas da conta
+    const columns = await KanbanColumn.findAll({
+      where: {
+        account_id: accountId,
+        is_active: true
+      },
+      order: [['position', 'ASC']]
+    });
+
+    const stageMetrics = [];
+
+    for (const column of columns) {
+      const timeInStage = [];
+
+      // 📊 PARTE 1: Leads atualmente nesta coluna
+      const currentLeads = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          column_id: column.id
+        },
+        attributes: ['id'],
+        raw: true
+      });
+
+      for (const lead of currentLeads) {
+        // Buscar quando este lead entrou nesta coluna (último movimento para cá)
+        const entryHistory = await LeadHistory.findOne({
+          where: {
+            account_id: accountId,
+            lead_id: lead.id,
+            to_column_id: column.id
+          },
+          order: [['moved_at', 'DESC']]
+        });
+
+
+        if (entryHistory) {
+          // Calcular tempo desde que entrou na coluna até agora
+          const timeSpentSoFar = new Date() - new Date(entryHistory.moved_at);
+          const days = Math.floor(timeSpentSoFar / (1000 * 60 * 60 * 24));
+
+
+          timeInStage.push(Math.max(0, days)); // Garantir que não seja negativo
+        } else {
+
+          // Se não há histórico de entrada, usar created_at (especialmente para primeira coluna)
+          const leadDetails = await Lead.findByPk(lead.id, { attributes: ['createdAt'] });
+          if (leadDetails) {
+            const timeSpentSoFar = new Date() - new Date(leadDetails.createdAt);
+            const days = Math.floor(timeSpentSoFar / (1000 * 60 * 60 * 24));
+
+
+            timeInStage.push(Math.max(0, days));
+          }
+        }
+      }
+
+      // 📊 PARTE 2: Leads que já saíram desta coluna (histórico completo)
+      const exitedLeads = await LeadHistory.findAll({
+        where: {
+          account_id: accountId,
+          from_column_id: column.id,
+          ...(startDate && endDate && {
+            moved_at: { [Op.between]: [startDate, endDate] }
+          })
+        },
+        order: [['moved_at', 'ASC']]
+      });
+
+      for (const exitHistory of exitedLeads) {
+        // Buscar quando entrou nesta coluna (movimento mais recente antes de sair)
+        const entryHistory = await LeadHistory.findOne({
+          where: {
+            account_id: accountId,
+            lead_id: exitHistory.lead_id,
+            to_column_id: column.id,
+            moved_at: { [Op.lt]: exitHistory.moved_at }
+          },
+          order: [['moved_at', 'DESC']]
+        });
+
+        if (entryHistory) {
+          const timeSpent = new Date(exitHistory.moved_at) - new Date(entryHistory.moved_at);
+          const days = Math.floor(timeSpent / (1000 * 60 * 60 * 24));
+          timeInStage.push(Math.max(0, days)); // Garantir que não seja negativo
+        }
+      }
+
+      // Contar leads atualmente nesta coluna
+      const currentLeadsCount = currentLeads.length;
+
+      // Contar total de leads que passaram por esta coluna (incluindo os atuais)
+      const totalLeadsInStage = await LeadHistory.count({
+        where: {
+          account_id: accountId,
+          to_column_id: column.id,
+          ...(startDate && endDate && {
+            moved_at: { [Op.between]: [startDate, endDate] }
+          })
+        }
+      });
+
+      const avgDays = timeInStage.length > 0
+        ? Math.round(timeInStage.reduce((a, b) => a + b, 0) / timeInStage.length)
+        : 0;
+
+      stageMetrics.push({
+        columnId: column.id,
+        columnName: column.name,
+        columnColor: column.color,
+        currentLeadsCount,
+        totalLeadsProcessed: totalLeadsInStage,
+        averageTimeInDays: avgDays,
+        averageTimeFormatted: this.formatDays(avgDays)
+      });
+    }
+
+    return stageMetrics;
+  }
+
+  // Novo método: Taxa de conversão entre estágios
+  static async getStageConversionRates(accountId, dateRange = {}) {
+    const { startDate, endDate } = this.getDateRange(dateRange);
+
+    const columns = await KanbanColumn.findAll({
+      where: {
+        account_id: accountId,
+        is_active: true
+      },
+      order: [['position', 'ASC']]
+    });
+
+    const conversionRates = [];
+
+    for (let i = 0; i < columns.length - 1; i++) {
+      const currentColumn = columns[i];
+      const nextColumn = columns[i + 1];
+
+      // Contar leads que entraram na coluna atual
+      const leadsEnteredCurrent = await LeadHistory.count({
+        where: {
+          account_id: accountId,
+          to_column_id: currentColumn.id,
+          ...(startDate && endDate && {
+            moved_at: { [Op.between]: [startDate, endDate] }
+          })
+        }
+      });
+
+      // Contar leads que avançaram para a próxima coluna
+      const leadsAdvancedToNext = await LeadHistory.count({
+        where: {
+          account_id: accountId,
+          from_column_id: currentColumn.id,
+          to_column_id: nextColumn.id,
+          ...(startDate && endDate && {
+            moved_at: { [Op.between]: [startDate, endDate] }
+          })
+        }
+      });
+
+      const conversionRate = leadsEnteredCurrent > 0
+        ? ((leadsAdvancedToNext / leadsEnteredCurrent) * 100).toFixed(2)
+        : 0;
+
+      conversionRates.push({
+        fromStage: currentColumn.name,
+        toStage: nextColumn.name,
+        leadsEntered: leadsEnteredCurrent,
+        leadsAdvanced: leadsAdvancedToNext,
+        conversionRate: parseFloat(conversionRate)
+      });
+    }
+
+    return conversionRates;
+  }
+
+  // Novo método: Leads estagnados
+  static async getStagnantLeads(accountId, daysThreshold = 7) {
+    const thresholdDate = new Date();
+    thresholdDate.setDate(thresholdDate.getDate() - daysThreshold);
+
+    const stagnantLeads = await Lead.findAll({
+      where: {
+        account_id: accountId,
+        updated_at: { [Op.lt]: thresholdDate }
+      },
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        }
+      ],
+      order: [['updated_at', 'ASC']],
+      limit: 50 // Limitar para performance
+    });
+
+    return stagnantLeads.map(lead => ({
+      id: lead.id,
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email,
+      value: lead.value,
+      daysSinceUpdate: Math.floor((new Date() - new Date(lead.updated_at)) / (1000 * 60 * 60 * 24)),
+      column: {
+        id: lead.column?.id,
+        name: lead.column?.name,
+        color: lead.column?.color
+      },
+      updated_at: lead.updated_at
+    }));
+  }
+
+  // Novo método: Métricas detalhadas combinadas
+  static async getDetailedStageMetrics(accountId, dateRange = {}) {
+    const [timingMetrics, conversionRates] = await Promise.all([
+      this.getStageTimingMetrics(accountId, dateRange),
+      this.getStageConversionRates(accountId, dateRange)
+    ]);
+
+    // Combinar dados de timing com conversão
+    const detailedMetrics = timingMetrics.map(timing => {
+      const conversionData = conversionRates.find(conv => conv.fromStage === timing.columnName);
+
+      return {
+        ...timing,
+        conversionToNext: conversionData ? {
+          toStage: conversionData.toStage,
+          rate: conversionData.conversionRate,
+          leadsAdvanced: conversionData.leadsAdvanced
+        } : null
+      };
+    });
+
+    return detailedMetrics;
+  }
+
+  // Método auxiliar: Formatar dias
+  // ===============================
+  // NOVOS MÉTODOS: RANKING DE VENDEDORES
+  // ===============================
+
+  static async getSalesRankingData(accountId, dateRange = {}) {
+    const { startDate, endDate } = this.getDateRange(dateRange);
+
+    // Buscar todos os usuários da conta
+    const users = await User.findAll({
+      where: {
+        account_id: accountId,
+        is_active: true
+      }
+    });
+
+    const salesRanking = [];
+
+    for (const user of users) {
+      // Buscar leads atribuídos para este usuário
+      const leadWhere = {
+        account_id: accountId,
+        assigned_to_user_id: user.id,
+        ...(startDate && endDate && {
+          created_at: {
+            [Op.between]: [startDate, endDate]
+          }
+        })
+      };
+
+      const assignedLeads = await Lead.findAll({
+        where: leadWhere
+      });
+
+      const newLeadsAssigned = assignedLeads.length;
+
+      // Contar leads ganhos
+      const leadsWon = assignedLeads.filter(lead => lead.status === 'won').length;
+
+      // Calcular taxa de conversão
+      const conversionRate = newLeadsAssigned > 0 ? (leadsWon / newLeadsAssigned * 100).toFixed(2) : 0;
+
+      // Contar atividades realizadas para este usuário
+      const activitiesWhere = {
+        account_id: accountId,
+        user_id: user.id,
+        ...(startDate && endDate && {
+          created_at: {
+            [Op.between]: [startDate, endDate]
+          }
+        })
+      };
+
+      const activitiesCount = await LeadActivity.count({
+        where: activitiesWhere
+      });
+
+      // Calcular receita total
+      const totalRevenue = assignedLeads
+        .filter(lead => lead.status === 'won' && lead.value)
+        .reduce((sum, lead) => sum + parseFloat(lead.value), 0);
+
+      salesRanking.push({
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        },
+        newLeadsAssigned,
+        leadsWon,
+        conversionRate: parseFloat(conversionRate),
+        activitiesCount,
+        totalRevenue: parseFloat(totalRevenue.toFixed(2))
+      });
+    }
+
+    // Ordenar por leads ganhos (desc) e depois por taxa de conversão (desc)
+    return salesRanking.sort((a, b) => {
+      if (b.leadsWon !== a.leadsWon) return b.leadsWon - a.leadsWon;
+      return b.conversionRate - a.conversionRate;
+    });
+  }
+
+  static async getSalesPerformanceChart(accountId, dateRange = {}) {
+    const rankingData = await this.getSalesRankingData(accountId, dateRange);
+
+    // Transformar para formato do gráfico de barras
+    return rankingData.map(item => ({
+      name: item.user.name.split(' ')[0], // Primeiro nome para economizar espaço
+      leadsWon: item.leadsWon,
+      totalRevenue: item.totalRevenue,
+      conversionRate: item.conversionRate,
+      fullName: item.user.name,
+      role: item.user.role
+    }));
+  }
+
+  static async getActivityVsConversionData(accountId, dateRange = {}) {
+    const rankingData = await this.getSalesRankingData(accountId, dateRange);
+
+    // Transformar para formato do scatter plot
+    return rankingData
+      .filter(item => item.newLeadsAssigned > 0) // Só incluir quem tem leads atribuídos
+      .map(item => ({
+        name: item.user.name,
+        x: item.activitiesCount, // Eixo X: Número de atividades
+        y: item.conversionRate,  // Eixo Y: Taxa de conversão
+        leadsWon: item.leadsWon,
+        newLeadsAssigned: item.newLeadsAssigned,
+        totalRevenue: item.totalRevenue,
+        role: item.user.role
+      }));
+  }
+
+  // ===============================
+
+  static formatDays(days) {
+    if (days === 0) return '0 dias';
+    if (days === 1) return '1 dia';
+    if (days < 7) return `${days} dias`;
+    if (days < 30) {
+      const weeks = Math.floor(days / 7);
+      const remainingDays = days % 7;
+      if (remainingDays === 0) return `${weeks} sem${weeks > 1 ? 's' : ''}`;
+      return `${weeks} sem${weeks > 1 ? 's' : ''} ${remainingDays}d`;
+    }
+    const months = Math.floor(days / 30);
+    return `${months} mês${months > 1 ? 'es' : ''}`;
+  }
+
   static getDateRange(dateRange) {
     const { startDate, endDate } = dateRange;
-    
+
     if (startDate && endDate) {
       return {
         startDate: new Date(startDate),

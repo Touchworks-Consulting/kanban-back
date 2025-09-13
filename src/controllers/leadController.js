@@ -1,4 +1,4 @@
-const { Lead, KanbanColumn, Tag, LeadTag } = require('../models');
+const { Lead, KanbanColumn, Tag, LeadTag, LeadHistory } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
 const PlatformDetectionService = require('../services/PlatformDetectionService');
 const AutomationService = require('../services/AutomationService');
@@ -145,6 +145,23 @@ const leadController = {
 
     const lead = await Lead.create(leadData);
 
+    // 📊 REGISTRAR HISTÓRICO: Lead criado em uma coluna
+    if (leadData.column_id) {
+      await LeadHistory.create({
+        lead_id: lead.id,
+        account_id: req.account.id,
+        from_column_id: null, // null indica criação
+        to_column_id: leadData.column_id,
+        action_type: 'created',
+        moved_at: new Date(),
+        metadata: {
+          leadName: leadData.name,
+          platform: leadData.platform,
+          campaign: leadData.campaign
+        }
+      });
+    }
+
     // Associar tags se fornecidas
     if (tags && tags.length > 0) {
       const validTags = await Tag.findAll({
@@ -206,8 +223,11 @@ const leadController = {
       });
     }
 
+    // 📊 REGISTRAR HISTÓRICO: Mudança de coluna
+    const willMoveColumn = updateData.column_id && updateData.column_id !== lead.column_id;
+
     // Atualizar posição se mudou de coluna
-    if (updateData.column_id && updateData.column_id !== lead.column_id) {
+    if (willMoveColumn) {
       const maxPosition = await Lead.max('position', {
         where: {
           account_id: req.account.id,
@@ -242,6 +262,24 @@ const leadController = {
     }
 
     await lead.update(updateData);
+
+    // 📊 REGISTRAR HISTÓRICO: Após atualizar o lead, registrar a movimentação
+    if (willMoveColumn) {
+      await LeadHistory.create({
+        lead_id: lead.id,
+        account_id: req.account.id,
+        from_column_id: previousData.column_id,
+        to_column_id: updateData.column_id,
+        action_type: 'moved',
+        moved_at: new Date(),
+        metadata: {
+          leadName: lead.name,
+          previousStatus: previousData.status,
+          newStatus: updateData.status || lead.status,
+          updatedBy: req.user?.email || 'system'
+        }
+      });
+    }
 
     // Atualizar tags se fornecidas
     if (tags !== undefined) {
@@ -360,9 +398,26 @@ const leadController = {
       });
     }
 
+    const previousColumnId = lead.column_id;
+
     await lead.update({
       column_id,
       position: position || 0
+    });
+
+    // 📊 REGISTRAR HISTÓRICO: Movimentação via endpoint move
+    await LeadHistory.create({
+      lead_id: lead.id,
+      account_id: req.account.id,
+      from_column_id: previousColumnId,
+      to_column_id: column_id,
+      action_type: 'moved',
+      moved_at: new Date(),
+      metadata: {
+        leadName: lead.name,
+        movedBy: req.user?.email || 'system',
+        moveType: 'manual_move_endpoint'
+      }
     });
 
     const updatedLead = await Lead.findByPk(lead.id, {
