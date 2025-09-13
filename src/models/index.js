@@ -9,6 +9,7 @@ const CronJobExecution = require('./CronJobExecution');
 const Automation = require('./Automation');
 const AutomationExecution = require('./AutomationExecution');
 const User = require('./User');
+const UserAccount = require('./UserAccount');
 const WhatsAppAccount = require('./WhatsAppAccount');
 const WebhookLog = require('./WebhookLog');
 const Campaign = require('./Campaign');
@@ -21,7 +22,7 @@ Account.hasMany(Tag, { foreignKey: 'account_id', as: 'tags' });
 Account.hasMany(PlatformConfig, { foreignKey: 'account_id', as: 'platformConfigs' });
 Account.hasMany(CronJob, { foreignKey: 'account_id', as: 'cronJobs' });
 Account.hasMany(Automation, { foreignKey: 'account_id', as: 'automations' });
-Account.hasMany(User, { foreignKey: 'account_id', as: 'users' });
+// Removido: Conflito com belongsToMany users na linha 84
 Account.hasMany(WhatsAppAccount, { foreignKey: 'account_id', as: 'whatsappAccounts' });
 Account.hasMany(WebhookLog, { foreignKey: 'account_id', as: 'webhookLogs' });
 Account.hasMany(Campaign, { foreignKey: 'account_id', as: 'campaigns' });
@@ -68,6 +69,29 @@ Automation.hasMany(AutomationExecution, { foreignKey: 'automation_id', as: 'exec
 AutomationExecution.belongsTo(Automation, { foreignKey: 'automation_id', as: 'automation' });
 AutomationExecution.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
 
+// Multi-account user associations
+User.belongsToMany(Account, { 
+  through: UserAccount, 
+  foreignKey: 'user_id',
+  otherKey: 'account_id',
+  as: 'accounts'
+});
+
+Account.belongsToMany(User, { 
+  through: UserAccount, 
+  foreignKey: 'account_id',
+  otherKey: 'user_id',
+  as: 'users'
+});
+
+// UserAccount associations
+UserAccount.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+UserAccount.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+
+// Current account association
+User.belongsTo(Account, { foreignKey: 'current_account_id', as: 'currentAccount' });
+
+// Legacy associations (manter por compatibilidade)
 User.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 WhatsAppAccount.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 WebhookLog.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -83,6 +107,7 @@ TriggerPhrase.belongsTo(Campaign, { foreignKey: 'campaign_id', as: 'campaign' })
 module.exports = {
   Account,
   User,
+  UserAccount,
   Lead,
   KanbanColumn,
   Tag,

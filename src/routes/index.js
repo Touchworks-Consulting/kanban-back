@@ -10,6 +10,7 @@ const automationRoutes = require('./automationRoutes');
 const campaignRoutes = require('./campaignRoutes');
 const whatsappAccountRoutes = require('./whatsappAccountRoutes');
 const userRoutes = require('./userRoutes');
+const accountRoutes = require('./accountRoutes');
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
+      accounts: '/api/accounts',
       leads: '/api/leads',
       kanban: '/api/kanban',
       dashboard: '/api/dashboard',
@@ -36,6 +38,7 @@ router.get('/', (req, res) => {
 
 // Routes
 router.use('/auth', authRoutes);
+router.use('/accounts', accountRoutes);
 router.use('/leads', leadRoutes);
 router.use('/kanban', kanbanRoutes);
 router.use('/dashboard', dashboardRoutes);

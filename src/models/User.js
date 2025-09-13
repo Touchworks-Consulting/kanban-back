@@ -37,6 +37,10 @@ const User = sequelize.define('User', {
   last_login_at: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  current_account_id: {
+    type: DataTypes.UUID,
+    allowNull: true
   }
 }, {
   hooks: {

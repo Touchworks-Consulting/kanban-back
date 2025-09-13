@@ -36,6 +36,22 @@ const Account = sequelize.define('Account', {
   settings: {
     type: DataTypes.JSON,
     defaultValue: {}
+  },
+  display_name: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  avatar_url: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  plan: {
+    type: DataTypes.ENUM('free', 'basic', 'pro', 'enterprise'),
+    defaultValue: 'free'
   }
 }, {
   hooks: {
