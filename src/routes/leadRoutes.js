@@ -2,6 +2,7 @@ const express = require('express');
 const leadController = require('../controllers/leadController');
 const { authenticateToken } = require('../middleware/auth');
 const { validateCreateLead, validateUpdateLead } = require('../validators/leadValidator');
+const { handleUuidFields } = require('../middleware/uuidHandler');
 
 const router = express.Router();
 
@@ -15,10 +16,10 @@ router.get('/', leadController.list);
 router.get('/:id', leadController.getById);
 
 // Criar lead
-router.post('/', validateCreateLead, leadController.create);
+router.post('/', handleUuidFields(['assigned_to_user_id', 'column_id']), validateCreateLead, leadController.create);
 
 // Atualizar lead
-router.put('/:id', validateUpdateLead, leadController.update);
+router.put('/:id', handleUuidFields(['assigned_to_user_id', 'column_id']), validateUpdateLead, leadController.update);
 
 // Deletar lead
 router.delete('/:id', leadController.delete);

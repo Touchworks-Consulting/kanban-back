@@ -20,6 +20,24 @@ services:
       timeout: 5s
       retries: 5
 
+  # Redis para cache de alta performance
+  redis:
+    image: redis:7-alpine
+    container_name: kanban-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=753951
+    command: redis-server --requirepass 753951
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "753951", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   # Opcional: pgAdmin para administração visual
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -37,6 +55,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
   pgadmin_data:
 
 networks:

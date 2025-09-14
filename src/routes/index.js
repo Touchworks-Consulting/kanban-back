@@ -12,6 +12,8 @@ const campaignRoutes = require('./campaignRoutes');
 const whatsappAccountRoutes = require('./whatsappAccountRoutes');
 const userRoutes = require('./userRoutes');
 const accountRoutes = require('./accountRoutes');
+const settingsRoutes = require('./settingsRoutes');
+const batchRoutes = require('./batchRoutes');
 
 const router = express.Router();
 
@@ -31,7 +33,9 @@ router.get('/', (req, res) => {
   automations: '/api/automations',
   campaigns: '/api/campaigns',
   whatsappAccounts: '/api/whatsapp-accounts',
-  users: '/api/users'
+  users: '/api/users',
+  settings: '/api/settings',
+  batch: '/api/batch'
     },
     documentation: '/api/docs'
   });
@@ -50,5 +54,7 @@ router.use('/automations', automationRoutes);
 router.use('/campaigns', campaignRoutes);
 router.use('/whatsapp-accounts', whatsappAccountRoutes);
 router.use('/users', userRoutes);
+router.use('/settings', settingsRoutes);
+router.use('/batch', batchRoutes);
 
 module.exports = router;

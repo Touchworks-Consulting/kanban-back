@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'leads',
+          model: 'Lead',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'accounts',
+          model: 'Account',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: true, // null quando é a primeira entrada (lead criado)
         references: {
-          model: 'kanban_columns',
+          model: 'KanbanColumn',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -43,7 +43,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'kanban_columns',
+          model: 'KanbanColumn',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -75,21 +75,47 @@ module.exports = {
       }
     });
 
-    // Adicionar índices para melhorar performance das consultas
-    await queryInterface.addIndex('lead_histories', ['lead_id', 'moved_at']);
-    await queryInterface.addIndex('lead_histories', ['account_id', 'moved_at']);
-    await queryInterface.addIndex('lead_histories', ['to_column_id', 'moved_at']);
-    await queryInterface.addIndex('lead_histories', ['from_column_id', 'moved_at']);
-    await queryInterface.addIndex('lead_histories', ['action_type']);
+    // Adicionar índices para melhorar performance das consultas (com verificação de existência)
+    const indexes = [
+      { name: 'lead_histories_lead_id_moved_at', fields: ['lead_id', 'moved_at'] },
+      { name: 'lead_histories_account_id_moved_at', fields: ['account_id', 'moved_at'] },
+      { name: 'lead_histories_to_column_id_moved_at', fields: ['to_column_id', 'moved_at'] },
+      { name: 'lead_histories_from_column_id_moved_at', fields: ['from_column_id', 'moved_at'] },
+      { name: 'lead_histories_action_type', fields: ['action_type'] }
+    ];
+
+    for (const index of indexes) {
+      try {
+        await queryInterface.addIndex('lead_histories', index.fields, { name: index.name });
+      } catch (error) {
+        if (!error.message.includes('already exists')) {
+          throw error;
+        }
+        console.log(`Index ${index.name} already exists, skipping...`);
+      }
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Remover índices
-    await queryInterface.removeIndex('lead_histories', ['lead_id', 'moved_at']);
-    await queryInterface.removeIndex('lead_histories', ['account_id', 'moved_at']);
-    await queryInterface.removeIndex('lead_histories', ['to_column_id', 'moved_at']);
-    await queryInterface.removeIndex('lead_histories', ['from_column_id', 'moved_at']);
-    await queryInterface.removeIndex('lead_histories', ['action_type']);
+    // Remover índices (com verificação de existência)
+    const indexes = [
+      'lead_histories_lead_id_moved_at',
+      'lead_histories_account_id_moved_at',
+      'lead_histories_to_column_id_moved_at',
+      'lead_histories_from_column_id_moved_at',
+      'lead_histories_action_type'
+    ];
+
+    for (const indexName of indexes) {
+      try {
+        await queryInterface.removeIndex('lead_histories', indexName);
+      } catch (error) {
+        if (!error.message.includes('does not exist')) {
+          throw error;
+        }
+        console.log(`Index ${indexName} doesn't exist, skipping...`);
+      }
+    }
 
     // Remover ENUM
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_lead_histories_action_type";');

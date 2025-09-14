@@ -114,7 +114,10 @@ const createAccount = async (req, res) => {
       return res.status(400).json({ error: 'Nome da conta é obrigatório' });
     }
 
-    // Criar nova conta
+    console.log(`🔵 Criando conta para usuário: ${userId}, nome: ${name}`);
+
+    // Abordagem simples: criar conta primeiro, depois UserAccount
+    // Criar nova conta SEM transação primeiro
     const account = await Account.create({
       name,
       display_name: display_name || name,
@@ -126,44 +129,58 @@ const createAccount = async (req, res) => {
       settings: {}
     });
 
-    // Adicionar usuário como owner da nova conta
-    await UserAccount.create({
-      user_id: userId,
-      account_id: account.id,
-      role: 'owner',
-      is_active: true,
-      permissions: {
-        manage_users: true,
-        manage_settings: true,
-        manage_billing: true,
-        manage_integrations: true
-      }
-    });
+    console.log(`✅ Conta criada com ID: ${account.id}`);
 
-    // Definir como conta atual se for a primeira
-    const currentUser = await User.findByPk(userId);
-    if (!currentUser.current_account_id) {
-      await currentUser.update({ current_account_id: account.id });
-    }
-
-    res.status(201).json({
-      account: {
-        id: account.id,
-        name: account.name,
-        display_name: account.display_name,
-        description: account.description,
-        avatar_url: account.avatar_url,
-        plan: account.plan,
+    try {
+      // Agora criar o UserAccount com a conta que já existe no banco
+      const userAccount = await UserAccount.create({
+        user_id: userId,
+        account_id: account.id,
         role: 'owner',
+        is_active: true,
         permissions: {
           manage_users: true,
           manage_settings: true,
           manage_billing: true,
           manage_integrations: true
-        },
-        is_active: account.is_active
+        }
+      });
+
+      console.log(`✅ UserAccount criado: ${userAccount.id}`);
+
+      // Definir como conta atual se for a primeira
+      const currentUser = await User.findByPk(userId);
+      if (!currentUser.current_account_id) {
+        await currentUser.update({ current_account_id: account.id });
+        console.log(`✅ Conta ${account.id} definida como atual para usuário ${userId}`);
       }
-    });
+
+      res.status(201).json({
+        account: {
+          id: account.id,
+          name: account.name,
+          display_name: account.display_name,
+          description: account.description,
+          avatar_url: account.avatar_url,
+          plan: account.plan,
+          role: 'owner',
+          permissions: {
+            manage_users: true,
+            manage_settings: true,
+            manage_billing: true,
+            manage_integrations: true
+          },
+          is_active: account.is_active
+        }
+      });
+
+    } catch (userAccountError) {
+      // Se falhar ao criar UserAccount, limpar a conta órfã
+      console.error('Erro ao criar UserAccount, limpando conta:', userAccountError);
+      await Account.destroy({ where: { id: account.id } });
+      throw userAccountError;
+    }
+
   } catch (error) {
     console.error('Error creating account:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });

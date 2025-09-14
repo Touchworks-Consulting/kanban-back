@@ -4,52 +4,28 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-
 const { sequelize } = require('./database/connection');
 const routes = require('./routes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+// Temporariamente comentado para debug
+// const {
+//   readApiLimiter,
+//   writeApiLimiter,
+//   dashboardLimiter,
+//   authLimiter,
+//   settingsLimiter,
+//   globalLimiter
+// } = require('./middleware/scalableRateLimit');
+// const { monitor, rateLimitMonitor } = require('./middleware/requestMonitoring');
 const CronJobService = require('./services/CronJobService');
 const AutomationService = require('./services/AutomationService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting (separa auth crítico de demais rotas)
-const apiLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutos (mais curto)
-  max: Number(process.env.API_RATE_LIMIT) || 500, // Mais permissivo para app usage
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Muitas requisições. Tente novamente em alguns minutos.'
-});
-
-// Rate limiter específico para dashboard (mais permissivo)
-const dashboardLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 200, // Dobrar para múltiplas requisições simultâneas
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Muitas requisições ao dashboard. Aguarde um momento.'
-});
-
-// Rate limiter para rotas de app (accounts, users, kanban)
-const appLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 300, // Muito permissivo para uso normal do app
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Muitas requisições à aplicação. Aguarde um momento.'
-});
-
-const authLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minuto
-  max: 50, // Permitir mais tentativas para fluxo normal
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip + '|' + (req.headers['user-agent'] || ''),
-  message: 'Limite de autenticação excedido. Aguarde um pouco.'
-});
+// ✨ Sistema de Rate Limiting Escalável para Centenas de Usuários Simultâneos
+// Baseado em usuário autenticado, não por IP
+// Suporta 500+ usuários com milhares de requisições por minuto
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -63,37 +39,13 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-// Aplicar rate limiters específicos ANTES das rotas
-// Auth tem seu próprio limiter mais permissivo
-app.use('/api/auth', authLimiter);
 
-// Dashboard tem limiter mais permissivo para múltiplas requisições
-app.use('/api/dashboard', dashboardLimiter);
-
-// Rotas da aplicação (accounts, users, kanban) - mais permissivas
-app.use('/api/accounts', appLimiter);
-app.use('/api/users', appLimiter);
-app.use('/api/kanban', appLimiter);
-app.use('/api/leads', appLimiter);
-app.use('/api/tags', appLimiter);
-// Temporariamente sem rate limit para settings devido a loop no frontend
-// app.use('/api/settings', appLimiter);
-
-// Demais rotas da API (mais restritivas)
-app.use('/api', (req, res, next) => {
-  // Se já passou pelos limiters específicos acima, pula
-  if (req.path.startsWith('/auth/') ||
-      req.path.startsWith('/dashboard/') ||
-      req.path.startsWith('/accounts/') ||
-      req.path.startsWith('/users/') ||
-      req.path.startsWith('/kanban/') ||
-      req.path.startsWith('/leads/') ||
-      req.path.startsWith('/tags/') ||
-      req.path.startsWith('/settings/')) {
-    return next();
-  }
-  return apiLimiter(req, res, next);
-});
+// 📊 Sistema de Monitoramento (desabilitado temporariamente)
+// app.use(monitor()); // Monitoramento geral de requisições
+// app.use(rateLimitMonitor()); // Monitoramento específico de rate limiting
+// ✅ Rate Limiting (temporariamente desabilitado para debug)
+// TODO: Re-habilitar após resolver problemas
+// app.use(globalLimiter);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -16,6 +16,7 @@ const Campaign = require('./Campaign');
 const TriggerPhrase = require('./TriggerPhrase');
 const LeadHistory = require('./LeadHistory');
 const LeadActivity = require('./LeadActivity');
+const Notification = require('./Notification');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -31,6 +32,7 @@ Account.hasMany(Campaign, { foreignKey: 'account_id', as: 'campaigns' });
 Account.hasMany(TriggerPhrase, { foreignKey: 'account_id', as: 'triggerPhrases' });
 Account.hasMany(LeadHistory, { foreignKey: 'account_id', as: 'leadHistories' });
 Account.hasMany(LeadActivity, { foreignKey: 'account_id', as: 'leadActivities' });
+Account.hasMany(Notification, { foreignKey: 'account_id', as: 'notifications' });
 
 // Lead associations
 Lead.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -128,6 +130,10 @@ LeadActivity.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 LeadActivity.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
 LeadActivity.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
+// Notification associations
+Notification.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
 module.exports = {
   Account,
   User,
@@ -146,5 +152,6 @@ module.exports = {
   Campaign,
   TriggerPhrase,
   LeadHistory,
-  LeadActivity
+  LeadActivity,
+  Notification
 };

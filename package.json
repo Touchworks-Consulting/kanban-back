@@ -12,9 +12,11 @@
     "seed": "node src/database/seed.js",
     "setup": "node scripts/setup-windows.bat",
     "setup:unix": "bash scripts/setup-unix.sh",
-    "db:up": "docker-compose up -d postgres",
+    "db:up": "docker-compose up -d postgres redis",
     "db:down": "docker-compose down",
-    "db:reset": "docker-compose down && docker volume rm kanban-touch_postgres_data && docker-compose up -d postgres && npm run migrate && npm run seed"
+    "db:reset": "docker-compose down && docker volume rm kanban-touch_postgres_data && docker-compose up -d postgres redis && npm run migrate && npm run seed",
+    "cache:up": "docker-compose up -d redis",
+    "cache:down": "docker-compose stop redis"
   },
   "keywords": [
     "crm",
@@ -28,6 +30,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.12.1",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
@@ -38,6 +41,7 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "joi": "^17.9.2",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
@@ -47,6 +51,7 @@
     "nodemailer": "^6.9.4",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
+    "redis": "^5.8.2",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.3",
     "uuid": "^9.0.0"
