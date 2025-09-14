@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const { sequelize } = require('./database/connection');
 const routes = require('./routes');
@@ -13,6 +15,15 @@ const CronJobService = require('./services/CronJobService');
 const AutomationService = require('./services/AutomationService');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.NODE_ENV === 'production'
+      ? ['https://yourdomain.com']
+      : ['http://localhost:5173', 'http://localhost:3001'],
+    credentials: true
+  }
+});
 const PORT = process.env.PORT || 3000;
 
 // Rate limiting (separa auth crítico de demais rotas)
@@ -95,6 +106,23 @@ app.use('/api', (req, res, next) => {
   return apiLimiter(req, res, next);
 });
 
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('👤 Cliente conectado:', socket.id);
+
+  socket.on('join-account', (accountId) => {
+    socket.join(`account-${accountId}`);
+    console.log(`👤 Cliente ${socket.id} entrou na sala account-${accountId}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('👤 Cliente desconectado:', socket.id);
+  });
+});
+
+// Make io instance available globally
+app.set('io', io);
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ 
@@ -129,11 +157,12 @@ async function startServer() {
       await AutomationService.processScheduledAutomations();
     }, 60000); // 1 minuto
 
-    app.listen(PORT, '0.0.0.0', () => {
+    server.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
       console.log(`📊 Local: http://localhost:${PORT}/health`);
       console.log(`📊 WSL: http://172.23.223.142:${PORT}/health`);
       console.log(`🔌 API: http://localhost:${PORT}/api`);
+      console.log(`🔌 Socket.IO ativo na porta ${PORT}`);
       console.log(`⚡ Automações: Ativas`);
     });
   } catch (error) {

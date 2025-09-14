@@ -14,6 +14,7 @@ const userRoutes = require('./userRoutes');
 const accountRoutes = require('./accountRoutes');
 const settingsRoutes = require('./settingsRoutes');
 const batchRoutes = require('./batchRoutes');
+const notificationRoutes = require('./notificationRoutes');
 
 const router = express.Router();
 
@@ -35,7 +36,8 @@ router.get('/', (req, res) => {
   whatsappAccounts: '/api/whatsapp-accounts',
   users: '/api/users',
   settings: '/api/settings',
-  batch: '/api/batch'
+  batch: '/api/batch',
+  notifications: '/api/notifications'
     },
     documentation: '/api/docs'
   });
@@ -56,5 +58,6 @@ router.use('/whatsapp-accounts', whatsappAccountRoutes);
 router.use('/users', userRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/batch', batchRoutes);
+router.use('/notifications', notificationRoutes);
 
 module.exports = router;
