@@ -1,5 +1,12 @@
 const { Sequelize } = require('sequelize');
 
+// Force load pg driver to avoid Vercel issues
+try {
+  require('pg');
+} catch (err) {
+  console.warn('PostgreSQL driver not found, continuing anyway...');
+}
+
 // Configuração do PostgreSQL
 // Support both DATABASE_URL and individual environment variables
 const sequelize = process.env.DATABASE_URL
@@ -29,24 +36,24 @@ const sequelize = process.env.DATABASE_URL
         timezone: 'America/Sao_Paulo',
         useUTC: false // Use local timezone for dates
       },
-  define: {
-    timestamps: true,
-    underscored: true,
-    freezeTableName: true,
-    // Ensure dates are serialized as ISO strings
-    defaultScope: {
-      attributes: {
-        exclude: []
+      define: {
+        timestamps: true,
+        underscored: true,
+        freezeTableName: true,
+        // Ensure dates are serialized as ISO strings
+        defaultScope: {
+          attributes: {
+            exclude: []
+          }
+        }
+      },
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
       }
-    }
-  },
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
-});
+    });
 
 // Global hook para serialização de datas
 sequelize.addHook('afterFind', (instances, options) => {
