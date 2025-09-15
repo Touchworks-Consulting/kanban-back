@@ -64,8 +64,8 @@ module.exports = {
               custom_loss_reasons = $2
           WHERE custom_statuses IS NULL
              OR custom_loss_reasons IS NULL
-             OR custom_statuses = 'null'
-             OR custom_loss_reasons = 'null';
+             OR custom_statuses::text = 'null'
+             OR custom_loss_reasons::text = 'null';
         `;
 
         const [updateResults] = await queryInterface.sequelize.query(updateAccountsQuery, {

@@ -43,32 +43,11 @@ module.exports = {
       console.log('ℹ️ Coluna custom_loss_reasons já existe, pulando...');
     }
 
-    // Adicionar índice para melhorar performance (com verificação de existência)
-    try {
-      await queryInterface.addIndex('Account', ['custom_statuses'], {
-        using: 'gin',
-        name: 'account_custom_statuses_gin_idx'
-      });
-      console.log('✅ Índice GIN para custom_statuses adicionado');
-    } catch (error) {
-      if (!error.message.includes('already exists')) {
-        throw error;
-      }
-      console.log('ℹ️ Índice GIN para custom_statuses já existe, pulando...');
-    }
+    // Índice será adicionado em uma migração futura se necessário
+    console.log('✅ Migração concluída sem criar índices para compatibilidade');
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Remover índice (com verificação de existência)
-    try {
-      await queryInterface.removeIndex('Account', 'account_custom_statuses_gin_idx');
-    } catch (error) {
-      if (!error.message.includes('does not exist')) {
-        throw error;
-      }
-      console.log('ℹ️ Índice account_custom_statuses_gin_idx não existe, pulando...');
-    }
-
     // Verificar se as colunas existem antes de removê-las
     const tableInfo = await queryInterface.describeTable('Account');
 
