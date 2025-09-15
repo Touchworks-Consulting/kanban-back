@@ -7,53 +7,55 @@ try {
   console.warn('PostgreSQL driver not found, continuing anyway...');
 }
 
-// Configuração do PostgreSQL
-// Support both DATABASE_URL and individual environment variables
-const sequelize = process.env.DATABASE_URL
-  ? new Sequelize(process.env.DATABASE_URL, {
-      dialect: 'postgres',
-      logging: process.env.NODE_ENV === 'development' ? console.log : false,
-      timezone: '-03:00', // America/Sao_Paulo timezone
-      dialectOptions: {
-        timezone: 'America/Sao_Paulo',
-        useUTC: false, // Use local timezone for dates
-        ssl: process.env.NODE_ENV === 'production' ? {
-          require: true,
-          rejectUnauthorized: false
-        } : false
-      },
-    })
-  : new Sequelize({
-      dialect: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 5432,
-      database: process.env.DB_NAME || 'kanban_crm',
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      logging: process.env.NODE_ENV === 'development' ? console.log : false,
-      timezone: '-03:00', // America/Sao_Paulo timezone
-      dialectOptions: {
-        timezone: 'America/Sao_Paulo',
-        useUTC: false // Use local timezone for dates
-      },
-      define: {
-        timestamps: true,
-        underscored: true,
-        freezeTableName: true,
-        // Ensure dates are serialized as ISO strings
-        defaultScope: {
-          attributes: {
-            exclude: []
-          }
+// Create a function to get Sequelize instance
+function createSequelizeInstance() {
+  const config = {
+    dialect: 'postgres',
+    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    timezone: '-03:00', // America/Sao_Paulo timezone
+    dialectOptions: {
+      timezone: 'America/Sao_Paulo',
+      useUTC: false, // Use local timezone for dates
+      ssl: process.env.NODE_ENV === 'production' ? {
+        require: true,
+        rejectUnauthorized: false
+      } : false
+    },
+    define: {
+      timestamps: true,
+      underscored: true,
+      freezeTableName: true,
+      // Ensure dates are serialized as ISO strings
+      defaultScope: {
+        attributes: {
+          exclude: []
         }
-      },
-      pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
       }
-    });
+    },
+    pool: {
+      max: process.env.NODE_ENV === 'production' ? 1 : 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+  };
+
+  if (process.env.DATABASE_URL) {
+    return new Sequelize(process.env.DATABASE_URL, config);
+  }
+
+  return new Sequelize({
+    ...config,
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME || 'kanban_crm',
+    username: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres'
+  });
+}
+
+// Create initial instance
+const sequelize = createSequelizeInstance();
 
 // Global hook para serialização de datas
 sequelize.addHook('afterFind', (instances, options) => {
@@ -89,4 +91,4 @@ sequelize.addHook('afterFind', (instances, options) => {
   processInstance(instances);
 });
 
-module.exports = { sequelize };
+module.exports = { sequelize, createSequelizeInstance };

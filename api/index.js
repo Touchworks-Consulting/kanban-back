@@ -29,6 +29,49 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Debug endpoint to check environment and database
+app.get('/api/debug', async (req, res) => {
+  try {
+    const debug = {
+      environment: process.env.NODE_ENV,
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+      databaseUrlLength: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
+      pgInstalled: false,
+      connectionTest: 'not tested'
+    };
+
+    // Test pg package
+    try {
+      require('pg');
+      debug.pgInstalled = true;
+    } catch (e) {
+      debug.pgInstalled = false;
+      debug.pgError = e.message;
+    }
+
+    // Test database connection
+    if (process.env.DATABASE_URL) {
+      try {
+        const { getSequelizeConnection, closeConnection } = require('../src/utils/serverless-db');
+        const sequelize = await getSequelizeConnection();
+        await sequelize.authenticate();
+        debug.connectionTest = 'success';
+        await closeConnection();
+      } catch (e) {
+        debug.connectionTest = 'failed';
+        debug.connectionError = e.message;
+      }
+    }
+
+    res.json(debug);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Debug failed',
+      message: error.message
+    });
+  }
+});
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({ message: 'Kanban CRM API is running', status: 'ok' });
@@ -41,11 +84,11 @@ const loadRoutes = async () => {
   if (routesLoaded) return;
 
   try {
-    // Import database connection
-    const { sequelize } = require('../src/database/connection');
+    // Import database utilities
+    const { getSequelizeConnection } = require('../src/utils/serverless-db');
 
     // Test database connection
-    await sequelize.authenticate();
+    const sequelize = await getSequelizeConnection();
     console.log('Database connected successfully');
 
     // Import routes
