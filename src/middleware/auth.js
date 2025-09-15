@@ -26,7 +26,7 @@ const authenticateToken = async (req, res, next) => {
         include: [{
           model: Account,
           as: 'currentAccount',
-          attributes: ['id', 'name', 'display_name', 'is_active']
+          attributes: ['id', 'name', 'display_name', 'description', 'avatar_url', 'plan', 'is_active']
         }]
       });
     } else if (decoded.email) {
@@ -35,7 +35,7 @@ const authenticateToken = async (req, res, next) => {
         include: [{
           model: Account,
           as: 'currentAccount',
-          attributes: ['id', 'name', 'display_name', 'is_active']
+          attributes: ['id', 'name', 'display_name', 'description', 'avatar_url', 'plan', 'is_active']
         }]
       });
     }

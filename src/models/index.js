@@ -17,6 +17,7 @@ const TriggerPhrase = require('./TriggerPhrase');
 const LeadHistory = require('./LeadHistory');
 const LeadActivity = require('./LeadActivity');
 const Notification = require('./Notification');
+const Feedback = require('./Feedback');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -134,6 +135,10 @@ LeadActivity.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 Notification.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
+// Feedback associations
+Feedback.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+Feedback.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+
 module.exports = {
   Account,
   User,
@@ -153,5 +158,6 @@ module.exports = {
   TriggerPhrase,
   LeadHistory,
   LeadActivity,
-  Notification
+  Notification,
+  Feedback
 };
