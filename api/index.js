@@ -119,20 +119,13 @@ const loadRoutes = async () => {
   }
 };
 
-// Load routes on first request
-app.use(async (req, res, next) => {
-  if (!routesLoaded && req.path !== '/api/health' && req.path !== '/') {
-    try {
-      await loadRoutes();
-    } catch (error) {
-      console.error('Error in middleware route loading:', error);
-      return res.status(500).json({
-        error: 'Service initialization error',
-        message: 'Please try again in a moment'
-      });
-    }
+// Load routes immediately
+(async () => {
+  try {
+    await loadRoutes();
+  } catch (error) {
+    console.error('Error loading routes on startup:', error);
   }
-  next();
-});
+})();
 
 module.exports = app;
