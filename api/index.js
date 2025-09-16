@@ -1,8 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    methods: ["GET", "POST"]
+  }
+});
 
 // Basic middleware
 app.use(helmet({
@@ -91,6 +100,23 @@ const loadRoutes = async () => {
     const sequelize = await getSequelizeConnection();
     console.log('Database connected successfully');
 
+    // Setup Socket.IO
+    app.set('io', io);
+
+    // Socket.IO connection handling
+    io.on('connection', (socket) => {
+      console.log('Cliente conectado:', socket.id);
+
+      socket.on('join-account', (accountId) => {
+        socket.join(`account-${accountId}`);
+        console.log(`Cliente ${socket.id} entrou na sala account-${accountId}`);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Cliente desconectado:', socket.id);
+      });
+    });
+
     // Import routes
     const routes = require('../src/routes');
     app.use('/api', routes);
@@ -132,4 +158,4 @@ app.use(async (req, res, next) => {
   next();
 });
 
-module.exports = app;
+module.exports = server;

@@ -34,23 +34,32 @@ router.post('/broadcast',
         read: false
       };
 
-      if (targetAccounts && targetAccounts.length > 0) {
-        targetAccounts.forEach(accountId => {
-          io.to(`account-${accountId}`).emit('new-notification', notification);
-        });
+      // Enviar notificação via Socket.IO
+      if (io) {
+        if (targetAccounts && targetAccounts.length > 0) {
+          targetAccounts.forEach(accountId => {
+            io.to(`account-${accountId}`).emit('new-notification', notification);
+          });
+        } else {
+          io.emit('new-notification', notification);
+        }
+        console.log(`Notificação enviada via Socket.IO: ${title}`);
       } else {
-        io.emit('new-notification', notification);
+        console.error('Socket.IO não está disponível');
+        return res.status(500).json({
+          success: false,
+          message: 'Serviço de notificação indisponível'
+        });
       }
-
-      console.log(`📢 Notificação enviada: ${title} para ${targetAccounts ? targetAccounts.length + ' contas' : 'todos os usuários'}`);
 
       res.json({
         success: true,
-        message: 'Notificação enviada com sucesso',
-        notification
+        message: 'Notificação processada com sucesso',
+        notification,
+        socketAvailable: !!io
       });
     } catch (error) {
-      console.error('Erro ao enviar notificação:', error);
+      console.error('Erro ao processar notificação:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',
@@ -76,17 +85,22 @@ router.post('/test',
         read: false
       };
 
-      io.to(`account-${accountId}`).emit('new-notification', testNotification);
-
-      console.log(`📢 Notificação de teste enviada para conta: ${accountId}`);
+      // Verifica se Socket.IO está disponível
+      if (io) {
+        io.to(`account-${accountId}`).emit('new-notification', testNotification);
+        console.log(`📢 Notificação de teste enviada via Socket.IO para conta: ${accountId}`);
+      } else {
+        console.log(`📢 Notificação de teste criada (sem Socket.IO) para conta: ${accountId}`);
+      }
 
       res.json({
         success: true,
-        message: 'Notificação de teste enviada',
-        notification: testNotification
+        message: io ? 'Notificação de teste enviada via Socket.IO' : 'Notificação de teste criada (Socket.IO não disponível)',
+        notification: testNotification,
+        socketAvailable: !!io
       });
     } catch (error) {
-      console.error('Erro ao enviar notificação de teste:', error);
+      console.error('Erro ao processar notificação de teste:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',
