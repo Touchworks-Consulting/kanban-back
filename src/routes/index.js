@@ -14,7 +14,7 @@ const userRoutes = require('./userRoutes');
 const accountRoutes = require('./accountRoutes');
 const settingsRoutes = require('./settingsRoutes');
 const batchRoutes = require('./batchRoutes');
-// const notificationRoutes = require('./notificationRoutes'); // Desabilitado - requer Socket.IO
+const notificationRoutes = require('./notificationRoutes');
 const billingRoutes = require('./billingRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 
