@@ -14,7 +14,7 @@ const userRoutes = require('./userRoutes');
 const accountRoutes = require('./accountRoutes');
 const settingsRoutes = require('./settingsRoutes');
 const batchRoutes = require('./batchRoutes');
-const notificationRoutes = require('./notificationRoutes');
+// const notificationRoutes = require('./notificationRoutes'); // Desabilitado - requer Socket.IO
 const billingRoutes = require('./billingRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 
@@ -39,7 +39,7 @@ router.get('/', (req, res) => {
       users: '/api/users',
       settings: '/api/settings',
       batch: '/api/batch',
-      notifications: '/api/notifications',
+      // notifications: '/api/notifications', // Desabilitado
       billing: '/api/billing',
       feedback: '/api/feedback'
     },
@@ -62,7 +62,7 @@ router.use('/whatsapp-accounts', whatsappAccountRoutes);
 router.use('/users', userRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/batch', batchRoutes);
-router.use('/notifications', notificationRoutes);
+// router.use('/notifications', notificationRoutes); // Desabilitado - requer Socket.IO
 router.use('/billing', billingRoutes);
 router.use('/feedback', feedbackRoutes);
 
