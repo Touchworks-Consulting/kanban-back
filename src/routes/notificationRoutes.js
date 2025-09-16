@@ -3,16 +3,6 @@ const { body, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
-// Pusher Beams para produção (notificações push nativas)
-let beamsClient = null;
-if (process.env.NODE_ENV === 'production' && process.env.PUSHER_INSTANCE_ID) {
-  const PushNotifications = require('@pusher/push-notifications-server');
-  beamsClient = new PushNotifications({
-    instanceId: process.env.PUSHER_INSTANCE_ID,
-    secretKey: process.env.PUSHER_SECRET_KEY,
-  });
-}
-
 router.post('/broadcast',
   authenticateToken,
   [
@@ -44,9 +34,8 @@ router.post('/broadcast',
         read: false
       };
 
-      // Enviar notificação via Socket.IO (local) ou Pusher Beams (produção)
+      // Enviar notificação via Socket.IO
       if (io) {
-        // Ambiente local com Socket.IO
         if (targetAccounts && targetAccounts.length > 0) {
           targetAccounts.forEach(accountId => {
             io.to(`account-${accountId}`).emit('new-notification', notification);
@@ -54,42 +43,13 @@ router.post('/broadcast',
         } else {
           io.emit('new-notification', notification);
         }
-        console.log(`📢 Notificação enviada via Socket.IO: ${title}`);
-      } else if (beamsClient) {
-        // Ambiente de produção com Pusher Beams (notificações push nativas)
-        try {
-          const pushPayload = {
-            web: {
-              notification: {
-                title: notification.title,
-                body: notification.message,
-                icon: '/icon-192x192.png', // Você pode ajustar o ícone
-                badge: '/badge-72x72.png', // Badge opcional
-                data: {
-                  id: notification.id,
-                  type: notification.type,
-                  timestamp: notification.timestamp
-                }
-              }
-            }
-          };
-
-          if (targetAccounts && targetAccounts.length > 0) {
-            // Enviar para contas específicas
-            for (const accountId of targetAccounts) {
-              await beamsClient.publishToInterests([`account-${accountId}`], pushPayload);
-            }
-          } else {
-            // Enviar para todos (interesse global)
-            await beamsClient.publishToInterests(['global-notifications'], pushPayload);
-          }
-
-          console.log(`📢 Notificação push enviada via Pusher Beams: ${title}`);
-        } catch (error) {
-          console.error('Erro ao enviar push notification:', error);
-        }
+        console.log(`Notificação enviada via Socket.IO: ${title}`);
       } else {
-        console.log(`⚠️ Nenhum serviço de notificação disponível: ${title}`);
+        console.error('Socket.IO não está disponível');
+        return res.status(500).json({
+          success: false,
+          message: 'Serviço de notificação indisponível'
+        });
       }
 
       res.json({
