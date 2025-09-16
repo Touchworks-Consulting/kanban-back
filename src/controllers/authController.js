@@ -1,5 +1,5 @@
 const { signToken, verifyToken: verifyJWT } = require('../utils/jwtUtils');
-const { Account, User } = require('../models');
+const { Account, User, UserAccount } = require('../models');
 
 // Login somente para contas previamente registradas (sem criação automática)
 const login = async (req, res) => {
@@ -128,7 +128,6 @@ const register = async (req, res) => {
 
     // Criar entrada na tabela UserAccount para compatibilidade multi-tenant
     console.log(`🔗 Criando relação UserAccount para multi-tenant`);
-    const { UserAccount } = require('../models');
     await UserAccount.create({
       user_id: user.id,
       account_id: account.id,
