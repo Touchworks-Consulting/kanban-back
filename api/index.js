@@ -119,13 +119,20 @@ const loadRoutes = async () => {
   }
 };
 
-// Load routes immediately
-(async () => {
-  try {
-    await loadRoutes();
-  } catch (error) {
-    console.error('Error loading routes on startup:', error);
+// Load routes on any API request
+app.use('/api', async (req, res, next) => {
+  if (!routesLoaded) {
+    try {
+      await loadRoutes();
+    } catch (error) {
+      console.error('Error in middleware route loading:', error);
+      return res.status(500).json({
+        error: 'Service initialization error',
+        message: 'Please try again in a moment'
+      });
+    }
   }
-})();
+  next();
+});
 
 module.exports = app;
