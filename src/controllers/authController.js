@@ -87,25 +87,43 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { email, password, name, accountName, domain } = req.body;
+    console.log(`🔐 REGISTER: Tentativa de registro para: ${email}`);
+
     if (!email || !password || !name) {
       return res.status(400).json({ success: false, message: 'email, password e name são obrigatórios' });
     }
+
     // Não permitir duplicar usuário
+    console.log(`🔍 Verificando se usuário já existe: ${email}`);
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
+      console.log(`❌ Usuário já existe: ${email}`);
       return res.status(400).json({ success: false, message: 'Email já cadastrado' });
     }
+    console.log(`✅ Usuário não existe: ${email}`);
+
     // Também verificar se já existe conta com o mesmo email (modelo antigo)
+    console.log(`🔍 Verificando se conta já existe: ${email}`);
     const existingAccount = await Account.findOne({ where: { email } });
     if (existingAccount) {
+      console.log(`❌ Conta já existe: ${email} - ID: ${existingAccount.id}, Name: ${existingAccount.name}`);
       return res.status(400).json({ success: false, message: 'Email já associado a uma conta' });
     }
+    console.log(`✅ Conta não existe: ${email}`);
+
+    console.log(`💾 Criando nova conta para: ${email}`);
     const account = await Account.create({ name: accountName || name || email.split('@')[0], email, is_active: true, settings: { domain: domain || null } });
+    console.log(`✅ Conta criada: ID=${account.id}, Name=${account.name}, Email=${account.email}`);
+
+    console.log(`👤 Criando usuário owner para conta: ${account.id}`);
     const user = await User.create({ account_id: account.id, name, email, password, role: 'owner' });
+    console.log(`✅ Usuário criado: ID=${user.id}, Name=${user.name}, Role=${user.role}`);
 
     const tokenPayload = { id: account.id, accountId: account.id, userId: user.id, email: user.email, name: user.name, role: user.role };
     const token = signToken(tokenPayload, { expiresIn: '24h' });
 
+    console.log(`🎫 Token gerado para registro: ${user.email}`);
+    console.log(`✅ Registro completo para: ${user.email}`);
     return res.status(201).json({ token, user: { id: account.id, account_id: account.id, user_id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (error) {
     console.error('Register error:', error);
