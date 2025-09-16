@@ -9,6 +9,19 @@ try {
 
 // Create a function to get Sequelize instance
 function createSequelizeInstance() {
+  console.log('🔌 DATABASE CONNECTION INFO:');
+  console.log('📍 NODE_ENV:', process.env.NODE_ENV);
+  console.log('🏢 DATABASE_URL exists:', !!process.env.DATABASE_URL);
+  if (process.env.DATABASE_URL) {
+    const dbUrl = process.env.DATABASE_URL;
+    const maskedUrl = dbUrl.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@');
+    console.log('🔗 Using DATABASE_URL:', maskedUrl);
+  } else {
+    console.log('⚠️  DATABASE_URL não encontrada, usando configuração local');
+    console.log('🏠 DB_HOST:', process.env.DB_HOST || 'localhost');
+    console.log('🔢 DB_NAME:', process.env.DB_NAME || 'kanban_crm');
+  }
+
   const config = {
     dialect: 'postgres',
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
@@ -41,9 +54,17 @@ function createSequelizeInstance() {
   };
 
   if (process.env.DATABASE_URL) {
+    console.log('✅ Conectando ao banco de produção via DATABASE_URL');
     return new Sequelize(process.env.DATABASE_URL, config);
   }
 
+  // PROTEÇÃO: Em produção, nunca usar configuração local
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ ERRO CRÍTICO: DATABASE_URL não configurada em produção!');
+    throw new Error('DATABASE_URL é obrigatória em ambiente de produção');
+  }
+
+  console.log('🏠 Conectando ao banco local (desenvolvimento)');
   return new Sequelize({
     ...config,
     host: process.env.DB_HOST || 'localhost',
