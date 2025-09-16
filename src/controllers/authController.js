@@ -116,8 +116,27 @@ const register = async (req, res) => {
     console.log(`✅ Conta criada: ID=${account.id}, Name=${account.name}, Email=${account.email}`);
 
     console.log(`👤 Criando usuário owner para conta: ${account.id}`);
-    const user = await User.create({ account_id: account.id, name, email, password, role: 'owner' });
+    const user = await User.create({
+      account_id: account.id,
+      name,
+      email,
+      password,
+      role: 'owner',
+      current_account_id: account.id  // Define a conta atual
+    });
     console.log(`✅ Usuário criado: ID=${user.id}, Name=${user.name}, Role=${user.role}`);
+
+    // Criar entrada na tabela UserAccount para compatibilidade multi-tenant
+    console.log(`🔗 Criando relação UserAccount para multi-tenant`);
+    const { UserAccount } = require('../models');
+    await UserAccount.create({
+      user_id: user.id,
+      account_id: account.id,
+      role: 'owner',
+      is_active: true,
+      permissions: {}
+    });
+    console.log(`✅ UserAccount criado para multi-tenant compatibility`);
 
     const tokenPayload = { id: account.id, accountId: account.id, userId: user.id, email: user.email, name: user.name, role: user.role };
     const token = signToken(tokenPayload, { expiresIn: '24h' });

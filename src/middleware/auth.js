@@ -6,13 +6,22 @@ const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
+    console.log('🔐 AUTH MIDDLEWARE: Token recebido:', !!token);
+
     if (!token) {
-      return res.status(401).json({ 
-        error: 'Token de acesso necessário' 
+      console.log('❌ AUTH MIDDLEWARE: Token não fornecido');
+      return res.status(401).json({
+        error: 'Token de acesso necessário'
       });
     }
 
+    console.log('🔓 AUTH MIDDLEWARE: Verificando token JWT...');
     const decoded = verifyJWT(token);
+    console.log('✅ AUTH MIDDLEWARE: Token decodificado:', {
+      userId: decoded.userId,
+      email: decoded.email,
+      accountId: decoded.accountId
+    });
     
     if (!decoded.userId && !decoded.email) {
       return res.status(401).json({ error: 'Token inválido' });
