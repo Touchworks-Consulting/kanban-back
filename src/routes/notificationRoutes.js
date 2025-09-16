@@ -3,6 +3,16 @@ const { body, validationResult } = require('express-validator');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
+// Pusher Beams para produção (notificações push nativas)
+let beamsClient = null;
+if (process.env.NODE_ENV === 'production' && process.env.PUSHER_INSTANCE_ID) {
+  const PushNotifications = require('@pusher/push-notifications-server');
+  beamsClient = new PushNotifications({
+    instanceId: process.env.PUSHER_INSTANCE_ID,
+    secretKey: process.env.PUSHER_SECRET_KEY,
+  });
+}
+
 router.post('/broadcast',
   authenticateToken,
   [
@@ -34,23 +44,62 @@ router.post('/broadcast',
         read: false
       };
 
-      if (targetAccounts && targetAccounts.length > 0) {
-        targetAccounts.forEach(accountId => {
-          io.to(`account-${accountId}`).emit('new-notification', notification);
-        });
-      } else {
-        io.emit('new-notification', notification);
-      }
+      // Enviar notificação via Socket.IO (local) ou Pusher Beams (produção)
+      if (io) {
+        // Ambiente local com Socket.IO
+        if (targetAccounts && targetAccounts.length > 0) {
+          targetAccounts.forEach(accountId => {
+            io.to(`account-${accountId}`).emit('new-notification', notification);
+          });
+        } else {
+          io.emit('new-notification', notification);
+        }
+        console.log(`📢 Notificação enviada via Socket.IO: ${title}`);
+      } else if (beamsClient) {
+        // Ambiente de produção com Pusher Beams (notificações push nativas)
+        try {
+          const pushPayload = {
+            web: {
+              notification: {
+                title: notification.title,
+                body: notification.message,
+                icon: '/icon-192x192.png', // Você pode ajustar o ícone
+                badge: '/badge-72x72.png', // Badge opcional
+                data: {
+                  id: notification.id,
+                  type: notification.type,
+                  timestamp: notification.timestamp
+                }
+              }
+            }
+          };
 
-      console.log(`📢 Notificação enviada: ${title} para ${targetAccounts ? targetAccounts.length + ' contas' : 'todos os usuários'}`);
+          if (targetAccounts && targetAccounts.length > 0) {
+            // Enviar para contas específicas
+            for (const accountId of targetAccounts) {
+              await beamsClient.publishToInterests([`account-${accountId}`], pushPayload);
+            }
+          } else {
+            // Enviar para todos (interesse global)
+            await beamsClient.publishToInterests(['global-notifications'], pushPayload);
+          }
+
+          console.log(`📢 Notificação push enviada via Pusher Beams: ${title}`);
+        } catch (error) {
+          console.error('Erro ao enviar push notification:', error);
+        }
+      } else {
+        console.log(`⚠️ Nenhum serviço de notificação disponível: ${title}`);
+      }
 
       res.json({
         success: true,
-        message: 'Notificação enviada com sucesso',
-        notification
+        message: 'Notificação processada com sucesso',
+        notification,
+        socketAvailable: !!io
       });
     } catch (error) {
-      console.error('Erro ao enviar notificação:', error);
+      console.error('Erro ao processar notificação:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',
@@ -76,17 +125,22 @@ router.post('/test',
         read: false
       };
 
-      io.to(`account-${accountId}`).emit('new-notification', testNotification);
-
-      console.log(`📢 Notificação de teste enviada para conta: ${accountId}`);
+      // Verifica se Socket.IO está disponível
+      if (io) {
+        io.to(`account-${accountId}`).emit('new-notification', testNotification);
+        console.log(`📢 Notificação de teste enviada via Socket.IO para conta: ${accountId}`);
+      } else {
+        console.log(`📢 Notificação de teste criada (sem Socket.IO) para conta: ${accountId}`);
+      }
 
       res.json({
         success: true,
-        message: 'Notificação de teste enviada',
-        notification: testNotification
+        message: io ? 'Notificação de teste enviada via Socket.IO' : 'Notificação de teste criada (Socket.IO não disponível)',
+        notification: testNotification,
+        socketAvailable: !!io
       });
     } catch (error) {
-      console.error('Erro ao enviar notificação de teste:', error);
+      console.error('Erro ao processar notificação de teste:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',
