@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, UserAccount } = require('../models');
 const cacheService = require('../services/CacheService');
 
 function requireAdmin(req, res) {
@@ -49,7 +49,18 @@ module.exports = {
 
       const exists = await User.findOne({ where: { email } });
       if (exists) return res.status(400).json({ success: false, message: 'Email já em uso' });
-      const user = await User.create({ account_id: targetAccountId, name, email, password, role });
+      const user = await User.create({ account_id: targetAccountId, name, email, password, role, current_account_id: targetAccountId });
+
+      // Criar entrada na tabela UserAccount para compatibilidade multi-tenant
+      console.log(`🔗 Criando relação UserAccount para multi-tenant (user_id: ${user.id}, account_id: ${targetAccountId})`);
+      await UserAccount.create({
+        user_id: user.id,
+        account_id: targetAccountId,
+        role: role,
+        is_active: true,
+        permissions: {}
+      });
+      console.log(`✅ UserAccount criado para multi-tenant compatibility`);
 
       // 🔄 Invalidar cache após criação (usar targetAccountId para ser consistente)
       await cacheService.invalidateUsersCache(targetAccountId);
