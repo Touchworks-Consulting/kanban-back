@@ -40,15 +40,20 @@ module.exports = {
   create: async (req, res) => {
     try {
       if (!requireAdmin(req,res)) return;
-      const { name, email, password, role = 'member' } = req.body;
+      const { name, email, password, role = 'member', account_id } = req.body;
       if (!name || !email || !password) return res.status(400).json({ success: false, message: 'name, email, password obrigatórios' });
+
+      // Usar account_id do payload se fornecido, senão usar req.account.id
+      const targetAccountId = account_id || req.account.id;
+      console.log(`🔍 Creating user with account_id: ${targetAccountId} (from payload: ${account_id}, from req.account: ${req.account.id})`);
+
       const exists = await User.findOne({ where: { email } });
       if (exists) return res.status(400).json({ success: false, message: 'Email já em uso' });
-      const user = await User.create({ account_id: req.account.id, name, email, password, role });
+      const user = await User.create({ account_id: targetAccountId, name, email, password, role });
 
-      // 🔄 Invalidar cache após criação
-      await cacheService.invalidateUsersCache(req.account.id);
-      console.log(`📦 Cache INVALIDATED: users para conta ${req.account.id} após criação`);
+      // 🔄 Invalidar cache após criação (usar targetAccountId para ser consistente)
+      await cacheService.invalidateUsersCache(targetAccountId);
+      console.log(`📦 Cache INVALIDATED: users para conta ${targetAccountId} após criação`);
 
       res.status(201).json({ success: true, user });
     } catch (e) {
