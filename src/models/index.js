@@ -18,6 +18,7 @@ const LeadHistory = require('./LeadHistory');
 const LeadActivity = require('./LeadActivity');
 const Notification = require('./Notification');
 const Feedback = require('./Feedback');
+const FeedbackVote = require('./FeedbackVote');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -138,6 +139,11 @@ Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 // Feedback associations
 Feedback.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 Feedback.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+Feedback.hasMany(FeedbackVote, { foreignKey: 'feedback_id', as: 'feedbackVotes' });
+
+// FeedbackVote associations
+FeedbackVote.belongsTo(Feedback, { foreignKey: 'feedback_id', as: 'feedback' });
+FeedbackVote.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = {
   Account,
@@ -159,5 +165,6 @@ module.exports = {
   LeadHistory,
   LeadActivity,
   Notification,
-  Feedback
+  Feedback,
+  FeedbackVote
 };

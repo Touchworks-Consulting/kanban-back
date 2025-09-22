@@ -77,6 +77,11 @@ const Feedback = sequelize.define('Feedback', {
     admin_notes: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    votes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
     }
   }, {
     tableName: 'feedbacks',
