@@ -369,7 +369,9 @@ const leadController = {
   // Mover lead para outra coluna/posição
   move: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { column_id, position } = req.body;
+    const { column_id, position, lost_reason } = req.body;
+
+    console.log(`🚀 MOVE ENDPOINT CHAMADO - Lead: ${id}, Coluna: ${column_id}, Position: ${position}`);
 
     const lead = await Lead.findOne({
       where: {
@@ -400,10 +402,49 @@ const leadController = {
 
     const previousColumnId = lead.column_id;
 
+    console.log(`🔄 Movendo lead para coluna: "${column.name}"`);
+
+    // Primeiro, fazer a movimentação simples
     await lead.update({
       column_id,
       position: position || 0
     });
+
+    // Depois, verificar se precisa atualizar status baseado na coluna
+    const columnName = column.name.toLowerCase();
+    console.log(`🔍 Analisando coluna: "${column.name}" (lowercase: "${columnName}")`);
+    let statusUpdateData = null;
+
+    if (columnName.includes('ganho') || columnName.includes('ganhos')) {
+      console.log('✅ Detectada coluna de GANHO - alterando status para "won"');
+      statusUpdateData = {
+        status: 'won',
+        won_at: new Date(),
+        lost_reason: null,
+        lost_at: null
+      };
+    } else if (columnName.includes('perdido') || columnName.includes('perdidos')) {
+      console.log('❌ Detectada coluna de PERDIDO - alterando status para "lost"');
+      statusUpdateData = {
+        status: 'lost',
+        lost_at: new Date(),
+        won_reason: null,
+        won_at: null
+      };
+      // Incluir motivo de perda se fornecido
+      if (lost_reason) {
+        console.log(`📝 Motivo de perda fornecido: "${lost_reason}"`);
+        statusUpdateData.lost_reason = lost_reason;
+      }
+    } else {
+      console.log('ℹ️  Coluna não corresponde a ganho/perdido - mantendo status atual');
+    }
+
+    // Se há necessidade de atualizar status, fazer uma segunda atualização
+    if (statusUpdateData) {
+      console.log('📝 Atualizando status do lead:', statusUpdateData);
+      await lead.update(statusUpdateData);
+    }
 
     // 📊 REGISTRAR HISTÓRICO: Movimentação via endpoint move
     await LeadHistory.create({
