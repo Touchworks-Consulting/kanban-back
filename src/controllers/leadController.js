@@ -9,11 +9,20 @@ const leadController = {
   // Listar leads com filtros e paginação
   list: asyncHandler(async (req, res) => {
     const { page = 1, limit = 20, status, platform, search, column_id } = req.query;
+    const phoneParam = Array.isArray(req.query.phone)
+      ? req.query.phone[0]
+      : req.query.phone;
+    const phone = typeof phoneParam === 'string' ? phoneParam.trim() : '';
+
     const offset = (page - 1) * limit;
 
     const whereClause = {
       account_id: req.account.id
     };
+
+    if (phone) {
+      whereClause.phone = phone;
+    }
 
     // Filtros
     if (status) {
@@ -364,6 +373,41 @@ const leadController = {
     res.json({
       message: 'Lead deletado com sucesso'
     });
+  }),
+
+  // Buscar lead por telefone
+  getByPhone: asyncHandler(async (req, res) => {
+    const { phone } = req.query;
+
+    if (!phone) {
+      return res.status(400).json({ error: 'Parâmetro phone é obrigatório' });
+    }
+
+    const lead = await Lead.findOne({
+      where: {
+        account_id: req.account.id,
+        phone
+      },
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        },
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    if (!lead) {
+      return res.status(404).json({ error: 'Lead não encontrado' });
+    }
+
+    res.json({ lead: processSequelizeResponse(lead) });
   }),
 
   // Mover lead para outra coluna/posição
