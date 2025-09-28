@@ -525,6 +525,251 @@ const leadController = {
       message: 'Lead movido com sucesso',
       lead: updatedLead
     });
+  }),
+
+  // ===== OPTIMIZED ENDPOINTS FOR PERFORMANCE =====
+  // These methods provide granular updates without full reloads
+
+  // Atualizar apenas responsável (super otimizado)
+  updateAssignee: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { assigned_to_user_id } = req.body;
+
+    const lead = await Lead.findOne({
+      where: { id, account_id: req.account.id }
+    });
+
+    if (!lead) {
+      return res.status(404).json({
+        error: 'Lead não encontrado'
+      });
+    }
+
+    // Backup do valor anterior para histórico
+    const previousAssigneeId = lead.assigned_to_user_id;
+
+    // Update apenas o campo necessário
+    await lead.update({ assigned_to_user_id });
+
+    // Buscar lead atualizado com relacionamentos mínimos necessários
+    const updatedLead = await Lead.findByPk(lead.id, {
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        },
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    // Log da atividade (opcional, mas recomendado)
+    // TODO: Implementar LeadActivity se necessário
+
+    res.json({
+      success: true,
+      message: 'Responsável atualizado com sucesso',
+      lead: updatedLead
+    });
+
+    // Trigger automations if needed (background)
+    if (assigned_to_user_id !== previousAssigneeId) {
+      AutomationService.triggerAutomations('assignee_changed', {
+        lead: updatedLead.toJSON(),
+        previousAssigneeId,
+        newAssigneeId: assigned_to_user_id,
+        account_id: req.account.id
+      }, req.account.id).catch(error => {
+        console.error('Erro ao disparar automações de responsável:', error);
+      });
+    }
+  }),
+
+  // Atualizar apenas status (super otimizado)
+  updateStatus: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { status, won_reason, lost_reason } = req.body;
+
+    const lead = await Lead.findOne({
+      where: { id, account_id: req.account.id }
+    });
+
+    if (!lead) {
+      return res.status(404).json({
+        error: 'Lead não encontrado'
+      });
+    }
+
+    // Backup do valor anterior
+    const previousStatus = lead.status;
+
+    // Preparar dados do update
+    const updateData = { status };
+    if (status === 'won' && won_reason) {
+      updateData.won_reason = won_reason;
+    }
+    if (status === 'lost' && lost_reason) {
+      updateData.lost_reason = lost_reason;
+    }
+
+    // Update apenas os campos necessários
+    await lead.update(updateData);
+
+    // Buscar lead atualizado
+    const updatedLead = await Lead.findByPk(lead.id, {
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        },
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    res.json({
+      success: true,
+      message: 'Status atualizado com sucesso',
+      lead: updatedLead
+    });
+
+    // Trigger automations (background)
+    if (status !== previousStatus) {
+      AutomationService.triggerAutomations('status_changed', {
+        lead: updatedLead.toJSON(),
+        previousStatus,
+        newStatus: status,
+        account_id: req.account.id
+      }, req.account.id).catch(error => {
+        console.error('Erro ao disparar automações de status:', error);
+      });
+    }
+  }),
+
+  // Atualizar campo específico (otimizado para forms)
+  updateField: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { field, value } = req.body;
+
+    // Validar campos permitidos por segurança
+    const allowedFields = [
+      'name', 'email', 'phone', 'message', 'value', 'notes',
+      'priority', 'campaign', 'platform', 'channel'
+    ];
+
+    if (!allowedFields.includes(field)) {
+      return res.status(400).json({
+        error: 'Campo não permitido para atualização'
+      });
+    }
+
+    const lead = await Lead.findOne({
+      where: { id, account_id: req.account.id }
+    });
+
+    if (!lead) {
+      return res.status(404).json({
+        error: 'Lead não encontrado'
+      });
+    }
+
+    // Update apenas o campo específico
+    await lead.update({ [field]: value });
+
+    // Buscar lead atualizado
+    const updatedLead = await Lead.findByPk(lead.id, {
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        },
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    res.json({
+      success: true,
+      message: `Campo ${field} atualizado com sucesso`,
+      lead: updatedLead
+    });
+  }),
+
+  // Atualização em batch com suporte a debounce (para múltiplos campos)
+  batchUpdate: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { updates, debounce_key } = req.body;
+
+    const lead = await Lead.findOne({
+      where: { id, account_id: req.account.id }
+    });
+
+    if (!lead) {
+      return res.status(404).json({
+        error: 'Lead não encontrado'
+      });
+    }
+
+    // Validar campos permitidos
+    const allowedFields = [
+      'name', 'email', 'phone', 'message', 'value', 'notes',
+      'priority', 'campaign', 'platform', 'channel'
+    ];
+
+    const filteredUpdates = {};
+    Object.keys(updates).forEach(key => {
+      if (allowedFields.includes(key)) {
+        filteredUpdates[key] = updates[key];
+      }
+    });
+
+    if (Object.keys(filteredUpdates).length === 0) {
+      return res.status(400).json({
+        error: 'Nenhum campo válido para atualização'
+      });
+    }
+
+    // Update múltiplos campos de uma vez
+    await lead.update(filteredUpdates);
+
+    // Buscar lead atualizado
+    const updatedLead = await Lead.findByPk(lead.id, {
+      include: [
+        {
+          model: KanbanColumn,
+          as: 'column',
+          attributes: ['id', 'name', 'color']
+        },
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name', 'color'],
+          through: { attributes: [] }
+        }
+      ]
+    });
+
+    res.json({
+      success: true,
+      message: 'Campos atualizados com sucesso',
+      lead: updatedLead,
+      updated_fields: Object.keys(filteredUpdates)
+    });
   })
 };
 

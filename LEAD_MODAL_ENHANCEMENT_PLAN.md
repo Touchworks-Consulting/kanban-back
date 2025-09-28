@@ -2,7 +2,7 @@
 
 ## 📋 **Visão Geral**
 
-Transformar o modal de lead atual em uma solução enterprise-grade, competindo diretamente com CRMs como HubSpot, Pipedrive e RD Station, através da implementação de funcionalidades críticas ausentes.
+Transformar o modal de lead atual em uma solução enterprise-grade, competindo diretamente com os principais CRMs do mercado, através da implementação de funcionalidades críticas ausentes.
 
 ## 🎯 **Objetivos Estratégicos**
 
