@@ -12,6 +12,9 @@ router.use(authenticateToken);
 // Listar leads
 router.get('/', leadController.list);
 
+// Buscar lead por telefone
+router.get('/search/by-phone', leadController.getByPhone);
+
 // Obter lead por ID
 router.get('/:id', leadController.getById);
 

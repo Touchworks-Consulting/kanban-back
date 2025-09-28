@@ -16,9 +16,14 @@ const Campaign = require('./Campaign');
 const TriggerPhrase = require('./TriggerPhrase');
 const LeadHistory = require('./LeadHistory');
 const LeadActivity = require('./LeadActivity');
+const LeadContact = require('./LeadContact');
+const LeadFile = require('./LeadFile');
 const Notification = require('./Notification');
 const Feedback = require('./Feedback');
 const FeedbackVote = require('./FeedbackVote');
+const Plan = require('./Plan');
+const Subscription = require('./Subscription');
+const UserSession = require('./UserSession');
 
 // Account associations
 Account.hasMany(Lead, { foreignKey: 'account_id', as: 'leads' });
@@ -34,7 +39,12 @@ Account.hasMany(Campaign, { foreignKey: 'account_id', as: 'campaigns' });
 Account.hasMany(TriggerPhrase, { foreignKey: 'account_id', as: 'triggerPhrases' });
 Account.hasMany(LeadHistory, { foreignKey: 'account_id', as: 'leadHistories' });
 Account.hasMany(LeadActivity, { foreignKey: 'account_id', as: 'leadActivities' });
+Account.hasMany(LeadContact, { foreignKey: 'account_id', as: 'leadContacts' });
+Account.hasMany(LeadFile, { foreignKey: 'account_id', as: 'leadFiles' });
 Account.hasMany(Notification, { foreignKey: 'account_id', as: 'notifications' });
+Account.hasMany(Subscription, { foreignKey: 'account_id', as: 'subscriptions' });
+Account.hasMany(UserSession, { foreignKey: 'account_id', as: 'userSessions' });
+Account.hasMany(Feedback, { foreignKey: 'account_id', as: 'feedback' });
 
 // Lead associations
 Lead.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
@@ -47,6 +57,8 @@ Lead.belongsToMany(Tag, {
 });
 Lead.hasMany(LeadHistory, { foreignKey: 'lead_id', as: 'histories' });
 Lead.hasMany(LeadActivity, { foreignKey: 'lead_id', as: 'activities' });
+Lead.hasMany(LeadContact, { foreignKey: 'lead_id', as: 'contacts' });
+Lead.hasMany(LeadFile, { foreignKey: 'lead_id', as: 'files' });
 Lead.belongsTo(User, { foreignKey: 'assigned_to_user_id', as: 'assignedTo' });
 
 // KanbanColumn associations
@@ -132,6 +144,15 @@ LeadActivity.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 LeadActivity.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
 LeadActivity.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
+// LeadContact associations
+LeadContact.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+LeadContact.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
+
+// LeadFile associations
+LeadFile.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+LeadFile.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead' });
+LeadFile.belongsTo(User, { foreignKey: 'uploaded_by_user_id', as: 'uploadedBy' });
+
 // Notification associations
 Notification.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
 Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -144,6 +165,17 @@ Feedback.hasMany(FeedbackVote, { foreignKey: 'feedback_id', as: 'feedbackVotes' 
 // FeedbackVote associations
 FeedbackVote.belongsTo(Feedback, { foreignKey: 'feedback_id', as: 'feedback' });
 FeedbackVote.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
+// Plan associations
+Plan.hasMany(Subscription, { foreignKey: 'plan_id', as: 'subscriptions' });
+
+// Subscription associations
+Subscription.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+Subscription.belongsTo(Plan, { foreignKey: 'plan_id', as: 'plan' });
+
+// UserSession associations
+UserSession.belongsTo(Account, { foreignKey: 'account_id', as: 'account' });
+UserSession.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = {
   Account,
@@ -164,7 +196,12 @@ module.exports = {
   TriggerPhrase,
   LeadHistory,
   LeadActivity,
+  LeadContact,
+  LeadFile,
   Notification,
   Feedback,
-  FeedbackVote
+  FeedbackVote,
+  Plan,
+  Subscription,
+  UserSession
 };

@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { Account } = require('../models');
 
 const createLeadSchema = Joi.object({
   name: Joi.string()
@@ -89,8 +90,7 @@ const updateLeadSchema = Joi.object({
     .allow(''),
   message: Joi.string()
     .allow(''),
-  status: Joi.string()
-    .valid('new', 'contacted', 'qualified', 'proposal', 'won', 'lost'),
+  status: Joi.string(),
   column_id: Joi.string()
     .uuid()
     .allow(null),
@@ -135,23 +135,52 @@ const validateCreateLead = (req, res, next) => {
   next();
 };
 
-const validateUpdateLead = (req, res, next) => {
-  const { error } = updateLeadSchema.validate(req.body, {
-    allowUnknown: true,
-    stripUnknown: true
-  });
+const validateUpdateLead = async (req, res, next) => {
+  try {
+    // Primeiro faz validação básica
+    const { error } = updateLeadSchema.validate(req.body, {
+      allowUnknown: true,
+      stripUnknown: true
+    });
 
-  if (error) {
-    return res.status(400).json({
-      error: 'Dados inválidos',
-      details: error.details.map(detail => ({
-        field: detail.path[0],
-        message: detail.message
-      }))
+    if (error) {
+      return res.status(400).json({
+        error: 'Dados inválidos',
+        details: error.details.map(detail => ({
+          field: detail.path[0],
+          message: detail.message
+        }))
+      });
+    }
+
+    // Se tem status no body, valida contra status customizados da conta
+    if (req.body.status && req.account) {
+      const account = await Account.findByPk(req.account.id, {
+        attributes: ['custom_statuses']
+      });
+
+      if (account && account.custom_statuses) {
+        const validStatuses = account.custom_statuses.map(status => status.id);
+
+        if (!validStatuses.includes(req.body.status)) {
+          return res.status(400).json({
+            error: 'Dados inválidos',
+            details: [{
+              field: 'status',
+              message: `"status" deve ser um dos seguintes valores: ${validStatuses.join(', ')}`
+            }]
+          });
+        }
+      }
+    }
+
+    next();
+  } catch (error) {
+    console.error('Erro na validação de lead:', error);
+    return res.status(500).json({
+      error: 'Erro interno na validação'
     });
   }
-
-  next();
 };
 
 module.exports = {

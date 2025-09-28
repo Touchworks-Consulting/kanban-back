@@ -19,7 +19,7 @@ const FeedbackVote = sequelize.define('FeedbackVote', {
       type: DataTypes.UUID,
       allowNull: true, // Permite votos anônimos
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id'
       }
     },

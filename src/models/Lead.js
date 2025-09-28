@@ -59,7 +59,7 @@ const Lead = sequelize.define('Lead', {
     allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('new', 'contacted', 'qualified', 'proposal', 'won', 'lost'),
+    type: DataTypes.STRING,
     defaultValue: 'new'
   },
   column_id: {

@@ -11,7 +11,7 @@ const Subscription = sequelize.define('Subscription', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'accounts',
+      model: 'Account',
       key: 'id'
     },
     comment: 'Conta que possui a assinatura'

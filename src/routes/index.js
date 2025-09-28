@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./authRoutes');
 const leadRoutes = require('./leadRoutes');
+const leadModalRoutes = require('./leadModalRoutes');
 const kanbanRoutes = require('./kanbanRoutes');
 const dashboardRoutes = require('./dashboardRoutes');
 const optimizedDashboardRoutes = require('./optimizedDashboardRoutes');
@@ -29,6 +30,7 @@ router.get('/', (req, res) => {
       auth: '/api/auth',
       accounts: '/api/accounts',
       leads: '/api/leads',
+      leadModal: '/api/lead-modal',
       kanban: '/api/kanban',
       dashboard: '/api/dashboard',
       webhooks: '/api/webhooks',
@@ -51,6 +53,7 @@ router.get('/', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/accounts', accountRoutes);
 router.use('/leads', leadRoutes);
+router.use('/lead-modal', leadModalRoutes);
 router.use('/kanban', kanbanRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', optimizedDashboardRoutes); // Rotas otimizadas
