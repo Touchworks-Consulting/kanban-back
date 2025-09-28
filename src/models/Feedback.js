@@ -20,7 +20,7 @@ const Feedback = sequelize.define('Feedback', {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id'
       }
     },
@@ -36,7 +36,7 @@ const Feedback = sequelize.define('Feedback', {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
-        model: 'Accounts',
+        model: 'Account',
         key: 'id'
       }
     },

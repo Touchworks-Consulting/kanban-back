@@ -91,36 +91,41 @@ Novos Modelos:
 - Histórico de evolução do score
 - Priorização automática de leads
 
-## 📅 **Cronograma de Implementação**
+## 📅 **Cronograma de Implementação - ATUALIZADO**
 
-### **Fase 1: Fundação (Semana 1-2)**
-- ✅ Análise e planejamento detalhado
-- 🔄 Criação dos novos modelos de dados
-- 🔄 Migrações do banco de dados
-- 🔄 APIs básicas para novos endpoints
+### **🔴 CORREÇÕES CRÍTICAS APLICADAS**
+- **UX Otimizado**: 3 abas iniciais em vez de 5 (reduz sobrecarga cognitiva)
+- **Performance**: Service Layer + indexes otimizados para evitar N+1 queries
+- **Security**: Validação robusta de upload com magic numbers
+- **Mobile-first**: Design responsivo com Sheet otimizado
 
-### **Fase 2: Timeline e Tarefas (Semana 3-4)**
-- 📈 Sistema de timeline de atividades
-- 📋 Gestão completa de tarefas e follow-ups
+### **Fase 1: MVP Otimizado (Semana 1-6) - PRIORIDADE CRÍTICA**
+- ✅ **Análise e correções técnicas** identificadas pelos agentes
+- 🔄 **Backend Service Layer** para performance otimizada
+- 🔄 **3 Modelos principais**: LeadActivity, LeadContact, LeadFile
+- 🔄 **Migrações com indexes** críticos de performance
+- 🔄 **Modal com 3 abas**:
+  - 📊 Overview (dados + timeline + score)
+  - 👥 Contatos & Arquivos (consolidado)
+  - ⚙️ Configurações (campos customizáveis)
+- 🔄 **Upload seguro** com validação robusta
+- 🔄 **Timeline otimizado** com lazy loading
+- 🔄 **Design mobile-first** responsivo
+
+### **Fase 2: Enterprise Features (Semana 7-14)**
+- 📋 Sistema completo de tarefas (LeadTask)
+- 📊 Score de engajamento avançado
+- ⚙️ Campos customizáveis complexos
 - 🔔 Sistema de notificações
-- 🧪 Testes unitários e integração
+- 📋 Aba dedicada para Tarefas (5ª aba)
+- 🧪 Testes automatizados completos
 
-### **Fase 3: Contatos e Arquivos (Semana 5-6)**
-- 📞 Sistema de múltiplos contatos
-- 📎 Upload e gestão de arquivos
-- 🖼️ Preview de documentos
-- 🔒 Controle de acesso a arquivos
-
-### **Fase 4: Customização (Semana 7-8)**
-- ⚙️ Campos customizáveis por conta
-- 📊 Sistema de score de engajamento
-- 🎨 Melhorias na UI/UX do modal
-- 📱 Responsividade mobile
-
-### **Fase 5: Polimento (Semana 9-10)**
-- 🐛 Correção de bugs identificados
-- 🚀 Otimizações de performance
-- 📖 Documentação completa
+### **Fase 3: Polimento & Analytics (Semana 15-20)**
+- 🚀 Otimizações avançadas de performance
+- 📊 Analytics e métricas do modal
+- 🔗 Integrações com automações
+- 👥 Features de colaboração
+- 📱 Otimizações mobile avançadas
 - 🎯 Testes de aceitação do usuário
 
 ## 🎯 **Critérios de Aceite**
@@ -195,22 +200,36 @@ Novos Modelos:
 - **Taxa de Erro**: <0.1%
 - **Tempo Resposta API**: <200ms
 
-## 🚨 **Riscos e Mitigações**
+## 🚨 **Riscos e Mitigações - ATUALIZADOS**
 
-### **Alto Risco**
-- **Migração de Dados**: Planejar rollback completo
-- **Performance**: Load testing extensivo
-- **UX Complexa**: Testes com usuários reais
+### **🔴 RISCOS CRÍTICOS IDENTIFICADOS E CORRIGIDOS**
 
-### **Médio Risco**
-- **Integração Backend/Frontend**: APIs bem documentadas
-- **Upload de Arquivos**: Limites e validações rígidas
-- **Notificações**: Sistema de fallback
+#### **Performance (ALTO RISCO → MITIGADO)**
+- **❌ Problema**: N+1 queries na timeline podiam travar sistema
+- **✅ Solução**: Service Layer + indexes otimizados + lazy loading implementados
 
-### **Baixo Risco**
-- **UI/UX**: Protótipos validados previamente
-- **Compatibilidade**: Testes cross-browser
-- **Acessibilidade**: Auditoria automatizada
+#### **Security (ALTO RISCO → MITIGADO)**
+- **❌ Problema**: Upload sem validação adequada + XSS em campos customizáveis
+- **✅ Solução**: Validação magic numbers + sanitização DOMPurify implementadas
+
+#### **UX Complexity (MÉDIO RISCO → MITIGADO)**
+- **❌ Problema**: 5 abas causavam sobrecarga cognitiva
+- **✅ Solução**: Reduzido para 3 abas otimizadas + progressive disclosure
+
+### **📊 ANÁLISE DE AGENTES ESPECIALISTAS**
+- **✅ UX Expert**: Modal otimizado com CES (Customer Effort Score) melhorado
+- **✅ Code Reviewer**: Arquitetura aprovada com correções implementadas
+- **✅ Performance**: Indexes e caching strategy definidos
+
+### **🟡 RISCOS RESTANTES**
+- **Migração de Dados**: Rollback completo planejado + feature flags
+- **Integração Backend/Frontend**: APIs documentadas + contratos definidos
+- **Mobile UX**: Sheet component otimizado + testes em dispositivos reais
+
+### **🟢 BAIXO RISCO**
+- **Compatibilidade**: Stack atual (React + Node.js) já estabelecida
+- **Acessibilidade**: WCAG 2.1 AA compliance planejado
+- **Deploy**: Docker + feature flags para rollout gradual
 
 ## 📋 **Próximos Passos**
 

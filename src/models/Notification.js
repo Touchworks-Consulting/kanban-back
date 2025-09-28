@@ -11,7 +11,7 @@ const Notification = sequelize.define('Notification', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'accounts',
+      model: 'Account',
       key: 'id'
     }
   },

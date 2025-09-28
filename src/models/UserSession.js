@@ -11,7 +11,7 @@ const UserSession = sequelize.define('UserSession', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'accounts',
+      model: 'Account',
       key: 'id'
     },
     comment: 'Conta do usuário'
