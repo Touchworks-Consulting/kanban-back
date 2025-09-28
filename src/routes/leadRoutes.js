@@ -30,4 +30,19 @@ router.delete('/:id', leadController.delete);
 // Mover lead
 router.patch('/:id/move', leadController.move);
 
+// ===== OPTIMIZED ENDPOINTS FOR GRANULAR UPDATES =====
+// These endpoints provide much better performance by updating only specific fields
+
+// Atualizar apenas responsável (otimizado)
+router.patch('/:id/assignee', leadController.updateAssignee);
+
+// Atualizar apenas status (otimizado)
+router.patch('/:id/status', leadController.updateStatus);
+
+// Atualizar campo específico (otimizado)
+router.patch('/:id/field', leadController.updateField);
+
+// Atualização em batch com debounce (otimizado)
+router.patch('/:id/batch', leadController.batchUpdate);
+
 module.exports = router;
