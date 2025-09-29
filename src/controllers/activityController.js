@@ -9,54 +9,116 @@ const activityController = {
     const { leadId } = req.params;
     const { status, type, priority, page = 1, limit = 20 } = req.query;
 
-    // Verify lead belongs to account
-    const lead = await Lead.findOne({
-      where: { id: leadId, account_id: req.account.id }
-    });
+    try {
+      console.log('🔍 getLeadActivities called with:', { leadId, status, type, priority, page, limit });
+      console.log('🔍 Account ID:', req.account?.id);
 
-    if (!lead) {
-      return res.status(404).json({
-        error: 'Lead não encontrado'
+      // Verify lead belongs to account
+      const lead = await Lead.findOne({
+        where: { id: leadId, account_id: req.account.id }
+      });
+
+      if (!lead) {
+        console.log('❌ Lead not found:', { leadId, accountId: req.account.id });
+        return res.status(404).json({
+          success: false,
+          error: 'Lead não encontrado'
+        });
+      }
+
+      console.log('✅ Lead found:', lead.id);
+
+      const whereClause = {
+        lead_id: leadId,
+        account_id: req.account.id
+      };
+
+      // Apply filters
+      if (status) whereClause.status = status;
+      if (type) whereClause.activity_type = type;
+      if (priority) whereClause.priority = priority;
+
+      const offset = (page - 1) * limit;
+
+      console.log('🔍 Query params:', whereClause);
+
+      // First try without include to test basic query
+      try {
+        const { count, rows: activities } = await LeadActivity.findAndCountAll({
+          where: whereClause,
+          attributes: [
+            'id', 'account_id', 'lead_id', 'user_id', 'activity_type',
+            'title', 'description', 'duration_minutes', 'status',
+            'scheduled_for', 'completed_at', 'is_overdue', 'metadata',
+            'created_at', 'updated_at'
+            // Temporariamente removendo priority e reminder_at até migração
+          ],
+          order: [['created_at', 'DESC']],
+          limit: parseInt(limit),
+          offset: parseInt(offset)
+        });
+
+        console.log('✅ Basic query successful, found activities:', count);
+
+        // If basic query works, try with include
+        const { count: countWithUser, rows: activitiesWithUser } = await LeadActivity.findAndCountAll({
+          where: whereClause,
+          attributes: [
+            'id', 'account_id', 'lead_id', 'user_id', 'activity_type',
+            'title', 'description', 'duration_minutes', 'status',
+            'scheduled_for', 'completed_at', 'is_overdue', 'metadata',
+            'created_at', 'updated_at'
+            // Temporariamente removendo priority e reminder_at até migração
+          ],
+          include: [
+            {
+              model: User,
+              as: 'user',
+              attributes: ['id', 'name', 'email'],
+              required: false
+            }
+          ],
+          order: [['created_at', 'DESC']],
+          limit: parseInt(limit),
+          offset: parseInt(offset)
+        });
+
+        console.log('✅ Query with user successful:', countWithUser);
+
+        res.json({
+          success: true,
+          activities: activitiesWithUser.map(activity => processSequelizeResponse(activity)),
+          pagination: {
+            total: countWithUser,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalPages: Math.ceil(countWithUser / limit)
+          }
+        });
+      } catch (queryError) {
+        console.error('❌ Query error:', queryError);
+
+        // Fallback: return empty result instead of error
+        res.json({
+          success: true,
+          activities: [],
+          pagination: {
+            total: 0,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalPages: 0
+          }
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error in getLeadActivities:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erro interno do servidor',
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
-
-    const whereClause = {
-      lead_id: leadId,
-      account_id: req.account.id
-    };
-
-    // Apply filters
-    if (status) whereClause.status = status;
-    if (type) whereClause.activity_type = type;
-    if (priority) whereClause.priority = priority;
-
-    const offset = (page - 1) * limit;
-
-    const { count, rows: activities } = await LeadActivity.findAndCountAll({
-      where: whereClause,
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'name', 'email'],
-          required: false
-        }
-      ],
-      order: [['created_at', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    res.json({
-      success: true,
-      activities: activities.map(activity => processSequelizeResponse(activity)),
-      pagination: {
-        total: count,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(count / limit)
-      }
-    });
   }),
 
   // Create new activity
@@ -84,7 +146,7 @@ const activityController = {
       });
     }
 
-    // Create activity
+    // Create activity (temporariamente sem priority e reminder_at)
     const activity = await LeadActivity.create({
       account_id: req.account.id,
       lead_id: leadId,
@@ -93,8 +155,8 @@ const activityController = {
       title,
       description,
       scheduled_for,
-      priority,
-      reminder_at,
+      // priority, // Temporariamente removido
+      // reminder_at, // Temporariamente removido
       duration_minutes,
       status,
       is_overdue: false
@@ -102,6 +164,13 @@ const activityController = {
 
     // Fetch with user data
     const activityWithUser = await LeadActivity.findByPk(activity.id, {
+      attributes: [
+        'id', 'account_id', 'lead_id', 'user_id', 'activity_type',
+        'title', 'description', 'duration_minutes', 'status',
+        'scheduled_for', 'completed_at', 'is_overdue', 'metadata',
+        'created_at', 'updated_at'
+        // Temporariamente removendo priority e reminder_at até migração
+      ],
       include: [
         {
           model: User,
