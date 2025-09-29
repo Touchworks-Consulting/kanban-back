@@ -54,7 +54,7 @@ const LeadActivity = sequelize.define('LeadActivity', {
   },
   status: {
     type: DataTypes.ENUM('pending', 'completed', 'cancelled'),
-    defaultValue: 'completed',
+    defaultValue: 'pending',
     allowNull: false
   },
   scheduled_for: {
@@ -64,6 +64,20 @@ const LeadActivity = sequelize.define('LeadActivity', {
   completed_at: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  priority: {
+    type: DataTypes.ENUM('low', 'medium', 'high', 'urgent'),
+    defaultValue: 'medium',
+    allowNull: false
+  },
+  reminder_at: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  is_overdue: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
   },
   metadata: {
     type: DataTypes.JSON,

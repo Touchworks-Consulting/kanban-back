@@ -1,5 +1,6 @@
 const express = require('express');
 const leadController = require('../controllers/leadController');
+const activityController = require('../controllers/activityController');
 const { authenticateToken } = require('../middleware/auth');
 const { validateCreateLead, validateUpdateLead } = require('../validators/leadValidator');
 const { handleUuidFields } = require('../middleware/uuidHandler');
@@ -44,5 +45,18 @@ router.patch('/:id/field', leadController.updateField);
 
 // Atualização em batch com debounce (otimizado)
 router.patch('/:id/batch', leadController.batchUpdate);
+
+// ===== ACTIVITY ROUTES FOR LEADS =====
+// Get activities for a specific lead
+router.get('/:leadId/activities', activityController.getLeadActivities);
+
+// Create new activity for a lead
+router.post('/:leadId/activities', activityController.createActivity);
+
+// Get activity counts for a specific lead (for lead card indicators)
+router.get('/:leadId/activities/counts', activityController.getLeadActivityCounts);
+
+// Get activity counts for multiple leads (bulk operation for kanban board)
+router.post('/bulk/activities/counts', activityController.getBulkLeadActivityCounts);
 
 module.exports = router;

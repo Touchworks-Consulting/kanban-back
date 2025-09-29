@@ -33,6 +33,7 @@ const CronJob = sequelize.define('CronJob', {
       'webhook_retry',        // Retentar webhooks falhados
       'lead_scoring',         // Calcular score de leads
       'follow_up_reminder',   // Lembretes de follow-up
+      'activity_overdue',     // Marcar atividades vencidas
       'custom_automation'     // Automação personalizada
     ),
     allowNull: false

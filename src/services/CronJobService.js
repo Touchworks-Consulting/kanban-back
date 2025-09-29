@@ -1,6 +1,7 @@
 const cron = require('node-cron');
-const { CronJob, CronJobExecution, Lead, KanbanColumn, Tag } = require('../models');
+const { CronJob, CronJobExecution, Lead, KanbanColumn, Tag, LeadActivity } = require('../models');
 const { Op } = require('sequelize');
+const ActivityNotificationService = require('./ActivityNotificationService');
 
 class CronJobService {
   constructor() {
@@ -11,9 +12,15 @@ class CronJobService {
   /**
    * Inicializar serviço de cron jobs
    */
-  async initialize() {
+  async initialize(io = null) {
     console.log('🕐 Inicializando serviço de Cron Jobs...');
-    
+
+    // Configurar Socket.IO no serviço de notificações
+    if (io) {
+      ActivityNotificationService.setSocketIO(io);
+      console.log('🔌 Socket.IO configurado para notificações de atividades');
+    }
+
     // Buscar todos os jobs ativos
     const activeJobs = await CronJob.findAll({
       where: { is_active: true }
@@ -185,7 +192,10 @@ class CronJobService {
       
       case 'follow_up_reminder':
         return await this.executeFollowUpReminder(job);
-      
+
+      case 'activity_overdue':
+        return await this.executeActivityOverdue(job);
+
       default:
         throw new Error(`Tipo de job não implementado: ${job.type}`);
     }
@@ -304,12 +314,22 @@ class CronJobService {
   }
 
   /**
-   * Lembretes de follow-up
+   * Lembretes de follow-up e atividades
    */
   async executeFollowUpReminder(job) {
-    // Implementar lógica de lembretes
-    // Por ora, apenas contar leads que precisam de follow-up
-    
+    const conditions = job.conditions || {};
+
+    // Se é para verificar lembretes de atividades
+    if (conditions.reminder_type === 'activity_reminders') {
+      const result = await ActivityNotificationService.checkReminders();
+      return {
+        processed: result.processed,
+        affected: result.processed,
+        details: `${result.processed} lembretes verificados e enviados`
+      };
+    }
+
+    // Lógica original para leads que precisam de follow-up
     const leads = await Lead.findAll({
       where: {
         account_id: job.account_id,
@@ -321,11 +341,32 @@ class CronJobService {
   }
 
   /**
-   * Notificação por email
+   * Notificação por email e push
    */
   async executeEmailNotification(job) {
-    // Implementar envio de emails
-    // Por ora, apenas simular
+    const conditions = job.conditions || {};
+
+    // Notificações de atividades vencidas
+    if (conditions.notification_type === 'overdue_activities') {
+      const result = await ActivityNotificationService.notifyOverdueActivities();
+      return {
+        processed: result.processed,
+        affected: result.users_notified,
+        details: `${result.processed} atividades vencidas notificadas para ${result.users_notified} usuários`
+      };
+    }
+
+    // Notificações de atividades do dia
+    if (conditions.notification_type === 'today_activities') {
+      const result = await ActivityNotificationService.notifyTodayActivities();
+      return {
+        processed: result.processed,
+        affected: result.users_notified,
+        details: `${result.processed} atividades do dia notificadas para ${result.users_notified} usuários`
+      };
+    }
+
+    // Implementação original (outras notificações)
     return { processed: 1, affected: 1 };
   }
 
@@ -343,6 +384,50 @@ class CronJobService {
     } catch (error) {
       console.error('Erro ao calcular próxima execução:', error);
     }
+  }
+
+  /**
+   * Marcar atividades vencidas
+   */
+  async executeActivityOverdue(job) {
+    const now = new Date();
+
+    // Buscar atividades pendentes que estão vencidas
+    const overdueActivities = await LeadActivity.findAll({
+      where: {
+        account_id: job.account_id,
+        status: 'pending',
+        scheduled_for: {
+          [Op.lt]: now
+        },
+        is_overdue: false
+      }
+    });
+
+    let affected = 0;
+
+    if (overdueActivities.length > 0) {
+      // Marcar como vencidas em batch para melhor performance
+      const overdueIds = overdueActivities.map(activity => activity.id);
+
+      const [updatedCount] = await LeadActivity.update(
+        { is_overdue: true },
+        {
+          where: {
+            id: { [Op.in]: overdueIds }
+          }
+        }
+      );
+
+      affected = updatedCount;
+      console.log(`⏰ ${affected} atividades marcadas como vencidas`);
+    }
+
+    return {
+      processed: overdueActivities.length,
+      affected,
+      details: `${affected} atividades marcadas como vencidas`
+    };
   }
 
   /**
