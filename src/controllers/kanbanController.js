@@ -269,8 +269,10 @@ const kanbanController = {
   getBoard: asyncHandler(async (req, res) => {
     const { search, platform, period, dateStart, dateEnd, valueRange, tags, sortBy = 'updated_desc' } = req.query;
     
-    console.log('Backend getBoard - parâmetros recebidos:', {
-      search,
+    console.log('🔍 Backend getBoard - parâmetros recebidos:', {
+      search: search || 'VAZIO',
+      searchType: typeof search,
+      searchLength: search ? search.length : 0,
       platform,
       period,
       dateStart,
@@ -298,7 +300,8 @@ const kanbanController = {
     const leadFilters = {};
 
     // Search filter
-    if (search) {
+    if (search && search.trim() !== '') {
+      console.log('🔍 Aplicando filtro de busca:', search);
       // Verificar se é busca numérica (apenas dígitos)
       const isNumericSearch = /^\d+$/.test(search);
       
@@ -402,6 +405,14 @@ const kanbanController = {
         [Op.between]: [startDate, endDate] 
       };
     }
+
+    // Log dos filtros construídos
+    console.log('🔍 Filtros de leads construídos:', {
+      totalFiltros: Object.keys(leadFilters).length,
+      filtros: JSON.stringify(leadFilters, null, 2),
+      leadFiltersKeys: Object.keys(leadFilters),
+      willApplyFilter: Object.keys(leadFilters).length > 0
+    });
 
     // Build include for leads with filters
     const leadInclude = {
@@ -537,6 +548,15 @@ const kanbanController = {
     }
 
     const processedColumns = processSequelizeResponse(columns);
+
+    // Log do resultado da query
+    const totalLeadsFound = processedColumns.reduce((sum, col) => sum + (col.leads?.length || 0), 0);
+    console.log('🔍 Resultado da query:', {
+      totalColumns: processedColumns.length,
+      totalLeadsFound,
+      firstLeadInFirstColumn: processedColumns[0]?.leads?.[0]?.name || 'N/A',
+      searchApplied: search || 'NONE'
+    });
 
     // Log de debug para verificar ordenação
     const firstColumnWithLeads = processedColumns.find(col => col.leads && col.leads.length > 0);
