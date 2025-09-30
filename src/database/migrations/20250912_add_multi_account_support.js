@@ -114,15 +114,36 @@ module.exports = {
       }
     });
 
-    // Adicionar índices únicos e de performance
-    await queryInterface.addIndex('user_accounts', ['user_id', 'account_id'], {
-      unique: true,
-      name: 'user_accounts_user_account_unique'
-    });
-    
-    await queryInterface.addIndex('user_accounts', ['user_id']);
-    await queryInterface.addIndex('user_accounts', ['account_id']);
-    await queryInterface.addIndex('user_accounts', ['is_active']);
+    // Adicionar índices únicos e de performance (com tratamento de erros)
+    try {
+      await queryInterface.addIndex('user_accounts', ['user_id', 'account_id'], {
+        unique: true,
+        name: 'user_accounts_user_account_unique'
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) {
+        throw e;
+      }
+      console.log('⚠️ Índice user_accounts_user_account_unique já existe');
+    }
+
+    try {
+      await queryInterface.addIndex('user_accounts', ['user_id'], { name: 'user_accounts_user_id_idx' });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+    }
+
+    try {
+      await queryInterface.addIndex('user_accounts', ['account_id'], { name: 'user_accounts_account_id_idx' });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+    }
+
+    try {
+      await queryInterface.addIndex('user_accounts', ['is_active'], { name: 'user_accounts_is_active_idx' });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+    }
 
     // Migrar dados existentes da tabela users para user_accounts
     // Primeiro, verificar se há usuários para migrar
@@ -155,30 +176,47 @@ module.exports = {
         }
       }
 
-      // Agora migrar os user_accounts
+      // Agora migrar os user_accounts (verificando duplicados)
       for (const user of users) {
-        await queryInterface.bulkInsert('user_accounts', [{
-          id: require('crypto').randomUUID(),
-          user_id: user.id,
-          account_id: user.account_id,
-          role: user.role,
-          is_active: true,
-          permissions: '{}',
-          created_at: new Date(),
-          updated_at: new Date()
-        }]);
+        // Verificar se o relacionamento já existe
+        const existing = await queryInterface.sequelize.query(
+          `SELECT id FROM user_accounts WHERE user_id = '${user.id}' AND account_id = '${user.account_id}'`,
+          { type: Sequelize.QueryTypes.SELECT }
+        );
+
+        if (existing.length === 0) {
+          await queryInterface.bulkInsert('user_accounts', [{
+            id: require('crypto').randomUUID(),
+            user_id: user.id,
+            account_id: user.account_id,
+            role: user.role,
+            is_active: true,
+            permissions: '{}',
+            created_at: new Date(),
+            updated_at: new Date()
+          }]);
+        } else {
+          console.log(`⚠️ Relacionamento user_accounts já existe para user ${user.id} e account ${user.account_id}`);
+        }
       }
     }
 
-    // Adicionar campo current_account_id na tabela users para contexto atual
-    await queryInterface.addColumn('users', 'current_account_id', {
-      type: Sequelize.UUID,
-      allowNull: true,
-      references: {
-        model: accountsTableName,
-        key: 'id'
+    // Adicionar campo current_account_id na tabela users para contexto atual (se não existir)
+    try {
+      await queryInterface.addColumn('users', 'current_account_id', {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: accountsTableName,
+          key: 'id'
+        }
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) {
+        throw e;
       }
-    });
+      console.log('⚠️ Coluna current_account_id já existe na tabela users');
+    }
 
     // Definir a conta atual com base na conta original
     await queryInterface.sequelize.query(`
@@ -187,26 +225,46 @@ module.exports = {
       WHERE account_id IS NOT NULL
     `);
 
-    // Adicionar campos para multi-account no Account
-    await queryInterface.addColumn(accountsTableName, 'display_name', {
-      type: Sequelize.STRING,
-      allowNull: true
-    });
+    // Adicionar campos para multi-account no Account (com tratamento de erros)
+    try {
+      await queryInterface.addColumn(accountsTableName, 'display_name', {
+        type: Sequelize.STRING,
+        allowNull: true
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+      console.log('⚠️ Coluna display_name já existe');
+    }
 
-    await queryInterface.addColumn(accountsTableName, 'description', {
-      type: Sequelize.TEXT,
-      allowNull: true
-    });
+    try {
+      await queryInterface.addColumn(accountsTableName, 'description', {
+        type: Sequelize.TEXT,
+        allowNull: true
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+      console.log('⚠️ Coluna description já existe');
+    }
 
-    await queryInterface.addColumn(accountsTableName, 'avatar_url', {
-      type: Sequelize.STRING,
-      allowNull: true
-    });
+    try {
+      await queryInterface.addColumn(accountsTableName, 'avatar_url', {
+        type: Sequelize.STRING,
+        allowNull: true
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+      console.log('⚠️ Coluna avatar_url já existe');
+    }
 
-    await queryInterface.addColumn(accountsTableName, 'plan', {
-      type: Sequelize.ENUM('free', 'basic', 'pro', 'enterprise'),
-      defaultValue: 'free'
-    });
+    try {
+      await queryInterface.addColumn(accountsTableName, 'plan', {
+        type: Sequelize.ENUM('free', 'basic', 'pro', 'enterprise'),
+        defaultValue: 'free'
+      });
+    } catch (e) {
+      if (!e.message.includes('already exists')) throw e;
+      console.log('⚠️ Coluna plan já existe');
+    }
 
     // Preencher display_name com o nome existente
     await queryInterface.sequelize.query(`
