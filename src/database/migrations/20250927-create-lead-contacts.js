@@ -2,6 +2,11 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Determinar nome correto da tabela de leads
+    const tables = await queryInterface.showAllTables();
+    const leadsTable = tables.includes('Lead') ? 'Lead' : 'leads';
+    const accountsTable = tables.includes('Account') ? 'Account' : 'accounts';
+
     await queryInterface.createTable('lead_contacts', {
       id: {
         type: Sequelize.UUID,
@@ -13,7 +18,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'leads',
+          model: leadsTable,
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -23,7 +28,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'accounts',
+          model: accountsTable,
           key: 'id'
         },
         onUpdate: 'CASCADE',
