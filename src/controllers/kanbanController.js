@@ -1,7 +1,7 @@
-const { KanbanColumn, Lead, Tag, LeadHistory } = require('../models');
+const { KanbanColumn, Lead, Tag, LeadHistory, LeadActivity } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { processSequelizeResponse } = require('../utils/dateSerializer');
-const { Op } = require('sequelize');
+const { Op, literal } = require('sequelize');
 
 const kanbanController = {
   // Listar colunas
@@ -432,48 +432,126 @@ const kanbanController = {
     const getSortOrder = (sortBy) => {
       switch (sortBy) {
         case 'updated_desc':
-          return [['updated_at', 'DESC']];
+          return [['updatedAt', 'DESC']];
         case 'updated_asc':
-          return [['updated_at', 'ASC']];
+          return [['updatedAt', 'ASC']];
         case 'activity_asc':
-          // Using updated_at as proxy for "next activity"
-          return [['updated_at', 'ASC']];
+          // Ordenar por próxima atividade pendente (mais próxima primeiro)
+          // Usar o subquery diretamente no ORDER BY
+          return [[
+            literal(`(
+              SELECT MIN(scheduled_for)
+              FROM lead_activities
+              WHERE lead_activities.lead_id = leads.id
+              AND lead_activities.status = 'pending'
+              AND lead_activities.scheduled_for >= NOW()
+            )`),
+            'ASC NULLS LAST'
+          ]];
         case 'activity_desc':
-          return [['updated_at', 'DESC']];
+          // Ordenar por próxima atividade pendente (mais distante primeiro)
+          return [[
+            literal(`(
+              SELECT MIN(scheduled_for)
+              FROM lead_activities
+              WHERE lead_activities.lead_id = leads.id
+              AND lead_activities.status = 'pending'
+              AND lead_activities.scheduled_for >= NOW()
+            )`),
+            'DESC NULLS LAST'
+          ]];
         case 'title_asc':
           return [['name', 'ASC']];
         case 'title_desc':
           return [['name', 'DESC']];
         case 'value_desc':
-          return [['value', 'DESC'], ['created_at', 'DESC']];
+          return [['value', 'DESC'], ['createdAt', 'DESC']];
         case 'value_asc':
-          return [['value', 'ASC'], ['created_at', 'ASC']];
+          return [['value', 'ASC'], ['createdAt', 'ASC']];
         case 'created_desc':
-          return [['created_at', 'DESC']];
+          return [['createdAt', 'DESC']];
         case 'created_asc':
-          return [['created_at', 'ASC']];
+          return [['createdAt', 'ASC']];
         default:
-          // Default: updated_desc
-          return [['updated_at', 'DESC']];
+          // Default: updatedAt DESC (mais recente primeiro)
+          return [['updatedAt', 'DESC']];
       }
     };
 
-    // Apply dynamic sorting but preserve position as primary sort
+    // Apply dynamic sorting
+    // Se o usuário escolheu uma ordenação específica (não padrão), usar ela como prioridade
+    // Caso contrário, manter position como ordenação primária
     const dynamicOrder = getSortOrder(sortBy);
-    leadInclude.order = [['position', 'ASC'], ...dynamicOrder];
 
-    const columns = await KanbanColumn.findAll({
-      where: {
-        account_id: req.account.id,
-        is_active: true
-      },
-      include: [leadInclude],
-      order: [['position', 'ASC']]
-    });
+    // Construir ordem para o Sequelize (sintaxe de nested order)
+    let orderConfig;
 
-    res.json({ 
+    if (sortBy && sortBy !== 'updated_desc') {
+      // Usuário escolheu ordenação específica - ela tem prioridade
+      // Formato: [{ model: Lead, as: 'leads' }, 'campo', 'ASC/DESC']
+      // Para ordenação por atividade, o dynamicOrder já vem com literal() - tratamento especial
+      if (sortBy === 'activity_asc' || sortBy === 'activity_desc') {
+        // Para atividades com subquery, usar formato especial sem nested model
+        // O Sequelize precisa do literal() no nível superior do order array
+        const subqueryLiteral = dynamicOrder[0][0]; // Pega o literal()
+        const direction = sortBy === 'activity_asc' ? 'ASC' : 'DESC';
+
+        orderConfig = [
+          ['position', 'ASC'], // Ordenar colunas primeiro
+          [subqueryLiteral, direction + ' NULLS LAST'] // Literal direto com direção
+        ];
+      } else {
+        orderConfig = [
+          ['position', 'ASC'], // Ordenar colunas primeiro
+          ...dynamicOrder.map(([field, dir]) => [{ model: Lead, as: 'leads' }, field, dir])
+        ];
+      }
+      console.log('🔄 Backend - Aplicando ordenação personalizada:', sortBy);
+    } else {
+      // Ordenação padrão - manter position primeiro nos leads
+      orderConfig = [
+        ['position', 'ASC'], // Ordenar colunas
+        [{ model: Lead, as: 'leads' }, 'position', 'ASC'], // Ordenar leads por position
+        ...dynamicOrder.map(([field, dir]) => [{ model: Lead, as: 'leads' }, field, dir])
+      ];
+      console.log('🔄 Backend - Aplicando ordenação padrão por position');
+    }
+
+    let columns;
+    try {
+      columns = await KanbanColumn.findAll({
+        where: {
+          account_id: req.account.id,
+          is_active: true
+        },
+        include: [leadInclude],
+        order: orderConfig
+      });
+    } catch (error) {
+      console.error('❌ Erro ao buscar colunas com ordenação:', {
+        sortBy,
+        error: error.message,
+        sql: error.sql || 'N/A'
+      });
+      throw error;
+    }
+
+    const processedColumns = processSequelizeResponse(columns);
+
+    // Log de debug para verificar ordenação
+    const firstColumnWithLeads = processedColumns.find(col => col.leads && col.leads.length > 0);
+    if (firstColumnWithLeads) {
+      console.log('🔄 Backend - Primeiro lead após ordenação:', {
+        sortBy,
+        firstLeadName: firstColumnWithLeads.leads[0].name,
+        totalLeads: firstColumnWithLeads.leads.length,
+        first3Leads: firstColumnWithLeads.leads.slice(0, 3).map(l => l.name)
+      });
+    }
+
+    res.json({
       board: {
-        columns: processSequelizeResponse(columns),
+        columns: processedColumns,
         account: {
           id: req.account.id,
           name: req.account.name
