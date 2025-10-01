@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Kanban Touch CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #475569;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: #64748b;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-button:hover {
+            background: #f1f5f9;
+        }
+        .tab-button.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .endpoint-card {
+            border-left: 4px solid #3b82f6;
+            background: #f8fafc;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+        .method-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .method-get { background: #10b981; color: white; }
+        .method-post { background: #3b82f6; color: white; }
+        .method-put { background: #f59e0b; color: white; }
+        .method-patch { background: #8b5cf6; color: white; }
+        .method-delete { background: #ef4444; color: white; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold">Kanban Touch CRM API</h1>
+            <p class="mt-2 text-blue-100">Documentação completa para integração</p>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-10">
+        <div class="container mx-auto px-4 flex space-x-1 overflow-x-auto">
+            <button class="tab-button active" data-tab="intro">Introdução</button>
+            <button class="tab-button" data-tab="auth">Autenticação</button>
+            <button class="tab-button" data-tab="embed">Embed/Iframe</button>
+            <button class="tab-button" data-tab="leads">Leads</button>
+            <button class="tab-button" data-tab="kanban">Kanban</button>
+            <button class="tab-button" data-tab="webhooks">Webhooks</button>
+            <button class="tab-button" data-tab="activities">Atividades</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Introdução Tab -->
+        <section class="tab-content active" id="intro">
+            <h2 class="text-2xl font-bold mb-4">Bem-vindo à API do Kanban Touch CRM</h2>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-semibold mb-3">Informações Gerais</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li><strong>Base URL:</strong> <code class="bg-gray-100 px-2 py-1 rounded">https://api.seudominio.com</code></li>
+                    <li><strong>Versão:</strong> v1.0.0</li>
+                    <li><strong>Formato:</strong> JSON</li>
+                    <li><strong>Encoding:</strong> UTF-8</li>
+                </ul>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <h4 class="font-semibold text-blue-800 mb-2">🔗 Domínios Permitidos (CORS)</h4>
+                <p class="text-blue-700">Esta API aceita requisições dos seguintes domínios:</p>
+                <ul class="mt-2 text-blue-700 list-disc list-inside">
+                    <li>https://touchworks.com.br</li>
+                    <li>https://*.touchworks.com.br (todos os subdomínios)</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold mb-3">Como Começar</h3>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li>Obtenha sua API Key no painel administrativo</li>
+                    <li>Configure os headers de autenticação (veja aba "Autenticação")</li>
+                    <li>Faça sua primeira requisição de teste</li>
+                    <li>Integre o iframe em seu sistema (veja aba "Embed/Iframe")</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Autenticação Tab -->
+        <section class="tab-content" id="auth">
+            <h2 class="text-2xl font-bold mb-4">Autenticação</h2>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-semibold mb-3">Métodos de Autenticação</h3>
+                <p class="text-gray-700 mb-4">A API suporta dois métodos de autenticação:</p>
+
+                <div class="space-y-4">
+                    <div class="border-l-4 border-green-500 bg-green-50 p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">1️⃣ JWT Token (Bearer Token)</h4>
+                        <p class="text-green-700 mb-2">Para uso interno e autenticação de usuários.</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                            <pre>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</pre>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                        <h4 class="font-semibold text-blue-800 mb-2">2️⃣ API Key</h4>
+                        <p class="text-blue-700 mb-2">Para integrações via iframe e sistemas externos.</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                            <pre>x-api-key: sua-api-key-aqui</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/auth/login</code>
+                </div>
+                <p class="text-gray-700 mb-3">Endpoint para obter JWT Token</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X POST https://api.seudominio.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@exemplo.com",
+    "password": "senha123"
+  }'</pre>
+                </div>
+                <p class="mt-3 text-sm text-gray-600"><strong>Response:</strong></p>
+                <div class="code-block">
+                    <pre>{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "uuid",
+    "name": "Nome do Usuário",
+    "email": "usuario@exemplo.com"
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Embed/Iframe Tab -->
+        <section class="tab-content" id="embed">
+            <h2 class="text-2xl font-bold mb-4">Integração via Embed/Iframe</h2>
+
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500 p-6 mb-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-3 text-purple-900">🎯 Use Case: Iframe em Sistemas Externos</h3>
+                <p class="text-purple-800 mb-4">
+                    Integre o modal de leads diretamente em seu sistema através de um iframe.
+                    Perfeito para CRMs, ERPs ou plataformas que precisam exibir detalhes de leads sem sair da aplicação.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-semibold mb-3">Como Funciona</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>Obtenha sua <strong>API Key</strong> no painel administrativo</li>
+                    <li>Use a API para buscar leads por telefone ou ID</li>
+                    <li>Incorpore o iframe com a URL do lead modal</li>
+                    <li>O iframe carregará automaticamente com autenticação via API key</li>
+                </ol>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/embed/lead/by-phone</code>
+                </div>
+                <p class="text-gray-700 mb-3">Buscar lead por número de telefone</p>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Headers:</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>x-api-key: sua-api-key-aqui</pre>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Request:</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET 'https://api.seudominio.com/api/embed/lead/by-phone?phone=5511999999999' \
+  -H 'x-api-key: sua-api-key-aqui'</pre>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Response:</p>
+                <div class="code-block">
+                    <pre>{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "João Silva",
+  "phone": "5511999999999",
+  "email": "joao@exemplo.com",
+  "status": "active",
+  "value": 1500.00,
+  "column": {
+    "id": "col-123",
+    "name": "Qualificação",
+    "color": "#3b82f6"
+  },
+  "tags": ["vip", "urgente"],
+  "assignedUser": {
+    "id": "user-456",
+    "name": "Maria Santos",
+    "email": "maria@empresa.com"
+  }
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/embed/lead-modal/:leadId</code>
+                </div>
+                <p class="text-gray-700 mb-3">Buscar lead por ID para exibir no iframe</p>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Request:</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET 'https://api.seudominio.com/api/embed/lead-modal/550e8400-e29b-41d4-a716-446655440000' \
+  -H 'x-api-key: sua-api-key-aqui'</pre>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mt-6">
+                <h3 class="text-xl font-semibold mb-3">Exemplo de Integração em HTML</h3>
+                <p class="text-gray-700 mb-3">Incorpore o modal de lead em sua aplicação:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>&lt;!-- Iframe do Lead Modal --&gt;
+&lt;iframe
+  src="https://seudominio.com/lead-modal/550e8400?apiKey=sua-api-key"
+  width="100%"
+  height="800px"
+  frameborder="0"
+  style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"&gt;
+&lt;/iframe&gt;</pre>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mt-6">
+                <h3 class="text-xl font-semibold mb-3">Exemplo em JavaScript</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>// Buscar lead e abrir iframe dinamicamente
+async function abrirLeadModal(telefone) {
+  const response = await fetch(
+    `https://api.seudominio.com/api/embed/lead/by-phone?phone=${telefone}`,
+    {
+      headers: {
+        'x-api-key': 'sua-api-key-aqui'
+      }
+    }
+  );
+
+  const lead = await response.json();
+
+  // Criar iframe
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://seudominio.com/lead-modal/${lead.id}?apiKey=sua-api-key`;
+  iframe.width = '100%';
+  iframe.height = '800px';
+  iframe.frameBorder = '0';
+
+  document.getElementById('lead-container').appendChild(iframe);
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leads Tab -->
+        <section class="tab-content" id="leads">
+            <h2 class="text-2xl font-bold mb-4">Gestão de Leads</h2>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/leads</code>
+                </div>
+                <p class="text-gray-700 mb-3">Listar todos os leads</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/leads \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/leads/:id</code>
+                </div>
+                <p class="text-gray-700 mb-3">Obter detalhes de um lead específico</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/leads/{id} \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/leads</code>
+                </div>
+                <p class="text-gray-700 mb-3">Criar novo lead</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X POST https://api.seudominio.com/api/leads \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "phone": "5511999999999",
+    "email": "joao@exemplo.com",
+    "value": 1500.00,
+    "column_id": "col-123",
+    "assigned_to_user_id": "user-456",
+    "campaign": "Google Ads",
+    "platform": "WhatsApp"
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-put">PUT</span>
+                    <code class="text-sm">/api/leads/:id</code>
+                </div>
+                <p class="text-gray-700 mb-3">Atualizar lead completo</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X PUT https://api.seudominio.com/api/leads/{id} \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva Atualizado",
+    "email": "joao.novo@exemplo.com",
+    "value": 2000.00
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-patch">PATCH</span>
+                    <code class="text-sm">/api/leads/:id/assignee</code>
+                </div>
+                <p class="text-gray-700 mb-3">Atualizar apenas o responsável (otimizado)</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X PATCH https://api.seudominio.com/api/leads/{id}/assignee \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "assigned_to_user_id": "user-789"
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-patch">PATCH</span>
+                    <code class="text-sm">/api/leads/:id/status</code>
+                </div>
+                <p class="text-gray-700 mb-3">Atualizar status (ganho/perdido)</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X PATCH https://api.seudominio.com/api/leads/{id}/status \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "won",
+    "won_reason": "Cliente fechou contrato"
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-delete">DELETE</span>
+                    <code class="text-sm">/api/leads/:id</code>
+                </div>
+                <p class="text-gray-700 mb-3">Deletar lead</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X DELETE https://api.seudominio.com/api/leads/{id} \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kanban Tab -->
+        <section class="tab-content" id="kanban">
+            <h2 class="text-2xl font-bold mb-4">Gestão de Kanban</h2>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/kanban/board</code>
+                </div>
+                <p class="text-gray-700 mb-3">Obter board completo com colunas e leads</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/kanban/board \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/kanban/columns</code>
+                </div>
+                <p class="text-gray-700 mb-3">Listar todas as colunas</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/kanban/columns \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/kanban/columns</code>
+                </div>
+                <p class="text-gray-700 mb-3">Criar nova coluna</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X POST https://api.seudominio.com/api/kanban/columns \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Proposta Enviada",
+    "color": "#10b981",
+    "position": 3
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-patch">PATCH</span>
+                    <code class="text-sm">/api/leads/:id/move</code>
+                </div>
+                <p class="text-gray-700 mb-3">Mover lead entre colunas</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X PATCH https://api.seudominio.com/api/leads/{id}/move \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "column_id": "col-456",
+    "position": 0
+  }'</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Webhooks Tab -->
+        <section class="tab-content" id="webhooks">
+            <h2 class="text-2xl font-bold mb-4">Webhooks</h2>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-semibold mb-3">Webhook WhatsApp</h3>
+                <p class="text-gray-700">Receba notificações de mensagens do WhatsApp diretamente na sua aplicação.</p>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/webhooks/whatsapp</code>
+                </div>
+                <p class="text-gray-700 mb-3">Verificação do webhook (Meta/Facebook)</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>GET /api/webhooks/whatsapp?hub.mode=subscribe&hub.verify_token={token}&hub.challenge={challenge}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/webhooks/whatsapp</code>
+                </div>
+                <p class="text-gray-700 mb-3">Receber mensagens do WhatsApp</p>
+                <p class="text-sm text-gray-600 mb-2">Este endpoint é chamado automaticamente pelo WhatsApp Business API.</p>
+                <div class="code-block">
+                    <pre>{
+  "object": "whatsapp_business_account",
+  "entry": [{
+    "id": "WHATSAPP_BUSINESS_ACCOUNT_ID",
+    "changes": [{
+      "value": {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "PHONE_NUMBER",
+          "phone_number_id": "PHONE_NUMBER_ID"
+        },
+        "messages": [{
+          "from": "5511999999999",
+          "id": "wamid.XXX",
+          "timestamp": "1234567890",
+          "text": {
+            "body": "Olá, gostaria de mais informações"
+          }
+        }]
+      }
+    }]
+  }]
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Atividades Tab -->
+        <section class="tab-content" id="activities">
+            <h2 class="text-2xl font-bold mb-4">Gestão de Atividades</h2>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/leads/:leadId/activities</code>
+                </div>
+                <p class="text-gray-700 mb-3">Obter atividades de um lead</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/leads/{leadId}/activities \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/leads/:leadId/activities</code>
+                </div>
+                <p class="text-gray-700 mb-3">Criar nova atividade</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X POST https://api.seudominio.com/api/leads/{leadId}/activities \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "call",
+    "title": "Ligação de follow-up",
+    "description": "Cliente interessado em mais informações",
+    "scheduledFor": "2025-10-02T14:00:00Z",
+    "status": "pending"
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-get">GET</span>
+                    <code class="text-sm">/api/leads/:leadId/activities/counts</code>
+                </div>
+                <p class="text-gray-700 mb-3">Obter contadores de atividades</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X GET https://api.seudominio.com/api/leads/{leadId}/activities/counts \
+  -H "Authorization: Bearer {token}"</pre>
+                </div>
+                <p class="mt-3 text-sm text-gray-600"><strong>Response:</strong></p>
+                <div class="code-block">
+                    <pre>{
+  "total": 15,
+  "pending": 3,
+  "completed": 12,
+  "byType": {
+    "call": 5,
+    "email": 7,
+    "meeting": 3
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Kanban Touch CRM. Todos os direitos reservados.</p>
+            <p class="mt-2 text-gray-400">Versão da API: 1.0.0</p>
+        </div>
+    </footer>
+
+    <script>
+        // Aguardar carregamento completo do DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado - inicializando tabs');
+
+            // Tab Navigation
+            const tabButtons = document.querySelectorAll('.tab-button');
+            console.log('Botões de tab encontrados:', tabButtons.length);
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    console.log('Tab clicada:', tabId);
+
+                    // Remove active class from all buttons and contents
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    const targetContent = document.getElementById(tabId);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                        console.log('Tab ativada:', tabId);
+                    } else {
+                        console.error('Conteúdo da tab não encontrado:', tabId);
+                    }
+
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+        });
+
+        // Copy to Clipboard
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('pre').textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copiado!';
+                button.style.background = '#10b981';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#475569';
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar código');
+            });
+        }
+    </script>
+</body>
+</html>
