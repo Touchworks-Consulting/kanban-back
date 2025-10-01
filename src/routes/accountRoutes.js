@@ -7,6 +7,7 @@ const {
   createAccount,
   updateAccount,
   getCurrentAccount,
+  getApiKey,
   generateApiKey
 } = require('../controllers/accountController');
 
@@ -27,6 +28,9 @@ router.put('/:accountId', updateAccount);
 
 // POST /api/accounts/switch - Trocar contexto de conta
 router.post('/switch', switchAccount);
+
+// GET /api/accounts/:id/api-key - Buscar API key (ofuscada, apenas owner/admin)
+router.get('/:id/api-key', getApiKey);
 
 // POST /api/accounts/:id/api-key - Gerar/regenerar API key (apenas owner/admin)
 router.post('/:id/api-key', generateApiKey);
