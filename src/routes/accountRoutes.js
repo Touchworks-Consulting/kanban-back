@@ -6,7 +6,8 @@ const {
   switchAccount,
   createAccount,
   updateAccount,
-  getCurrentAccount
+  getCurrentAccount,
+  generateApiKey
 } = require('../controllers/accountController');
 
 // Todas as rotas requerem autenticação
@@ -26,5 +27,8 @@ router.put('/:accountId', updateAccount);
 
 // POST /api/accounts/switch - Trocar contexto de conta
 router.post('/switch', switchAccount);
+
+// POST /api/accounts/:id/api-key - Gerar/regenerar API key (apenas owner/admin)
+router.post('/:id/api-key', generateApiKey);
 
 module.exports = router;

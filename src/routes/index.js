@@ -19,6 +19,7 @@ const notificationRoutes = require('./notificationRoutes');
 const billingRoutes = require('./billingRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 const activityRoutes = require('./activityRoutes');
+const embedRoutes = require('./embedRoutes');
 
 const router = express.Router();
 
@@ -45,7 +46,8 @@ router.get('/', (req, res) => {
       activities: '/api/activities',
       // notifications: '/api/notifications', // Desabilitado
       billing: '/api/billing',
-      feedback: '/api/feedback'
+      feedback: '/api/feedback',
+      embed: '/api/embed' // Integração via iframe (API key)
     },
     documentation: '/api/docs'
   });
@@ -71,5 +73,6 @@ router.use('/activities', activityRoutes);
 // router.use('/notifications', notificationRoutes); // Desabilitado - requer Socket.IO
 router.use('/billing', billingRoutes);
 router.use('/feedback', feedbackRoutes);
+router.use('/embed', embedRoutes); // Rotas para integração via iframe (autenticação via API key)
 
 module.exports = router;
