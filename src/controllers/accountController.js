@@ -356,10 +356,63 @@ const getCurrentAccount = async (req, res) => {
   }
 };
 
+// Gerar ou regenerar API key para integração externa
+const generateApiKey = async (req, res) => {
+  try {
+    const accountId = req.params.id || req.account?.id;
+
+    if (!accountId) {
+      return res.status(400).json({ error: 'ID da conta é obrigatório' });
+    }
+
+    // Verificar se usuário tem permissão (owner ou admin)
+    if (req.userRole !== 'owner' && req.userRole !== 'admin') {
+      return res.status(403).json({
+        error: 'Apenas proprietários e administradores podem gerar API keys'
+      });
+    }
+
+    const account = await Account.findByPk(accountId);
+
+    if (!account) {
+      return res.status(404).json({ error: 'Conta não encontrada' });
+    }
+
+    // Verificar se usuário tem acesso à conta
+    const userAccount = await UserAccount.findOne({
+      where: {
+        user_id: req.user.id,
+        account_id: accountId,
+        is_active: true
+      }
+    });
+
+    if (!userAccount) {
+      return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+    }
+
+    // Gerar nova API key (UUID v4)
+    const apiKey = crypto.randomBytes(32).toString('hex');
+
+    await account.update({ api_key: apiKey });
+
+    res.json({
+      message: 'API key gerada com sucesso',
+      api_key: apiKey,
+      warning: 'Guarde esta chave em local seguro. Ela não será mostrada novamente.'
+    });
+
+  } catch (error) {
+    console.error('Error generating API key:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
 module.exports = {
   getUserAccounts,
   switchAccount,
   createAccount,
   updateAccount,
-  getCurrentAccount
+  getCurrentAccount,
+  generateApiKey
 };
