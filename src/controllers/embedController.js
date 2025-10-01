@@ -21,7 +21,7 @@ const getLeadByPhone = asyncHandler(async (req, res) => {
       {
         model: KanbanColumn,
         as: 'column',
-        attributes: ['id', 'name', 'color', 'order']
+        attributes: ['id', 'name', 'color']
       },
       {
         model: Tag,
@@ -64,7 +64,7 @@ const getLeadById = asyncHandler(async (req, res) => {
       {
         model: KanbanColumn,
         as: 'column',
-        attributes: ['id', 'name', 'color', 'order']
+        attributes: ['id', 'name', 'color']
       },
       {
         model: Tag,
