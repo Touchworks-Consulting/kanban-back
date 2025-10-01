@@ -70,7 +70,7 @@ app.use(cors({
     ? ['https://yourdomain.com'] // Configure your frontend domain
     : true,
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
