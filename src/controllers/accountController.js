@@ -356,6 +356,64 @@ const getCurrentAccount = async (req, res) => {
   }
 };
 
+// Buscar API key (ofuscada para segurança)
+const getApiKey = async (req, res) => {
+  try {
+    const accountId = req.params.id || req.account?.id;
+
+    if (!accountId) {
+      return res.status(400).json({ error: 'ID da conta é obrigatório' });
+    }
+
+    // Verificar se usuário tem permissão (owner ou admin)
+    if (req.userRole !== 'owner' && req.userRole !== 'admin') {
+      return res.status(403).json({
+        error: 'Apenas proprietários e administradores podem visualizar API keys'
+      });
+    }
+
+    const account = await Account.findByPk(accountId);
+
+    if (!account) {
+      return res.status(404).json({ error: 'Conta não encontrada' });
+    }
+
+    // Verificar se usuário tem acesso à conta
+    const userAccount = await UserAccount.findOne({
+      where: {
+        user_id: req.user.id,
+        account_id: accountId,
+        is_active: true
+      }
+    });
+
+    if (!userAccount) {
+      return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+    }
+
+    if (!account.api_key) {
+      return res.status(404).json({
+        error: 'Conta não possui API key',
+        has_key: false
+      });
+    }
+
+    // Ofuscar API key (mostrar apenas últimos 8 caracteres)
+    const apiKey = account.api_key;
+    const maskedKey = '•'.repeat(Math.max(0, apiKey.length - 8)) + apiKey.slice(-8);
+
+    res.json({
+      api_key: apiKey, // Retornar completa (será usada apenas quando revelar)
+      masked_key: maskedKey,
+      has_key: true
+    });
+
+  } catch (error) {
+    console.error('Error fetching API key:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
 // Gerar ou regenerar API key para integração externa
 const generateApiKey = async (req, res) => {
   try {
@@ -414,5 +472,6 @@ module.exports = {
   createAccount,
   updateAccount,
   getCurrentAccount,
+  getApiKey,
   generateApiKey
 };

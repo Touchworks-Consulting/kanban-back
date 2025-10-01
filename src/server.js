@@ -16,11 +16,34 @@ const AutomationService = require('./services/AutomationService');
 
 const app = express();
 const server = http.createServer(app);
+
+// Configuração de origens permitidas
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [
+      'https://yourdomain.com',
+      'https://touchworks.com.br',
+      'https://www.touchworks.com.br'
+    ]
+  : [
+      'http://localhost:5173',
+      'http://localhost:3001',
+      'https://touchworks.com.br',
+      'https://www.touchworks.com.br'
+    ];
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production'
-      ? ['https://yourdomain.com']
-      : ['http://localhost:5173', 'http://localhost:3001'],
+    origin: (origin, callback) => {
+      // Permitir requisições sem origin (ex: mobile apps, Postman)
+      if (!origin) return callback(null, true);
+
+      // Permitir subdomínios de touchworks.com.br
+      if (origin.endsWith('.touchworks.com.br') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
   }
 });
@@ -63,14 +86,32 @@ const authLimiter = rateLimit({
 });
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(helmet({
+  frameguard: {
+    action: 'allow-from',
+    domain: 'https://touchworks.com.br'
+  },
+  contentSecurityPolicy: {
+    directives: {
+      frameAncestors: ["'self'", "*.touchworks.com.br", "touchworks.com.br"]
+    }
+  }
+})); // Security headers
 app.use(compression()); // Compress responses
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://yourdomain.com'] // Configure your frontend domain
-    : true,
+  origin: (origin, callback) => {
+    // Permitir requisições sem origin (ex: mobile apps, Postman)
+    if (!origin) return callback(null, true);
+
+    // Permitir subdomínios de touchworks.com.br
+    if (origin.endsWith('.touchworks.com.br') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
