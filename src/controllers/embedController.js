@@ -31,7 +31,7 @@ const getLeadByPhone = asyncHandler(async (req, res) => {
       },
       {
         model: User,
-        as: 'assignedUser',
+        as: 'assignedTo',
         attributes: ['id', 'name', 'email']
       }
     ]
@@ -74,7 +74,7 @@ const getLeadById = asyncHandler(async (req, res) => {
       },
       {
         model: User,
-        as: 'assignedUser',
+        as: 'assignedTo',
         attributes: ['id', 'name', 'email']
       }
     ]
