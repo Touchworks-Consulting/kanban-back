@@ -20,6 +20,7 @@ const billingRoutes = require('./billingRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
 const activityRoutes = require('./activityRoutes');
 const embedRoutes = require('./embedRoutes');
+const docsRoutes = require('./docsRoutes');
 
 const router = express.Router();
 
@@ -74,5 +75,6 @@ router.use('/activities', activityRoutes);
 router.use('/billing', billingRoutes);
 router.use('/feedback', feedbackRoutes);
 router.use('/embed', embedRoutes); // Rotas para integração via iframe (autenticação via API key)
+router.use('/docs', docsRoutes); // Documentação pública da API (sem autenticação)
 
 module.exports = router;

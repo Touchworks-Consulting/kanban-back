@@ -16,6 +16,7 @@ const AutomationService = require('./services/AutomationService');
 
 const app = express();
 const server = http.createServer(app);
+const path = require('path');
 
 // Configuração de origens permitidas
 const allowedOrigins = process.env.NODE_ENV === 'production'
@@ -87,13 +88,16 @@ const authLimiter = rateLimit({
 
 // Middleware
 app.use(helmet({
-  frameguard: {
-    action: 'allow-from',
-    domain: 'https://touchworks.com.br'
-  },
+  frameguard: false, // Desabilitar X-Frame-Options (vamos usar CSP)
   contentSecurityPolicy: {
     directives: {
-      frameAncestors: ["'self'", "*.touchworks.com.br", "touchworks.com.br"]
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      frameAncestors: ["'self'", "*.touchworks.com.br", "touchworks.com.br", "https://touchworks.com.br", "https://*.touchworks.com.br"]
     }
   }
 })); // Security headers
@@ -116,6 +120,9 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Servir arquivos estáticos da pasta public
+app.use('/public', express.static(path.join(__dirname, '../public')));
 // Aplicar rate limiters específicos ANTES das rotas
 // Auth tem seu próprio limiter mais permissivo
 app.use('/api/auth', authLimiter);
