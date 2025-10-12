@@ -74,6 +74,8 @@ const login = async (req, res) => {
         user_id: user.id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        phone_verified: user.phone_verified,
         role: user.role
       }
     });
@@ -86,11 +88,14 @@ const login = async (req, res) => {
 // Registro (cria nova conta + usuário owner)
 const register = async (req, res) => {
   try {
-    const { email, password, name, accountName, domain } = req.body;
+    const { email, password, name, accountName, domain, phone } = req.body;
     console.log(`🔐 REGISTER: Tentativa de registro para: ${email}`);
 
-    if (!email || !password || !name) {
-      return res.status(400).json({ success: false, message: 'email, password e name são obrigatórios' });
+    if (!email || !password || !name || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, senha, nome e telefone são obrigatórios'
+      });
     }
 
     // Não permitir duplicar usuário
@@ -111,8 +116,32 @@ const register = async (req, res) => {
     }
     console.log(`✅ Conta não existe: ${email}`);
 
+    // Validar formato do telefone
+    const normalizedPhone = normalizePhone(phone);
+    if (!isValidPhone(normalizedPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Telefone inválido. Use formato +5511999999999'
+      });
+    }
+
+    // Verificar se telefone já existe
+    const existingPhone = await User.findOne({ where: { phone: normalizedPhone } });
+    if (existingPhone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Telefone já cadastrado'
+      });
+    }
+
     console.log(`💾 Criando nova conta para: ${email}`);
-    const account = await Account.create({ name: accountName || name || email.split('@')[0], email, is_active: true, settings: { domain: domain || null } });
+    const account = await Account.create({
+      name: accountName || name || email.split('@')[0],
+      email,
+      phone: normalizedPhone,
+      is_active: true,
+      settings: { domain: domain || null }
+    });
     console.log(`✅ Conta criada: ID=${account.id}, Name=${account.name}, Email=${account.email}`);
 
     console.log(`👤 Criando usuário owner para conta: ${account.id}`);
@@ -121,6 +150,7 @@ const register = async (req, res) => {
       name,
       email,
       password,
+      phone: normalizedPhone,
       role: 'owner',
       current_account_id: account.id  // Define a conta atual
     });
@@ -208,6 +238,8 @@ const refresh = async (req, res) => {
         user_id: user.id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        phone_verified: user.phone_verified,
         role: user.role
       }
     });
@@ -260,6 +292,20 @@ const verifyTokenEndpoint = async (req, res) => {
     });
   }
 };
+
+// Helper functions
+function normalizePhone(phone) {
+  let cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  if (!cleaned.startsWith('+')) {
+    cleaned = '+55' + cleaned;
+  }
+  return cleaned;
+}
+
+function isValidPhone(phone) {
+  // E.164 format: +[country code][number]
+  return /^\+?[1-9]\d{1,14}$/.test(phone);
+}
 
 module.exports = {
   login,
