@@ -22,6 +22,18 @@ const User = sequelize.define('User', {
     unique: true,
     validate: { isEmail: true }
   },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true, // Mudar para false após migração completa
+    validate: {
+      is: /^\+?[1-9]\d{1,14}$/ // E.164 format
+    }
+  },
+  phone_verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false
