@@ -1,11 +1,11 @@
 const express = require('express');
 const activityController = require('../controllers/activityController');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateFlexible } = require('../middleware/auth');
 
 const router = express.Router();
 
-// All routes require authentication
-router.use(authenticateToken);
+// All routes require authentication (JWT or API key for embed)
+router.use(authenticateFlexible);
 
 // Lead-specific activity routes moved to leadRoutes.js
 

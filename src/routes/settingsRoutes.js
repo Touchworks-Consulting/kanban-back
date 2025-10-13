@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const settingsController = require('../controllers/settingsController');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateFlexible } = require('../middleware/auth');
 
-// Apply authentication to all settings routes
-router.use(authenticateToken);
+// Apply authentication to all settings routes (JWT or API key for embed)
+router.use(authenticateFlexible);
 
 // Profile Management
 router.get('/profile', settingsController.getProfile);
