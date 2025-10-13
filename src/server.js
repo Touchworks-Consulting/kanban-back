@@ -181,6 +181,14 @@ app.get('/health', (req, res) => {
   });
 });
 
+// CORS aberto para rotas de embed (permite iframe em qualquer domínio)
+app.use('/api/embed', cors({
+  origin: '*', // Permite qualquer origem para embed
+  credentials: false, // Não envia cookies em requisições cross-origin
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
+}));
+
 // API Routes
 app.use('/api', routes);
 
