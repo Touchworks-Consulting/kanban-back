@@ -7,7 +7,8 @@ const app = express();
 // Basic middleware
 app.use(helmet({
   contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false
+  crossOriginEmbedderPolicy: false,
+  frameguard: false // Desabilitar X-Frame-Options para permitir iframes
 }));
 
 // Middleware manual para CORS nas rotas de embed - ANTES de qualquer outro CORS
