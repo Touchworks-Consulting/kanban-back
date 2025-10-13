@@ -102,6 +102,16 @@ app.use(helmet({
   }
 })); // Security headers
 app.use(compression()); // Compress responses
+
+// CORS específico para rotas de embed - DEVE vir ANTES do CORS geral
+app.use('/api/embed', cors({
+  origin: '*', // Permite qualquer origem para embed
+  credentials: false, // Não envia cookies em requisições cross-origin
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
+}));
+
+// CORS geral para demais rotas
 app.use(cors({
   origin: (origin, callback) => {
     // Permitir requisições sem origin (ex: mobile apps, Postman)
@@ -180,14 +190,6 @@ app.get('/health', (req, res) => {
     version: process.env.npm_package_version || '1.0.0'
   });
 });
-
-// CORS aberto para rotas de embed (permite iframe em qualquer domínio)
-app.use('/api/embed', cors({
-  origin: '*', // Permite qualquer origem para embed
-  credentials: false, // Não envia cookies em requisições cross-origin
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
-}));
 
 // API Routes
 app.use('/api', routes);
