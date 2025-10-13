@@ -1,11 +1,11 @@
 const express = require('express');
 const kanbanController = require('../controllers/kanbanController');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateFlexible } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Todas as rotas requerem autenticação
-router.use(authenticateToken);
+// Todas as rotas requerem autenticação (JWT ou API key para embed)
+router.use(authenticateFlexible);
 
 // Obter board completo
 router.get('/board', kanbanController.getBoard);

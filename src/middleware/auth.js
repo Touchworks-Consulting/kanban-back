@@ -163,7 +163,138 @@ const authenticateApiKey = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware flexível que aceita tanto JWT quanto API key
+ * Útil para rotas que precisam funcionar tanto no app quanto no iframe embed
+ */
+const authenticateFlexible = async (req, res, next) => {
+  try {
+    // Verificar se tem API key primeiro (modo embed)
+    const apiKey = req.headers['x-api-key'];
+    
+    if (apiKey) {
+      console.log('🔑 AUTH FLEXIBLE: Usando API key');
+      const account = await Account.findOne({
+        where: { 
+          api_key: apiKey,
+          is_active: true 
+        }
+      });
+
+      if (!account) {
+        return res.status(401).json({ 
+          error: 'Chave API inválida' 
+        });
+      }
+
+      req.account = account;
+      req.authMode = 'api-key';
+      return next();
+    }
+
+    // Se não tem API key, tentar JWT (modo normal)
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({
+        error: 'Token de acesso ou API key necessário'
+      });
+    }
+
+    console.log('🔐 AUTH FLEXIBLE: Usando JWT token');
+    const decoded = verifyJWT(token);
+    
+    if (!decoded.userId && !decoded.email) {
+      return res.status(401).json({ error: 'Token inválido' });
+    }
+
+    // Buscar usuário
+    let user = null;
+    if (decoded.userId) {
+      user = await User.findOne({
+        where: { id: decoded.userId, is_active: true },
+        include: [{
+          model: Account,
+          as: 'currentAccount',
+          attributes: ['id', 'name', 'display_name', 'description', 'avatar_url', 'plan', 'is_active']
+        }]
+      });
+    } else if (decoded.email) {
+      user = await User.findOne({
+        where: { email: decoded.email, is_active: true },
+        include: [{
+          model: Account,
+          as: 'currentAccount',
+          attributes: ['id', 'name', 'display_name', 'description', 'avatar_url', 'plan', 'is_active']
+        }]
+      });
+    }
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário não encontrado ou inativo' });
+    }
+
+    // Buscar informações da conta atual e permissões
+    let currentAccount = user.currentAccount;
+    let userRole = 'member';
+    let userPermissions = {};
+
+    if (!currentAccount || !user.current_account_id) {
+      const firstUserAccount = await UserAccount.findOne({
+        where: { user_id: user.id, is_active: true },
+        include: [{
+          model: Account,
+          as: 'account',
+          where: { is_active: true }
+        }]
+      });
+
+      if (firstUserAccount) {
+        await user.update({ current_account_id: firstUserAccount.account.id });
+        currentAccount = firstUserAccount.account;
+        userRole = firstUserAccount.role;
+        userPermissions = firstUserAccount.permissions || {};
+      } else {
+        return res.status(401).json({ error: 'Usuário não possui acesso a nenhuma conta ativa' });
+      }
+    } else {
+      const userAccount = await UserAccount.findOne({
+        where: {
+          user_id: user.id,
+          account_id: currentAccount.id,
+          is_active: true
+        }
+      });
+
+      if (userAccount) {
+        userRole = userAccount.role;
+        userPermissions = userAccount.permissions || {};
+      } else {
+        return res.status(403).json({ error: 'Acesso negado à conta atual' });
+      }
+    }
+
+    req.user = user;
+    req.account = currentAccount;
+    req.userRole = userRole;
+    req.userPermissions = userPermissions;
+    req.authMode = 'jwt';
+    next();
+  } catch (error) {
+    if (error.message.includes('Token expired')) {
+      return res.status(401).json({ error: 'Token expirado' });
+    }
+    if (error.message.includes('Invalid token') || error.message.includes('Token verification failed')) {
+      return res.status(401).json({ error: 'Token inválido' });
+    }
+    console.error('Erro na autenticação flexível:', error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
 module.exports = {
   authenticateToken,
-  authenticateApiKey
+  authenticateApiKey,
+  authenticateFlexible
 };

@@ -1,14 +1,14 @@
 const express = require('express');
 const leadController = require('../controllers/leadController');
 const activityController = require('../controllers/activityController');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateFlexible } = require('../middleware/auth');
 const { validateCreateLead, validateUpdateLead } = require('../validators/leadValidator');
 const { handleUuidFields } = require('../middleware/uuidHandler');
 
 const router = express.Router();
 
-// Todas as rotas requerem autenticação
-router.use(authenticateToken);
+// Todas as rotas requerem autenticação (JWT ou API key para embed)
+router.use(authenticateFlexible);
 
 // Listar leads
 router.get('/', leadController.list);
