@@ -187,8 +187,36 @@ const authenticateFlexible = async (req, res, next) => {
         });
       }
 
+      // Buscar um usuário owner ou admin da conta para popular req.user
+      const ownerUserAccount = await UserAccount.findOne({
+        where: {
+          account_id: account.id,
+          role: ['owner', 'admin'],
+          is_active: true
+        },
+        include: [{
+          model: User,
+          as: 'user',
+          where: { is_active: true }
+        }],
+        order: [
+          [{ model: User, as: 'user' }, 'created_at', 'ASC']
+        ]
+      });
+
+      if (!ownerUserAccount) {
+        console.error('❌ API key válida mas conta sem usuário owner/admin ativo');
+        return res.status(500).json({ 
+          error: 'Configuração de conta inválida' 
+        });
+      }
+
       req.account = account;
+      req.user = ownerUserAccount.user;
+      req.userRole = ownerUserAccount.role;
+      req.userPermissions = ownerUserAccount.permissions || {};
       req.authMode = 'api-key';
+      console.log(`✅ API key autenticada - Conta: ${account.name}, User: ${ownerUserAccount.user.email}`);
       return next();
     }
 
