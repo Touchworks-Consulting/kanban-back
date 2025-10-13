@@ -10,6 +10,21 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
+// Middleware manual para CORS nas rotas de embed - ANTES de qualquer outro CORS
+app.use('/api/embed', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Tenant-ID, x-api-key');
+  res.header('Access-Control-Max-Age', '86400'); // 24 horas
+  
+  // Responder imediatamente a requisições OPTIONS (preflight)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
 // CORS específico para rotas de embed - permite qualquer origem
 app.use('/api/embed', cors({
   origin: '*',
