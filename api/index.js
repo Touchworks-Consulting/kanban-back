@@ -10,11 +10,20 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
+// CORS específico para rotas de embed - permite qualquer origem
+app.use('/api/embed', cors({
+  origin: '*',
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
+}));
+
+// CORS geral - permite todas as origens refletindo de volta
 app.use(cors({
   origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Tenant-ID', 'x-api-key']
 }));
 
 app.use(express.json({ limit: '10mb' }));
