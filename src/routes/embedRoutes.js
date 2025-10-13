@@ -4,6 +4,15 @@ const { authenticateApiKey } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Handler explícito para OPTIONS (preflight) - ANTES da autenticação
+router.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Tenant-ID, x-api-key');
+  res.header('Access-Control-Max-Age', '86400');
+  res.status(200).end();
+});
+
 // Todas as rotas de embed requerem autenticação via API key
 router.use(authenticateApiKey);
 
