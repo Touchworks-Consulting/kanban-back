@@ -4,9 +4,10 @@ const { Op } = require('sequelize');
 class DashboardService {
   static async getMetrics(accountId, dateRange = {}) {
     const { startDate, endDate } = this.getDateRange(dateRange);
-    
+
     const whereClause = {
       account_id: accountId,
+      is_customer: false, // Excluir leads marcados como clientes
       ...(startDate && endDate && {
         created_at: {
           [Op.between]: [startDate, endDate]
@@ -58,10 +59,11 @@ class DashboardService {
     // Recent leads (last 7 days for trend)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    
+
     const recentLeads = await Lead.count({
       where: {
         account_id: accountId,
+        is_customer: false, // Excluir leads marcados como clientes
         created_at: {
           [Op.gte]: sevenDaysAgo
         }
@@ -88,9 +90,10 @@ class DashboardService {
 
   static async getConversionFunnel(accountId, dateRange = {}) {
     const { startDate, endDate } = this.getDateRange(dateRange);
-    
+
     const whereClause = {
       account_id: accountId,
+      is_customer: false, // Excluir leads marcados como clientes
       ...(startDate && endDate && {
         created_at: {
           [Op.between]: [startDate, endDate]
@@ -176,6 +179,7 @@ class DashboardService {
       const count = await Lead.count({
         where: {
           account_id: accountId,
+          is_customer: false, // Excluir leads marcados como clientes
           created_at: {
             [Op.between]: [startOfPeriod, endOfPeriod]
           }
@@ -194,10 +198,11 @@ class DashboardService {
   // Nova métrica: Tempo médio até conversão por campanha
   static async getAverageConversionTimeByCampaign(accountId, dateRange = {}) {
     const { startDate, endDate } = this.getDateRange(dateRange);
-    
+
     const whereClause = {
       account_id: accountId,
       status: 'won',
+      is_customer: false, // Excluir leads marcados como clientes
       won_at: { [Op.not]: null },
       campaign: { [Op.not]: null },
       ...(startDate && endDate && {
@@ -281,7 +286,8 @@ class DashboardService {
       const currentLeads = await Lead.findAll({
         where: {
           account_id: accountId,
-          column_id: column.id
+          column_id: column.id,
+          is_customer: false // Excluir leads marcados como clientes
         },
         attributes: ['id'],
         raw: true
@@ -448,7 +454,9 @@ class DashboardService {
     const stagnantLeads = await Lead.findAll({
       where: {
         account_id: accountId,
-        updatedAt: { [Op.lt]: thresholdDate }
+        updatedAt: { [Op.lt]: thresholdDate },
+        status: { [Op.notIn]: ['won', 'lost'] }, // Excluir leads ganhos e perdidos
+        is_customer: false // Excluir leads marcados como clientes
       },
       attributes: ['id', 'name', 'phone', 'email', 'value', 'updatedAt'], // Adicionar updatedAt explicitamente
       include: [
@@ -525,6 +533,7 @@ class DashboardService {
       const leadWhere = {
         account_id: accountId,
         assigned_to_user_id: user.id,
+        is_customer: false, // Excluir leads marcados como clientes
         ...(startDate && endDate && {
           created_at: {
             [Op.between]: [startDate, endDate]

@@ -105,6 +105,11 @@ const Lead = sequelize.define('Lead', {
   metadata: {
     type: DataTypes.JSON,
     defaultValue: {}
+  },
+  is_customer: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 });
 
