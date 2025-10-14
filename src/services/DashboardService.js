@@ -448,8 +448,9 @@ class DashboardService {
     const stagnantLeads = await Lead.findAll({
       where: {
         account_id: accountId,
-        updated_at: { [Op.lt]: thresholdDate }
+        updatedAt: { [Op.lt]: thresholdDate }
       },
+      attributes: ['id', 'name', 'phone', 'email', 'value', 'updatedAt'], // Adicionar updatedAt explicitamente
       include: [
         {
           model: KanbanColumn,
@@ -457,7 +458,7 @@ class DashboardService {
           attributes: ['id', 'name', 'color']
         }
       ],
-      order: [['updated_at', 'ASC']],
+      order: [['updatedAt', 'ASC']],
       limit: 50 // Limitar para performance
     });
 
@@ -467,13 +468,13 @@ class DashboardService {
       phone: lead.phone,
       email: lead.email,
       value: lead.value,
-      daysSinceUpdate: Math.floor((new Date() - new Date(lead.updated_at)) / (1000 * 60 * 60 * 24)),
+      daysSinceUpdate: Math.floor((new Date() - new Date(lead.updatedAt)) / (1000 * 60 * 60 * 24)),
       column: {
         id: lead.column?.id,
         name: lead.column?.name,
         color: lead.column?.color
       },
-      updated_at: lead.updated_at
+      updated_at: lead.updatedAt
     }));
   }
 
