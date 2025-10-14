@@ -392,31 +392,55 @@ const settingsController = {
   // Custom Status Management
   async getCustomStatuses(req, res) {
     try {
-      const accountId = req.account.id;
+      const accountId = req.account?.id;
+
+      if (!accountId) {
+        console.error('❌ getCustomStatuses: accountId não encontrado no request');
+        return res.status(401).json({ error: 'Unauthorized - Account ID not found' });
+      }
+
+      console.log(`🔍 getCustomStatuses: Buscando statuses para conta ${accountId}`);
 
       // 📦 Tentar buscar do cache primeiro
-      const cachedStatuses = await cacheService.getCustomStatusesCache(accountId);
-      if (cachedStatuses) {
-        console.log(`📦 Cache HIT: custom statuses para conta ${accountId}`);
-        return res.json({ statuses: cachedStatuses });
+      try {
+        const cachedStatuses = await cacheService.getCustomStatusesCache(accountId);
+        if (cachedStatuses) {
+          console.log(`📦 Cache HIT: custom statuses para conta ${accountId}`);
+          return res.json({ statuses: cachedStatuses });
+        }
+      } catch (cacheError) {
+        console.warn(`⚠️ Erro ao buscar cache, continuando sem cache:`, cacheError.message);
       }
 
       // Cache MISS - buscar do banco
       console.log(`📦 Cache MISS: buscando custom statuses do banco para conta ${accountId}`);
       const account = await Account.findByPk(accountId);
+
       if (!account) {
+        console.error(`❌ Account ${accountId} não encontrado no banco`);
         return res.status(404).json({ error: 'Account not found' });
       }
 
       const statuses = account.custom_statuses || [];
+      console.log(`✅ Custom statuses encontrados: ${statuses.length} status(es)`);
 
-      // Armazenar no cache
-      await cacheService.setCustomStatusesCache(accountId, statuses);
+      // Armazenar no cache (com tratamento de erro)
+      try {
+        await cacheService.setCustomStatusesCache(accountId, statuses);
+      } catch (cacheError) {
+        console.warn(`⚠️ Erro ao salvar no cache:`, cacheError.message);
+      }
 
       res.json({ statuses });
     } catch (error) {
-      console.error('Error getting custom statuses:', error);
-      res.status(500).json({ error: 'Failed to get custom statuses' });
+      console.error('❌ Error getting custom statuses:', error);
+      console.error('Stack trace:', error.stack);
+
+      // Retornar array vazio ao invés de erro para evitar quebrar o frontend
+      res.json({
+        statuses: [],
+        warning: 'Failed to load custom statuses, using defaults'
+      });
     }
   },
 

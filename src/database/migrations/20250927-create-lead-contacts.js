@@ -2,12 +2,17 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Determinar nome correto da tabela de leads
-    const tables = await queryInterface.showAllTables();
-    const leadsTable = tables.includes('Lead') ? 'Lead' : 'leads';
-    const accountsTable = tables.includes('Account') ? 'Account' : 'accounts';
+    try {
+      // Determinar nome correto da tabela de leads
+      const tables = await queryInterface.showAllTables();
+      const leadsTable = tables.includes('Lead') ? 'Lead' : 'leads';
+      const accountsTable = tables.includes('Account') ? 'Account' : 'accounts';
 
-    await queryInterface.createTable('lead_contacts', {
+      // Verificar se a tabela já existe
+      if (tables.includes('lead_contacts')) {
+        console.log('⚠️ Tabela lead_contacts já existe, pulando criação');
+      } else {
+        await queryInterface.createTable('lead_contacts', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -74,35 +79,37 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW
       }
-    });
+        });
+      }
 
-    // Performance indexes
-    await queryInterface.addIndex('lead_contacts',
-      ['lead_id'],
-      { name: 'idx_lead_contacts_lead' }
-    );
+      // Performance indexes - adicionar de forma segura
+      const addIndexSafely = async (fields, name) => {
+        try {
+          await queryInterface.addIndex('lead_contacts', fields, { name });
+        } catch (error) {
+          console.log(`⚠️ Índice ${name} já existe:`, error.message);
+        }
+      };
 
-    await queryInterface.addIndex('lead_contacts',
-      ['account_id'],
-      { name: 'idx_lead_contacts_account' }
-    );
+      await addIndexSafely(['lead_id'], 'idx_lead_contacts_lead');
+      await addIndexSafely(['account_id'], 'idx_lead_contacts_account');
+      await addIndexSafely(['type', 'value'], 'idx_lead_contacts_type_value');
+      await addIndexSafely(['lead_id', 'is_primary', 'type'], 'idx_lead_contacts_primary');
 
-    await queryInterface.addIndex('lead_contacts',
-      ['type', 'value'],
-      { name: 'idx_lead_contacts_type_value' }
-    );
-
-    await queryInterface.addIndex('lead_contacts',
-      ['lead_id', 'is_primary', 'type'],
-      { name: 'idx_lead_contacts_primary' }
-    );
-
-    // Unique constraint to prevent duplicate contacts
-    await queryInterface.addConstraint('lead_contacts', {
-      fields: ['lead_id', 'type', 'value'],
-      type: 'unique',
-      name: 'unique_lead_contact_value'
-    });
+      // Unique constraint to prevent duplicate contacts
+      try {
+        await queryInterface.addConstraint('lead_contacts', {
+          fields: ['lead_id', 'type', 'value'],
+          type: 'unique',
+          name: 'unique_lead_contact_value'
+        });
+      } catch (error) {
+        console.log('⚠️ Constraint unique_lead_contact_value já existe:', error.message);
+      }
+    } catch (error) {
+      console.error('Erro na migration create-lead-contacts:', error);
+      throw error;
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
