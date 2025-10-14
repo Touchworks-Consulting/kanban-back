@@ -2,12 +2,17 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Determinar nome correto das tabelas
-    const tables = await queryInterface.showAllTables();
-    const leadsTable = tables.includes('Lead') ? 'Lead' : 'leads';
-    const accountsTable = tables.includes('Account') ? 'Account' : 'accounts';
+    try {
+      // Determinar nome correto das tabelas
+      const tables = await queryInterface.showAllTables();
+      const leadsTable = tables.includes('Lead') ? 'Lead' : 'leads';
+      const accountsTable = tables.includes('Account') ? 'Account' : 'accounts';
 
-    await queryInterface.createTable('lead_files', {
+      // Verificar se a tabela já existe
+      if (tables.includes('lead_files')) {
+        console.log('⚠️ Tabela lead_files já existe, pulando criação');
+      } else {
+        await queryInterface.createTable('lead_files', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -124,50 +129,40 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW
       }
-    });
+        });
+      }
 
-    // Performance indexes
-    await queryInterface.addIndex('lead_files',
-      ['lead_id', 'created_at'],
-      { name: 'idx_lead_files_lead' }
-    );
+      // Performance indexes - adicionar de forma segura
+      const addIndexSafely = async (fields, name) => {
+        try {
+          await queryInterface.addIndex('lead_files', fields, { name });
+        } catch (error) {
+          console.log(`⚠️ Índice ${name} já existe:`, error.message);
+        }
+      };
 
-    await queryInterface.addIndex('lead_files',
-      ['account_id', 'created_at'],
-      { name: 'idx_lead_files_account' }
-    );
+      await addIndexSafely(['lead_id', 'created_at'], 'idx_lead_files_lead');
+      await addIndexSafely(['account_id', 'created_at'], 'idx_lead_files_account');
+      await addIndexSafely(['uploaded_by_user_id'], 'idx_lead_files_uploader');
+      await addIndexSafely(['file_type'], 'idx_lead_files_type');
+      await addIndexSafely(['file_size'], 'idx_lead_files_size');
+      await addIndexSafely(['virus_scan_status'], 'idx_lead_files_virus_status');
+      await addIndexSafely(['is_public'], 'idx_lead_files_public');
 
-    await queryInterface.addIndex('lead_files',
-      ['uploaded_by_user_id'],
-      { name: 'idx_lead_files_uploader' }
-    );
-
-    await queryInterface.addIndex('lead_files',
-      ['file_type'],
-      { name: 'idx_lead_files_type' }
-    );
-
-    await queryInterface.addIndex('lead_files',
-      ['file_size'],
-      { name: 'idx_lead_files_size' }
-    );
-
-    await queryInterface.addIndex('lead_files',
-      ['virus_scan_status'],
-      { name: 'idx_lead_files_virus_status' }
-    );
-
-    await queryInterface.addIndex('lead_files',
-      ['is_public'],
-      { name: 'idx_lead_files_public' }
-    );
-
-    // Add constraint to ensure filename uniqueness per lead
-    await queryInterface.addConstraint('lead_files', {
-      fields: ['lead_id', 'filename'],
-      type: 'unique',
-      name: 'unique_lead_file_name'
-    });
+      // Add constraint to ensure filename uniqueness per lead
+      try {
+        await queryInterface.addConstraint('lead_files', {
+          fields: ['lead_id', 'filename'],
+          type: 'unique',
+          name: 'unique_lead_file_name'
+        });
+      } catch (error) {
+        console.log('⚠️ Constraint unique_lead_file_name já existe:', error.message);
+      }
+    } catch (error) {
+      console.error('Erro na migration create-lead-files:', error);
+      throw error;
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

@@ -665,7 +665,7 @@ const campaignController = {
           account_id: accountId,
           campaign: campaign.name
         },
-        attributes: ['id', 'name', 'phone', 'message', 'metadata', 'created_at'],
+        attributes: ['id', 'name', 'phone', 'message', 'metadata', 'created_at', 'status', 'won_at', 'lost_at', 'value'],
         order: [['created_at', 'DESC']],
         raw: true
       });
@@ -700,6 +700,8 @@ const campaignController = {
       console.log(`🔍 CONVERSÃO DEBUG - Campanha: ${campaign.name}`);
       console.log(`📊 Leads desta campanha: ${leads.length}`);
       console.log(`📊 Total leads campanhas identificadas: ${totalLeadsAllCampaigns}`);
+      console.log(`📊 Leads com won_at: ${leads.filter(l => l.won_at).length}`);
+      console.log(`📊 Leads com status won: ${leads.filter(l => l.status === 'won').length}`);
 
       // Taxa de conversão comparativa (% desta campanha vs campanhas identificadas)
       const comparativeConversionRate = totalLeadsAllCampaigns > 0 
@@ -761,19 +763,36 @@ const campaignController = {
 
       // ⏰ CALCULAR TEMPO MÉDIO DE CONVERSÃO
       // Apenas para leads com status 'won' E com won_at definido
-      const convertedLeads = leads.filter(lead => lead.status === 'won' && lead.won_at);
+      const convertedLeads = leads.filter(lead => {
+        const hasWonStatus = lead.status === 'won';
+        const hasWonAt = lead.won_at != null;
+
+        if (hasWonStatus && !hasWonAt) {
+          console.log(`⚠️ Lead ${lead.name} (${lead.id}) tem status 'won' mas won_at é null!`);
+        }
+
+        return hasWonStatus && hasWonAt;
+      });
+
       let avgConversionTime = 0;
-      
+
       if (convertedLeads.length > 0) {
         const totalConversionTime = convertedLeads.reduce((sum, lead) => {
           const leadCreatedAt = new Date(lead.created_at);
           const leadConvertedAt = new Date(lead.won_at); // ✅ USA won_at ao invés de updated_at
           const conversionTimeHours = (leadConvertedAt - leadCreatedAt) / (1000 * 60 * 60); // em horas
+
+          // Validar se o tempo é positivo
+          if (conversionTimeHours < 0) {
+            console.log(`⚠️ Tempo de conversão negativo para lead ${lead.name}: ${conversionTimeHours.toFixed(1)}h - won_at pode estar antes de created_at!`);
+            return sum;
+          }
+
           console.log(`🔍 Lead ${lead.name}: Criado ${leadCreatedAt.toISOString()}, Ganho ${leadConvertedAt.toISOString()}, Tempo: ${conversionTimeHours.toFixed(1)}h`);
           return sum + conversionTimeHours;
         }, 0);
-        
-        avgConversionTime = totalConversionTime / convertedLeads.length;
+
+        avgConversionTime = convertedLeads.length > 0 ? totalConversionTime / convertedLeads.length : 0;
       }
 
       console.log(`⏰ CONVERSÃO DEBUG: ${convertedLeads.length} leads convertidos, tempo médio: ${avgConversionTime.toFixed(1)} horas`);
@@ -918,11 +937,15 @@ const campaignController = {
   debugAllCampaignsLeads: async (req, res) => {
     try {
       const accountId = req.account.id;
-      
+
+      console.log(`🔍 DEBUG ALL CAMPAIGNS - Account ID: ${accountId}`);
+
       // Buscar todas as campanhas
       const campaigns = await Campaign.findAll({
         where: { account_id: accountId }
       });
+
+      console.log(`📊 Encontradas ${campaigns.length} campanhas cadastradas`);
 
       // Buscar leads agrupados por campanha
       const leadsPerCampaign = await Lead.findAll({
@@ -935,23 +958,53 @@ const campaignController = {
         raw: true
       });
 
+      console.log(`📊 Encontrados ${leadsPerCampaign.length} grupos de leads por campanha`);
+
       // Total de leads
       const totalLeads = await Lead.count({
         where: { account_id: accountId }
       });
 
-      console.log('🔍 DEBUG ALL CAMPAIGNS:');
-      console.log('📊 Campanhas registradas:', campaigns.map(c => ({ name: c.name, id: c.id })));
+      console.log('🔍 DEBUG ALL CAMPAIGNS DETAIL:');
+      console.log('📊 Campanhas registradas:', campaigns.map(c => ({
+        name: c.name,
+        id: c.id,
+        is_active: c.is_active,
+        platform: c.platform,
+        channel: c.channel
+      })));
       console.log('📊 Leads por campanha:', leadsPerCampaign);
       console.log('📊 Total de leads:', totalLeads);
 
+      // Verificar se há leads sem campanha ou com campanha "Não identificada"
+      const leadsWithoutCampaign = await Lead.count({
+        where: {
+          account_id: accountId,
+          [require('sequelize').Op.or]: [
+            { campaign: null },
+            { campaign: '' },
+            { campaign: 'Não identificada' }
+          ]
+        }
+      });
+
+      console.log(`⚠️ Leads sem campanha identificada: ${leadsWithoutCampaign}`);
+
       res.json({
-        campaigns: campaigns.map(c => ({ id: c.id, name: c.name, is_active: c.is_active })),
+        campaigns: campaigns.map(c => ({
+          id: c.id,
+          name: c.name,
+          is_active: c.is_active,
+          platform: c.platform,
+          channel: c.channel
+        })),
         leads_per_campaign: leadsPerCampaign,
-        total_leads: totalLeads
+        total_leads: totalLeads,
+        leads_without_campaign: leadsWithoutCampaign
       });
     } catch (error) {
       console.error('Error debugging all campaigns leads:', error);
+      console.error('Stack trace:', error.stack);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
