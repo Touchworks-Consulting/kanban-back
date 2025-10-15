@@ -3,7 +3,9 @@ const { Op } = require('sequelize');
 
 class DashboardService {
   static async getMetrics(accountId, dateRange = {}) {
+    console.log('📊 DashboardService.getMetrics - dateRange recebido:', dateRange);
     const { startDate, endDate } = this.getDateRange(dateRange);
+    console.log('📊 DashboardService.getMetrics - após getDateRange:', { startDate, endDate });
 
     const whereClause = {
       account_id: accountId,
@@ -14,6 +16,8 @@ class DashboardService {
         }
       })
     };
+
+    console.log('📊 DashboardService.getMetrics - whereClause:', JSON.stringify(whereClause, null, 2));
 
     // Total leads
     const totalLeads = await Lead.count({ where: whereClause });
@@ -133,33 +137,45 @@ class DashboardService {
     return funnel;
   }
 
-  static async getLeadsByTimeframe(accountId, timeframe = 'week') {
+  static async getLeadsByTimeframe(accountId, timeframe = 'week', dateRange = {}) {
+    const { startDate, endDate } = this.getDateRange(dateRange);
+    
     const data = [];
-    const now = new Date();
     let periods = 7;
     let unit = 'day';
+    let now = new Date();
+    let referenceStart = startDate || now;
 
-    switch (timeframe) {
-      case 'month':
-        periods = 30;
-        unit = 'day';
-        break;
-      case 'year':
-        periods = 12;
-        unit = 'month';
-        break;
-      default: // week
-        periods = 7;
-        unit = 'day';
+    // Se houver dateRange, calcular períodos baseado no range
+    if (startDate && endDate) {
+      const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      periods = Math.min(daysDiff, 30); // Limite de 30 períodos
+      unit = 'day';
+      referenceStart = new Date(startDate);
+    } else {
+      // Usar timeframe padrão
+      switch (timeframe) {
+        case 'month':
+          periods = 30;
+          unit = 'day';
+          break;
+        case 'year':
+          periods = 12;
+          unit = 'month';
+          break;
+        default: // week
+          periods = 7;
+          unit = 'day';
+      }
     }
 
-    for (let i = periods - 1; i >= 0; i--) {
-      const date = new Date(now);
+    for (let i = 0; i < periods; i++) {
+      const date = new Date(referenceStart);
       
       if (unit === 'day') {
-        date.setDate(date.getDate() - i);
+        date.setDate(date.getDate() + i);
       } else {
-        date.setMonth(date.getMonth() - i);
+        date.setMonth(date.getMonth() + i);
       }
 
       const startOfPeriod = new Date(date);
@@ -282,13 +298,20 @@ class DashboardService {
     for (const column of columns) {
       const timeInStage = [];
 
-      // 📊 PARTE 1: Leads atualmente nesta coluna
+      // 📊 PARTE 1: Leads atualmente nesta coluna (com filtro de data)
+      const currentLeadsWhere = {
+        account_id: accountId,
+        column_id: column.id,
+        is_customer: false, // Excluir leads marcados como clientes
+        ...(startDate && endDate && {
+          created_at: {
+            [Op.between]: [startDate, endDate]
+          }
+        })
+      };
+
       const currentLeads = await Lead.findAll({
-        where: {
-          account_id: accountId,
-          column_id: column.id,
-          is_customer: false // Excluir leads marcados como clientes
-        },
+        where: currentLeadsWhere,
         attributes: ['id'],
         raw: true
       });
@@ -646,9 +669,13 @@ class DashboardService {
     const { startDate, endDate } = dateRange;
 
     if (startDate && endDate) {
+      // Ajustar endDate para incluir todo o dia (23:59:59)
+      const endDateTime = new Date(endDate);
+      endDateTime.setHours(23, 59, 59, 999);
+      
       return {
         startDate: new Date(startDate),
-        endDate: new Date(endDate)
+        endDate: endDateTime
       };
     }
 

@@ -14,6 +14,8 @@ const dashboardController = {
     }
 
     const { start_date, end_date } = req.query;
+    console.log(`📊 Controller getMetrics - req.query:`, req.query);
+    console.log(`📊 Controller getMetrics - Extraído: start_date=${start_date}, end_date=${end_date}`);
     console.log(`📊 Buscando métricas para conta ${req.account.id} (${start_date} - ${end_date})`);
 
     const metrics = await DashboardService.getMetrics(req.account.id, {
@@ -38,7 +40,7 @@ const dashboardController = {
 
   // Leads por período de tempo
   getLeadsByTimeframe: asyncHandler(async (req, res) => {
-    const { timeframe = 'week' } = req.query;
+    const { timeframe = 'week', start_date, end_date } = req.query;
     
     if (!['week', 'month', 'year'].includes(timeframe)) {
       return res.status(400).json({
@@ -46,7 +48,10 @@ const dashboardController = {
       });
     }
 
-    const data = await DashboardService.getLeadsByTimeframe(req.account.id, timeframe);
+    const data = await DashboardService.getLeadsByTimeframe(req.account.id, timeframe, {
+      startDate: start_date,
+      endDate: end_date
+    });
 
     res.json({ 
       timeframe,
