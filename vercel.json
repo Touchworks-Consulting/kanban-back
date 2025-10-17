@@ -57,16 +57,6 @@
       ]
     }
   ],
-  "routes": [
-    {
-      "src": "/api/embed/(.*)",
-      "dest": "api/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "api/index.js"
-    }
-  ],
   "env": {
     "NODE_ENV": "production"
   }
