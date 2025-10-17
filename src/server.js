@@ -23,13 +23,15 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
       'https://yourdomain.com',
       'https://touchworks.com.br',
-      'https://www.touchworks.com.br'
+      'https://www.touchworks.com.br',
+      'https://crm.touchworks.com.br'
     ]
   : [
       'http://localhost:5173',
       'http://localhost:3001',
       'https://touchworks.com.br',
-      'https://www.touchworks.com.br'
+      'https://www.touchworks.com.br',
+      'https://crm.touchworks.com.br'
     ];
 
 const io = new Server(server, {
