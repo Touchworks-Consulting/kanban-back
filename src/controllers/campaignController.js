@@ -844,18 +844,32 @@ const campaignController = {
       const { date_range = '30' } = req.query; // dias
       const accountId = req.account.id;
 
+      console.log('🔍 [getCampaignChartData] Iniciando...', {
+        campaignId,
+        date_range,
+        accountId
+      });
+
       // Verificar se a campanha pertence à conta
       const campaign = await Campaign.findOne({
         where: { id: campaignId, account_id: accountId }
       });
 
       if (!campaign) {
+        console.log('❌ [getCampaignChartData] Campanha não encontrada!');
         return res.status(404).json({ error: 'Campanha não encontrada' });
       }
+
+      console.log('✅ [getCampaignChartData] Campanha encontrada:', campaign.name);
 
       // Data de início baseada no range
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - parseInt(date_range));
+
+      console.log('📅 [getCampaignChartData] Filtro de data:', {
+        startDate: startDate.toISOString(),
+        now: new Date().toISOString()
+      });
 
       // 📈 LEADS POR DIA - Dados reais
       const dailyLeads = await Lead.findAll({
@@ -874,6 +888,8 @@ const campaignController = {
         order: [[require('sequelize').literal('DATE("created_at")'), 'ASC']],
         raw: true
       });
+
+      console.log('📊 [getCampaignChartData] Daily leads da query:', dailyLeads);
 
       // Preencher dias sem leads com 0
       const dailyData = [];
@@ -908,6 +924,8 @@ const campaignController = {
         raw: true
       });
 
+      console.log('📊 [getCampaignChartData] Hourly leads da query:', hourlyLeads);
+
       // Preencher todas as 24 horas
       const hourlyData = [];
       for (let hour = 0; hour < 24; hour++) {
@@ -919,16 +937,27 @@ const campaignController = {
         });
       }
 
-      res.json({
+      const response = {
         campaign_name: campaign.name,
         date_range: `${date_range} dias`,
         daily_data: dailyData,
         hourly_data: hourlyData,
         total_leads: dailyData.reduce((sum, day) => sum + day.leads, 0),
         peak_hour: hourlyData.reduce((prev, current) => prev.leads > current.leads ? prev : current)
+      };
+
+      console.log('✅ [getCampaignChartData] Resposta final:', {
+        campaign_name: response.campaign_name,
+        daily_data_length: response.daily_data.length,
+        daily_data_sample: response.daily_data.slice(0, 3),
+        hourly_data_length: response.hourly_data.length,
+        hourly_data_sample: response.hourly_data.slice(0, 3),
+        total_leads: response.total_leads
       });
+
+      res.json(response);
     } catch (error) {
-      console.error('Error getting campaign chart data:', error);
+      console.error('❌ [getCampaignChartData] Erro:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   },
