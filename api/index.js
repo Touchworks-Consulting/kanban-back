@@ -4,6 +4,31 @@ const helmet = require('helmet');
 
 const app = express();
 
+// CORS headers globais - SEMPRE enviar, mesmo em caso de erro
+// Isso garante que erros 503 ou outros não causem erros CORS
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Permitir origem específica ou refletir a origem de volta
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Tenant-ID, x-api-key, Cache-Control, Pragma');
+  res.header('Access-Control-Max-Age', '86400'); // 24 horas
+
+  // Responder imediatamente a requisições OPTIONS (preflight)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
 // Basic middleware
 app.use(helmet({
   contentSecurityPolicy: false,
@@ -45,13 +70,46 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check endpoint (simple)
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
+// Health check endpoint (validates database connection)
+app.get('/api/health', async (req, res) => {
+  const healthCheck = {
     status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
+    environment: process.env.NODE_ENV || 'development',
+    database: 'unknown',
+    routes: routesLoaded ? 'loaded' : 'loading',
+    uptime: process.uptime()
+  };
+
+  try {
+    // Tentar conectar ao banco se rotas foram carregadas
+    if (routesLoaded) {
+      const { getSequelizeConnection } = require('../src/utils/serverless-db');
+      const sequelize = await getSequelizeConnection();
+      await sequelize.authenticate();
+      healthCheck.database = 'connected';
+      healthCheck.status = 'ok';
+      return res.status(200).json(healthCheck);
+    } else if (routesLoadError) {
+      healthCheck.status = 'error';
+      healthCheck.database = 'error';
+      healthCheck.error = process.env.NODE_ENV === 'production'
+        ? 'Service initialization failed'
+        : routesLoadError.message;
+      return res.status(503).json(healthCheck);
+    } else {
+      healthCheck.status = 'initializing';
+      healthCheck.database = 'pending';
+      return res.status(503).json(healthCheck);
+    }
+  } catch (error) {
+    healthCheck.status = 'error';
+    healthCheck.database = 'disconnected';
+    healthCheck.error = process.env.NODE_ENV === 'production'
+      ? 'Database connection failed'
+      : error.message;
+    return res.status(503).json(healthCheck);
+  }
 });
 
 // Debug endpoint to check environment and database
@@ -102,24 +160,30 @@ app.get('/', (req, res) => {
   res.json({ message: 'Kanban CRM API is running', status: 'ok' });
 });
 
-// Import and use routes only after basic setup
+// Variável para rastrear se rotas foram carregadas
 let routesLoaded = false;
+let routesLoadError = null;
 
-const loadRoutes = async () => {
-  if (routesLoaded) return;
+// Carregar rotas imediatamente (não sob demanda)
+// Isso reduz latência e evita timeouts em cold starts
+(async () => {
+  const startTime = Date.now();
+  console.log('🔄 Starting route initialization...');
 
   try {
     // Import database utilities
     const { getSequelizeConnection } = require('../src/utils/serverless-db');
 
     // Test database connection
+    console.log('📊 Connecting to database...');
     const sequelize = await getSequelizeConnection();
-    console.log('Database connected successfully');
+    console.log('✅ Database connected successfully');
 
     // Mock Socket.IO para compatibilidade (não funciona em Vercel serverless)
     app.set('io', null);
 
     // Import routes
+    console.log('📦 Loading routes...');
     const routes = require('../src/routes');
     app.use('/api', routes);
 
@@ -129,35 +193,33 @@ const loadRoutes = async () => {
     app.use(errorHandler);
 
     routesLoaded = true;
-    console.log('Routes loaded successfully');
+    const loadTime = Date.now() - startTime;
+    console.log(`✅ Routes loaded successfully in ${loadTime}ms`);
   } catch (error) {
-    console.error('Error loading routes:', error);
+    routesLoadError = error;
+    console.error('❌ Error loading routes:', error);
 
-    // Fallback error handler
+    // Fallback error handler que sempre retorna resposta válida com CORS
+    app.use('/api/*', (req, res) => {
+      console.error('Fallback handler - routes not loaded');
+      res.status(503).json({
+        success: false,
+        error: 'Service temporarily unavailable',
+        message: 'The service is initializing. Please try again in a moment.',
+        details: process.env.NODE_ENV === 'production' ? undefined : error.message
+      });
+    });
+
+    // Error handler genérico
     app.use((error, req, res, next) => {
       console.error('Fallback error handler:', error);
       res.status(500).json({
+        success: false,
         error: 'Internal Server Error',
         message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : error.message
       });
     });
   }
-};
-
-// Load routes on any API request
-app.use('/api', async (req, res, next) => {
-  if (!routesLoaded) {
-    try {
-      await loadRoutes();
-    } catch (error) {
-      console.error('Error in middleware route loading:', error);
-      return res.status(500).json({
-        error: 'Service initialization error',
-        message: 'Please try again in a moment'
-      });
-    }
-  }
-  next();
-});
+})();
 
 module.exports = app;
