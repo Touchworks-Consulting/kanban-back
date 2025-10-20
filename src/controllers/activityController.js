@@ -496,71 +496,87 @@ const activityController = {
 
   // Get activity counts for a specific lead (for lead card indicators)
   getLeadActivityCounts: asyncHandler(async (req, res) => {
+    const startTime = Date.now();
     const { leadId } = req.params;
 
-    // Verify lead belongs to account
-    const lead = await Lead.findOne({
-      where: { id: leadId, account_id: req.account.id }
-    });
+    console.log(`🔍 [ActivityCounts] Request for lead: ${leadId}, account: ${req.account?.id}`);
 
-    if (!lead) {
-      return res.status(404).json({
-        error: 'Lead não encontrado'
+    try {
+      // Verify lead belongs to account
+      const leadCheckStart = Date.now();
+      const lead = await Lead.findOne({
+        where: { id: leadId, account_id: req.account.id }
       });
-    }
+      console.log(`⏱️ [ActivityCounts] Lead check took: ${Date.now() - leadCheckStart}ms`);
 
-    const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-
-    const [totalPending, todayCount, overdueCount] = await Promise.all([
-      // Total pending activities for this lead
-      LeadActivity.count({
-        where: {
-          account_id: req.account.id,
-          lead_id: leadId,
-          status: 'pending'
-        }
-      }),
-
-      // Today's activities for this lead
-      LeadActivity.count({
-        where: {
-          account_id: req.account.id,
-          lead_id: leadId,
-          status: 'pending',
-          scheduled_for: {
-            [Op.gte]: startOfDay,
-            [Op.lt]: endOfDay
-          }
-        }
-      }),
-
-      // Overdue activities for this lead
-      LeadActivity.count({
-        where: {
-          account_id: req.account.id,
-          lead_id: leadId,
-          status: 'pending',
-          scheduled_for: {
-            [Op.lt]: today
-          }
-        }
-      })
-    ]);
-
-    res.json({
-      success: true,
-      lead_id: leadId,
-      counts: {
-        total_pending: totalPending,
-        today: todayCount,
-        overdue: overdueCount,
-        has_tasks: totalPending > 0,
-        has_overdue: overdueCount > 0,
-        has_today: todayCount > 0
+      if (!lead) {
+        console.log(`❌ [ActivityCounts] Lead not found: ${leadId}`);
+        return res.status(404).json({
+          error: 'Lead não encontrado'
+        });
       }
-    });
+
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+      const countStart = Date.now();
+      const [totalPending, todayCount, overdueCount] = await Promise.all([
+        // Total pending activities for this lead
+        LeadActivity.count({
+          where: {
+            account_id: req.account.id,
+            lead_id: leadId,
+            status: 'pending'
+          }
+        }),
+
+        // Today's activities for this lead
+        LeadActivity.count({
+          where: {
+            account_id: req.account.id,
+            lead_id: leadId,
+            status: 'pending',
+            scheduled_for: {
+              [Op.gte]: startOfDay,
+              [Op.lt]: endOfDay
+            }
+          }
+        }),
+
+        // Overdue activities for this lead
+        LeadActivity.count({
+          where: {
+            account_id: req.account.id,
+            lead_id: leadId,
+            status: 'pending',
+            scheduled_for: {
+              [Op.lt]: today
+            }
+          }
+        })
+      ]);
+      console.log(`⏱️ [ActivityCounts] Count queries took: ${Date.now() - countStart}ms`);
+
+      const totalTime = Date.now() - startTime;
+      console.log(`✅ [ActivityCounts] Total request time: ${totalTime}ms`);
+
+      res.json({
+        success: true,
+        lead_id: leadId,
+        counts: {
+          total_pending: totalPending,
+          today: todayCount,
+          overdue: overdueCount,
+          has_tasks: totalPending > 0,
+          has_overdue: overdueCount > 0,
+          has_today: todayCount > 0
+        }
+      });
+    } catch (error) {
+      console.error(`❌ [ActivityCounts] Error for lead ${leadId}:`, error);
+      throw error; // Re-throw to be caught by asyncHandler
+    }
   }),
 
   // Get activity counts for multiple leads (bulk operation for kanban board)
