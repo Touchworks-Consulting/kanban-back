@@ -9,6 +9,12 @@
       }
     }
   ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   }

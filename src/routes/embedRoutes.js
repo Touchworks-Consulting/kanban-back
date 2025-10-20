@@ -38,6 +38,30 @@ router.use(authenticateApiKey);
 router.get('/lead/by-phone', embedController.getLeadByPhone);
 
 /**
+ * Criar novo lead via embed/iframe
+ * POST /api/embed/lead
+ *
+ * Headers necessários:
+ * - x-api-key: API key da conta
+ *
+ * Body:
+ * {
+ *   name: "Nome do Lead" (obrigatório),
+ *   phone: "5511999999999",
+ *   email: "lead@example.com",
+ *   message: "Mensagem inicial",
+ *   platform: "WhatsApp",
+ *   campaign: "Nome da campanha",
+ *   value: 1000,
+ *   notes: "Observações",
+ *   assigned_to_user_id: "uuid",
+ *   column_id: "uuid",
+ *   tags: ["tag-uuid-1", "tag-uuid-2"]
+ * }
+ */
+router.post('/lead', embedController.createLead);
+
+/**
  * Buscar lead por ID (para validação no iframe)
  * GET /api/embed/lead-modal/:leadId
  *
