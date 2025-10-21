@@ -160,66 +160,87 @@ app.get('/', (req, res) => {
   res.json({ message: 'Kanban CRM API is running', status: 'ok' });
 });
 
-// Variável para rastrear se rotas foram carregadas
+// Variável para rastrear inicialização
 let routesLoaded = false;
 let routesLoadError = null;
+let initPromise = null;
 
-// Carregar rotas imediatamente (não sob demanda)
-// Isso reduz latência e evita timeouts em cold starts
-(async () => {
+// Função de inicialização
+async function initializeApp() {
+  if (routesLoaded) return;
+  if (routesLoadError) throw routesLoadError;
+
+  // Se já está inicializando, retorna a promise existente
+  if (initPromise) return initPromise;
+
   const startTime = Date.now();
   console.log('🔄 Starting route initialization...');
 
+  initPromise = (async () => {
+    try {
+      // Import database utilities
+      const { getSequelizeConnection } = require('../src/utils/serverless-db');
+
+      // Test database connection
+      console.log('📊 Connecting to database...');
+      const sequelize = await getSequelizeConnection();
+      console.log('✅ Database connected successfully');
+
+      // Mock Socket.IO para compatibilidade (não funciona em Vercel serverless)
+      app.set('io', null);
+
+      // Import routes
+      console.log('📦 Loading routes...');
+      const routes = require('../src/routes');
+      app.use('/api', routes);
+
+      // Import error handlers
+      const { errorHandler, notFoundHandler } = require('../src/middleware/errorHandler');
+      app.use(notFoundHandler);
+      app.use(errorHandler);
+
+      routesLoaded = true;
+      const loadTime = Date.now() - startTime;
+      console.log(`✅ Routes loaded successfully in ${loadTime}ms`);
+    } catch (error) {
+      routesLoadError = error;
+      console.error('❌ Error loading routes:', error);
+      throw error;
+    }
+  })();
+
+  return initPromise;
+}
+
+// Middleware que garante inicialização antes de processar requisições
+app.use('/api', async (req, res, next) => {
+  // Pular health check e debug para não causar loop
+  if (req.path === '/health' || req.path === '/debug') {
+    return next();
+  }
+
   try {
-    // Import database utilities
-    const { getSequelizeConnection } = require('../src/utils/serverless-db');
-
-    // Test database connection
-    console.log('📊 Connecting to database...');
-    const sequelize = await getSequelizeConnection();
-    console.log('✅ Database connected successfully');
-
-    // Mock Socket.IO para compatibilidade (não funciona em Vercel serverless)
-    app.set('io', null);
-
-    // Import routes
-    console.log('📦 Loading routes...');
-    const routes = require('../src/routes');
-    app.use('/api', routes);
-
-    // Import error handlers
-    const { errorHandler, notFoundHandler } = require('../src/middleware/errorHandler');
-    app.use(notFoundHandler);
-    app.use(errorHandler);
-
-    routesLoaded = true;
-    const loadTime = Date.now() - startTime;
-    console.log(`✅ Routes loaded successfully in ${loadTime}ms`);
+    await initializeApp();
+    next();
   } catch (error) {
-    routesLoadError = error;
-    console.error('❌ Error loading routes:', error);
-
-    // Fallback error handler que sempre retorna resposta válida com CORS
-    app.use('/api/*', (req, res) => {
-      console.error('Fallback handler - routes not loaded');
-      res.status(503).json({
-        success: false,
-        error: 'Service temporarily unavailable',
-        message: 'The service is initializing. Please try again in a moment.',
-        details: process.env.NODE_ENV === 'production' ? undefined : error.message
-      });
-    });
-
-    // Error handler genérico
-    app.use((error, req, res, next) => {
-      console.error('Fallback error handler:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : error.message
-      });
+    console.error('❌ Initialization failed:', error);
+    return res.status(503).json({
+      success: false,
+      error: 'Service temporarily unavailable',
+      message: 'The service is initializing. Please try again in a moment.',
+      details: process.env.NODE_ENV === 'production' ? undefined : error.message
     });
   }
-})();
+});
+
+// Fallback error handler
+app.use((error, req, res, next) => {
+  console.error('Fallback error handler:', error);
+  res.status(500).json({
+    success: false,
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : error.message
+  });
+});
 
 module.exports = app;
