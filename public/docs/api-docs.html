@@ -214,6 +214,50 @@
                 </ol>
             </div>
 
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-semibold mb-3">🔗 URLs do Iframe</h3>
+                <p class="text-gray-700 mb-4">O iframe suporta dois modos de operação:</p>
+
+                <div class="space-y-4">
+                    <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                        <h4 class="font-semibold text-blue-800 mb-2">1️⃣ Visualizar Lead Existente</h4>
+                        <p class="text-blue-700 text-sm mb-2">Use quando você já tem o ID do lead:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                            <pre>https://seudominio.com/embed/lead-modal/:leadId?api_key=SUA_API_KEY</pre>
+                        </div>
+                        <p class="text-blue-700 text-sm mt-2"><strong>Exemplo:</strong></p>
+                        <div class="code-block">
+                            <pre>https://seudominio.com/embed/lead-modal/550e8400-e29b-41d4?api_key=sk_live_xxxxx</pre>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-green-500 bg-green-50 p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">2️⃣ Criar Novo Lead</h4>
+                        <p class="text-green-700 text-sm mb-2">Use quando o lead não existe (404) ou para criar um novo:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                            <pre>https://seudominio.com/embed/lead-modal/new?api_key=SUA_API_KEY&phone=TELEFONE</pre>
+                        </div>
+                        <p class="text-green-700 text-sm mt-2"><strong>Exemplo:</strong></p>
+                        <div class="code-block">
+                            <pre>https://seudominio.com/embed/lead-modal/new?api_key=sk_live_xxxxx&phone=5511999999999</pre>
+                        </div>
+
+                        <p class="text-green-700 text-sm mt-3"><strong>Parâmetros opcionais:</strong></p>
+                        <ul class="text-green-700 text-sm list-disc list-inside mt-2">
+                            <li><code>email</code> - Email pré-preenchido</li>
+                            <li><code>name</code> - Nome pré-preenchido</li>
+                        </ul>
+
+                        <p class="text-green-700 text-sm mt-2"><strong>Exemplo com todos os parâmetros:</strong></p>
+                        <div class="code-block">
+                            <pre>https://seudominio.com/embed/lead-modal/new?api_key=sk_live_xxxxx&phone=5511999999999&email=joao@email.com&name=João%20Silva</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="endpoint-card">
                 <div class="flex items-center gap-2 mb-3">
                     <span class="method-badge method-get">GET</span>
@@ -273,6 +317,119 @@
                 </div>
             </div>
 
+            <div class="endpoint-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="method-badge method-post">POST</span>
+                    <code class="text-sm">/api/embed/lead</code>
+                </div>
+                <p class="text-gray-700 mb-3">Criar novo lead via API key (para integração externa)</p>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Headers:</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>x-api-key: sua-api-key-aqui
+Content-Type: application/json</pre>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Request Body:</p>
+                <div class="code-block mb-4">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>curl -X POST 'https://api.seudominio.com/api/embed/lead' \
+  -H 'x-api-key: sua-api-key-aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "João Silva",              // obrigatório
+    "phone": "5511999999999",          // opcional
+    "email": "joao@exemplo.com",       // opcional
+    "value": 1000,                     // opcional
+    "platform": "WhatsApp",            // opcional
+    "campaign": "Google Ads",          // opcional
+    "notes": "Cliente em potencial",   // opcional
+    "assigned_to_user_id": "user-id",  // opcional
+    "tags": ["tag-id-1", "tag-id-2"]   // opcional
+  }'</pre>
+                </div>
+
+                <p class="text-sm font-semibold text-gray-700 mb-2">Response (201 Created):</p>
+                <div class="code-block">
+                    <pre>{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "João Silva",
+  "phone": "5511999999999",
+  "email": "joao@exemplo.com",
+  "status": "new",
+  "value": 1000.00,
+  "column": {
+    "id": "col-123",
+    "name": "Leads Entrantes",
+    "color": "#3b82f6"
+  },
+  "tags": [],
+  "assignedTo": null,
+  "created_at": "2025-10-21T12:30:00.000Z"
+}</pre>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-4">
+                    <p class="text-yellow-800 text-sm">
+                        <strong>📌 Nota:</strong> Se <code>column_id</code> não for especificado, o lead será automaticamente atribuído à coluna padrão "Leads Entrantes".
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg shadow-sm mt-6">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-900">🔄 Fluxo Completo de Integração</h3>
+                <p class="text-indigo-800 mb-4">Recomendado: Buscar lead primeiro e criar automaticamente se não existir</p>
+
+                <div class="bg-white p-4 rounded-lg">
+                    <ol class="space-y-3 text-gray-700">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
+                            <div>
+                                <strong>Buscar lead por telefone</strong>
+                                <p class="text-sm text-gray-600 mt-1"><code>GET /api/embed/lead/by-phone?phone=xxx</code></p>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-3">
+                            <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
+                            <div>
+                                <strong>Verificar resposta</strong>
+                                <ul class="text-sm text-gray-600 mt-1 ml-4 list-disc">
+                                    <li><strong>200 OK:</strong> Lead encontrado → usar <code>lead.id</code></li>
+                                    <li><strong>404 Not Found:</strong> Lead não existe → preparar criação</li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
+                            <div>
+                                <strong>Abrir iframe</strong>
+                                <ul class="text-sm text-gray-600 mt-1 ml-4 list-disc">
+                                    <li><strong>Se lead existe:</strong> <code>/embed/lead-modal/:leadId?api_key=xxx</code></li>
+                                    <li><strong>Se não existe:</strong> <code>/embed/lead-modal/new?api_key=xxx&phone=xxx</code></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-3">
+                            <span class="bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
+                            <div>
+                                <strong>Escutar eventos do iframe</strong>
+                                <p class="text-sm text-gray-600 mt-1">Use <code>window.addEventListener('message', ...)</code> para receber notificações de criação, atualização ou exclusão</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                    <p class="text-yellow-800 text-sm">
+                        <strong>💡 Dica:</strong> Este fluxo garante que você sempre terá um modal funcionando, seja com um lead existente ou criando um novo automaticamente.
+                    </p>
+                </div>
+            </div>
+
             <div class="bg-white p-6 rounded-lg shadow-sm mt-6">
                 <h3 class="text-xl font-semibold mb-3">Exemplo de Integração em HTML</h3>
                 <p class="text-gray-700 mb-3">Incorpore o modal de lead em sua aplicação:</p>
@@ -315,6 +472,202 @@ async function abrirLeadModal(telefone) {
 
   document.getElementById('lead-container').appendChild(iframe);
 }</pre>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mt-6">
+                <h3 class="text-xl font-semibold mb-3">📡 Eventos postMessage</h3>
+                <p class="text-gray-700 mb-4">O iframe envia eventos para a página pai via <code>window.postMessage</code>. Use esses eventos para sincronizar o estado do lead com seu sistema.</p>
+
+                <div class="space-y-4">
+                    <div class="border-l-4 border-green-500 bg-green-50 p-4">
+                        <h4 class="font-semibold text-green-800 mb-2">lead-created</h4>
+                        <p class="text-green-700 text-sm mb-2">Disparado quando um novo lead é criado no iframe.</p>
+                        <div class="code-block">
+                            <pre>{
+  type: 'lead-created',
+  leadId: '550e8400-e29b-41d4-a716-446655440000',
+  lead: {
+    id: '550e8400-e29b-41d4-a716-446655440000',
+    name: 'João Silva',
+    phone: '5511999999999',
+    email: 'joao@email.com',
+    ...
+  }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                        <h4 class="font-semibold text-blue-800 mb-2">lead-updated</h4>
+                        <p class="text-blue-700 text-sm mb-2">Disparado quando um lead existente é atualizado (nome, email, telefone, etc).</p>
+                        <div class="code-block">
+                            <pre>{
+  type: 'lead-updated',
+  leadId: '550e8400-e29b-41d4-a716-446655440000'
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-red-500 bg-red-50 p-4">
+                        <h4 class="font-semibold text-red-800 mb-2">lead-deleted</h4>
+                        <p class="text-red-700 text-sm mb-2">Disparado quando um lead é excluído.</p>
+                        <div class="code-block">
+                            <pre>{
+  type: 'lead-deleted',
+  leadId: '550e8400-e29b-41d4-a716-446655440000'
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-gray-500 bg-gray-50 p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">lead-modal-closed</h4>
+                        <p class="text-gray-700 text-sm mb-2">Disparado quando o usuário fecha o modal (sem necessariamente fazer alterações).</p>
+                        <div class="code-block">
+                            <pre>{
+  type: 'lead-modal-closed',
+  leadId: '550e8400-e29b-41d4-a716-446655440000'  // pode ser null se modal foi fechado sem lead
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="font-semibold text-gray-800 mb-3">Exemplo de Listener Completo</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                        <pre>// Escutar eventos do iframe
+window.addEventListener('message', (event) => {
+  // ⚠️ IMPORTANTE: Validar origem em produção
+  if (event.origin !== 'https://seudominio.com') {
+    console.warn('Mensagem rejeitada de origem não autorizada:', event.origin);
+    return;
+  }
+
+  const { type, leadId, lead } = event.data;
+
+  switch (type) {
+    case 'lead-created':
+      console.log('✅ Novo lead criado:', leadId);
+      // Atualizar sua lista de leads
+      refreshLeadsList();
+      // Ou redirecionar para página do lead
+      // window.location = `/leads/${leadId}`;
+      break;
+
+    case 'lead-updated':
+      console.log('✏️ Lead atualizado:', leadId);
+      // Atualizar dados do lead no seu sistema
+      updateLeadInList(leadId);
+      break;
+
+    case 'lead-deleted':
+      console.log('🗑️ Lead deletado:', leadId);
+      // Remover lead da sua lista
+      removeLeadFromList(leadId);
+      // Fechar modal
+      closeIframeModal();
+      break;
+
+    case 'lead-modal-closed':
+      console.log('✖️ Modal fechado');
+      // Fechar/ocultar iframe
+      closeIframeModal();
+      break;
+
+    default:
+      console.log('Evento desconhecido:', type);
+  }
+});</pre>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                    <p class="text-red-800 text-sm">
+                        <strong>⚠️ Segurança:</strong> Sempre valide o <code>event.origin</code> para garantir que os eventos vêm apenas do seu iframe. Nunca confie em mensagens de origens desconhecidas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-50 to-yellow-50 p-6 rounded-lg shadow-sm mt-6">
+                <h3 class="text-xl font-semibold mb-3 text-orange-900">🎯 Exemplo Completo: Fluxo com 404 e Criação Automática</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>async function abrirLeadModalInteligente(telefone) {
+  const API_KEY = 'sua-api-key-aqui';
+  const API_BASE = 'https://api.seudominio.com';
+  const APP_BASE = 'https://seudominio.com';
+
+  try {
+    // 1. Tentar buscar lead por telefone
+    const response = await fetch(
+      `${API_BASE}/api/embed/lead/by-phone?phone=${telefone}`,
+      { headers: { 'x-api-key': API_KEY } }
+    );
+
+    let iframeUrl;
+
+    if (response.ok) {
+      // Lead encontrado - abrir modo visualização
+      const lead = await response.json();
+      iframeUrl = `${APP_BASE}/embed/lead-modal/${lead.id}?api_key=${API_KEY}`;
+      console.log('✅ Lead encontrado:', lead.id);
+    } else if (response.status === 404) {
+      // Lead não encontrado - abrir modo criação
+      iframeUrl = `${APP_BASE}/embed/lead-modal/new?api_key=${API_KEY}&phone=${encodeURIComponent(telefone)}`;
+      console.log('➕ Lead não encontrado. Abrindo modo criação...');
+    } else {
+      throw new Error(`Erro ${response.status}: ${response.statusText}`);
+    }
+
+    // 2. Criar e exibir iframe
+    const modalOverlay = document.getElementById('modal-overlay');
+    const iframe = document.getElementById('lead-iframe');
+
+    iframe.src = iframeUrl;
+    modalOverlay.style.display = 'flex';
+
+  } catch (error) {
+    console.error('Erro ao abrir modal:', error);
+    alert('Erro ao carregar lead: ' + error.message);
+  }
+}
+
+// Fechar modal
+function closeIframeModal() {
+  const modalOverlay = document.getElementById('modal-overlay');
+  const iframe = document.getElementById('lead-iframe');
+
+  modalOverlay.style.display = 'none';
+  iframe.src = ''; // Limpar iframe
+}
+
+// Listener de eventos
+window.addEventListener('message', (event) => {
+  if (event.origin !== 'https://seudominio.com') return;
+
+  const { type, leadId, lead } = event.data;
+
+  switch (type) {
+    case 'lead-created':
+      alert(`Lead ${lead.name} criado com sucesso!`);
+      refreshLeadsList();
+      break;
+
+    case 'lead-modal-closed':
+      closeIframeModal();
+      break;
+
+    case 'lead-updated':
+      updateLeadInList(leadId);
+      break;
+
+    case 'lead-deleted':
+      removeLeadFromList(leadId);
+      closeIframeModal();
+      break;
+  }
+});</pre>
                 </div>
             </div>
         </section>
