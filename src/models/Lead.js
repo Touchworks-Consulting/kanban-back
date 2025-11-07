@@ -111,6 +111,20 @@ const Lead = sequelize.define('Lead', {
     allowNull: false,
     defaultValue: false
   }
+}, {
+  indexes: [
+    // Single column indexes
+    { fields: ['account_id'], name: 'idx_lead_account_id' },
+    { fields: ['status'], name: 'idx_lead_status' },
+    { fields: ['column_id'], name: 'idx_lead_column_id' },
+    { fields: ['created_at'], name: 'idx_lead_created_at' },
+
+    // Composite indexes for common query patterns
+    { fields: ['account_id', 'status'], name: 'idx_lead_account_status' },
+    { fields: ['account_id', 'column_id'], name: 'idx_lead_account_column' },
+    { fields: ['account_id', 'created_at'], name: 'idx_lead_account_created' },
+    { fields: ['account_id', 'is_customer', 'created_at'], name: 'idx_lead_account_customer_created' }
+  ]
 });
 
 module.exports = Lead;

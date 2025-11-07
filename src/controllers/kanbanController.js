@@ -135,7 +135,7 @@ const kanbanController = {
   // Atualizar coluna
   updateColumn: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, color, position } = req.body;
+    const { name, color, position, is_mql } = req.body;
 
     const column = await KanbanColumn.findOne({
       where: {
@@ -161,6 +161,7 @@ const kanbanController = {
     if (name) updateData.name = name;
     if (color) updateData.color = color;
     if (position !== undefined) updateData.position = position;
+    if (typeof is_mql === 'boolean') updateData.is_mql = is_mql;
 
     await column.update(updateData);
 

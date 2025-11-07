@@ -1,5 +1,5 @@
-const { Lead, KanbanColumn, Tag, LeadHistory, LeadActivity, User } = require('../models');
-const { Op } = require('sequelize');
+const { Lead, KanbanColumn, Tag, LeadHistory, LeadActivity, User, Account } = require('../models');
+const { Op, Sequelize } = require('sequelize');
 
 class DashboardService {
   static async getMetrics(accountId, dateRange = {}) {
@@ -27,7 +27,7 @@ class DashboardService {
       where: whereClause,
       attributes: [
         'status',
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('id')), 'count']
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
       ],
       group: ['status'],
       raw: true
@@ -38,7 +38,7 @@ class DashboardService {
       where: whereClause,
       attributes: [
         'platform',
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('id')), 'count']
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
       ],
       group: ['platform'],
       raw: true
@@ -93,58 +93,100 @@ class DashboardService {
   }
 
   static async getConversionFunnel(accountId, dateRange = {}) {
-    const { startDate, endDate } = this.getDateRange(dateRange);
+    try {
+      console.log(`🔍 [FUNIL] Iniciando getConversionFunnel para account ${accountId}`);
+      const { startDate, endDate } = this.getDateRange(dateRange);
 
-    const whereClause = {
-      account_id: accountId,
-      is_customer: false, // Excluir leads marcados como clientes
-      ...(startDate && endDate && {
-        created_at: {
-          [Op.between]: [startDate, endDate]
-        }
-      })
-    };
+      const whereClause = {
+        account_id: accountId,
+        is_customer: false, // Excluir leads marcados como clientes
+        ...(startDate && endDate && {
+          created_at: {
+            [Op.between]: [startDate, endDate]
+          }
+        })
+      };
 
-    const funnelSteps = [
-      'new',
-      'contacted', 
-      'qualified',
-      'proposal',
-      'won'
-    ];
-
-    const funnel = [];
-    
-    for (const status of funnelSteps) {
-      const count = await Lead.count({
-        where: { ...whereClause, status }
+      // Buscar custom_statuses da conta
+      const account = await Account.findByPk(accountId, {
+        attributes: ['id', 'custom_statuses']
       });
-      
-      funnel.push({
-        step: status,
-        count,
-        percentage: 0 // Will be calculated after getting all counts
+
+      if (!account) {
+        console.error(`❌ Account ${accountId} não encontrado para funil`);
+        return [];
+      }
+
+      const customStatuses = account.custom_statuses || [];
+      console.log(`📊 [FUNIL] Custom statuses raw:`, JSON.stringify(customStatuses, null, 2));
+
+      // Se não houver custom statuses, usar fallback hardcoded
+      const funnelSteps = customStatuses.length > 0
+        ? customStatuses
+            .filter(s => !s.is_won && !s.is_lost && s.value) // Filtrar apenas status ativos (não finalizados)
+            .map(s => ({
+              value: s.value,
+              label: s.label,
+              color: s.color
+            }))
+        : [
+            { value: 'new', label: 'Novo', color: '#gray' },
+            { value: 'contacted', label: 'Contatado', color: '#blue' },
+            { value: 'qualified', label: 'Qualificado', color: '#green' },
+            { value: 'proposal', label: 'Proposta', color: '#orange' },
+            { value: 'won', label: 'Ganho', color: '#green' }
+          ];
+
+      console.log(`📊 [FUNIL] Funil usando ${funnelSteps.length} status customizados:`, funnelSteps);
+
+      // Executar queries em paralelo para melhor performance
+      const countPromises = funnelSteps.map(status =>
+        Lead.count({
+          where: { ...whereClause, status: status.value }
+        }).then(count => ({
+          step: status.value,
+          label: status.label,
+          color: status.color,
+          count,
+          percentage: 0
+        }))
+      );
+
+      const funnel = await Promise.all(countPromises);
+      console.log(`✅ [FUNIL] Counts obtidos:`, funnel);
+
+      // Calculate percentages based on the first step (or total if first is 0)
+      const totalLeads = funnel.reduce((sum, step) => sum + step.count, 0);
+      const firstStepCount = funnel[0]?.count || 1; // Evitar divisão por zero
+
+      funnel.forEach(step => {
+        // Percentual baseado no primeiro estágio (funil clássico)
+        step.percentage = firstStepCount > 0
+          ? parseFloat(((step.count / firstStepCount) * 100).toFixed(2))
+          : 0;
+
+        // Percentual do total (para referência)
+        step.percentage_of_total = totalLeads > 0
+          ? parseFloat(((step.count / totalLeads) * 100).toFixed(2))
+          : 0;
       });
+
+      console.log(`✅ [FUNIL] Funil completo retornado:`, funnel);
+      return funnel;
+    } catch (error) {
+      console.error(`❌ [FUNIL] Erro ao gerar funil de conversão:`, error);
+      throw error;
     }
-
-    // Calculate percentages based on the first step
-    const totalLeads = funnel[0].count;
-    funnel.forEach(step => {
-      step.percentage = totalLeads > 0 ? ((step.count / totalLeads) * 100).toFixed(2) : 0;
-      step.percentage = parseFloat(step.percentage);
-    });
-
-    return funnel;
   }
 
   static async getLeadsByTimeframe(accountId, timeframe = 'week', dateRange = {}) {
     const { startDate, endDate } = this.getDateRange(dateRange);
-    
-    const data = [];
+
     let periods = 7;
     let unit = 'day';
     let now = new Date();
     let referenceStart = startDate || now;
+    let referenceEnd = endDate || now;
 
     // Se houver dateRange, calcular períodos baseado no range
     if (startDate && endDate) {
@@ -152,6 +194,7 @@ class DashboardService {
       periods = Math.min(daysDiff, 30); // Limite de 30 períodos
       unit = 'day';
       referenceStart = new Date(startDate);
+      referenceEnd = new Date(endDate);
     } else {
       // Usar timeframe padrão
       switch (timeframe) {
@@ -169,42 +212,55 @@ class DashboardService {
       }
     }
 
+    // 🚀 OTIMIZAÇÃO: Usar agregação SQL ao invés de loop (1 query ao invés de N)
+    const dateFormat = unit === 'day'
+      ? "DATE(created_at AT TIME ZONE 'UTC')"
+      : "TO_CHAR(created_at, 'YYYY-MM')";
+
+    const results = await Lead.findAll({
+      attributes: [
+        [Sequelize.fn('DATE', Sequelize.col('created_at')), 'date'],
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
+      ],
+      where: {
+        account_id: accountId,
+        is_customer: false,
+        created_at: {
+          [Op.between]: [referenceStart, referenceEnd]
+        }
+      },
+      group: [Sequelize.fn('DATE', Sequelize.col('created_at'))],
+      order: [[Sequelize.fn('DATE', Sequelize.col('created_at')), 'ASC']],
+      raw: true
+    });
+
+    // Criar mapa de resultados para acesso rápido
+    const countsMap = {};
+    results.forEach(r => {
+      const dateKey = unit === 'day'
+        ? new Date(r.date).toISOString().split('T')[0]
+        : r.date;
+      countsMap[dateKey] = parseInt(r.count) || 0;
+    });
+
+    // Preencher todos os períodos (incluindo zeros)
+    const data = [];
     for (let i = 0; i < periods; i++) {
       const date = new Date(referenceStart);
-      
+
       if (unit === 'day') {
         date.setDate(date.getDate() + i);
       } else {
         date.setMonth(date.getMonth() + i);
       }
 
-      const startOfPeriod = new Date(date);
-      const endOfPeriod = new Date(date);
-
-      if (unit === 'day') {
-        startOfPeriod.setHours(0, 0, 0, 0);
-        endOfPeriod.setHours(23, 59, 59, 999);
-      } else {
-        startOfPeriod.setDate(1);
-        startOfPeriod.setHours(0, 0, 0, 0);
-        endOfPeriod.setMonth(endOfPeriod.getMonth() + 1);
-        endOfPeriod.setDate(0);
-        endOfPeriod.setHours(23, 59, 59, 999);
-      }
-
-      const count = await Lead.count({
-        where: {
-          account_id: accountId,
-          is_customer: false, // Excluir leads marcados como clientes
-          created_at: {
-            [Op.between]: [startOfPeriod, endOfPeriod]
-          }
-        }
-      });
+      const dateKey = unit === 'day'
+        ? date.toISOString().split('T')[0]
+        : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
       data.push({
-        date: unit === 'day' ? date.toISOString().split('T')[0] : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
-        count
+        date: dateKey,
+        count: countsMap[dateKey] || 0
       });
     }
 
@@ -232,16 +288,16 @@ class DashboardService {
       where: whereClause,
       attributes: [
         'campaign',
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('id')), 'total_conversions'],
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'total_conversions'],
         // Calcular diferença em segundos entre created_at e won_at
         [
-          Lead.sequelize.fn(
-            'AVG', 
-            Lead.sequelize.fn(
+          Sequelize.fn(
+            'AVG',
+            Sequelize.fn(
               'EXTRACT',
-              Lead.sequelize.literal("EPOCH FROM (won_at - created_at)")
+              Sequelize.literal("EPOCH FROM (won_at - created_at)")
             )
-          ), 
+          ),
           'avg_seconds_to_conversion'
         ]
       ],
@@ -280,7 +336,7 @@ class DashboardService {
     }
   }
 
-  // Novo método: Métricas de tempo por estágio do kanban
+  // Novo método: Métricas de tempo por estágio do kanban (OTIMIZADO - sem N+1)
   static async getStageTimingMetrics(accountId, dateRange = {}) {
     const { startDate, endDate } = this.getDateRange(dateRange);
 
@@ -290,109 +346,102 @@ class DashboardService {
         account_id: accountId,
         is_active: true
       },
-      order: [['position', 'ASC']]
+      order: [['position', 'ASC']],
+      raw: true
     });
 
+    if (columns.length === 0) {
+      return [];
+    }
+
+    // 🚀 OTIMIZAÇÃO 1: Buscar todos os leads ativos de uma vez (1 query ao invés de N)
+    const currentLeadsWhere = {
+      account_id: accountId,
+      is_customer: false,
+      column_id: { [Op.ne]: null },
+      ...(startDate && endDate && {
+        created_at: { [Op.between]: [startDate, endDate] }
+      })
+    };
+
+    const currentLeads = await Lead.findAll({
+      where: currentLeadsWhere,
+      attributes: ['id', 'column_id', 'createdAt'],
+      raw: true
+    });
+
+    // 🚀 OTIMIZAÇÃO 2: Buscar TODO o histórico relevante de uma vez (1 query ao invés de N)
+    const leadIds = currentLeads.map(l => l.id);
+    const columnIds = columns.map(c => c.id);
+
+    const allHistory = await LeadHistory.findAll({
+      where: {
+        account_id: accountId,
+        [Op.or]: [
+          { to_column_id: { [Op.in]: columnIds } },
+          { from_column_id: { [Op.in]: columnIds } }
+        ],
+        ...(leadIds.length > 0 && { lead_id: { [Op.in]: leadIds } })
+      },
+      attributes: ['lead_id', 'to_column_id', 'from_column_id', 'moved_at'],
+      order: [['lead_id', 'ASC'], ['moved_at', 'ASC']],
+      raw: true
+    });
+
+    // 🚀 OTIMIZAÇÃO 3: Criar índices em memória para acesso rápido
+    const historyByLead = {};
+    allHistory.forEach(h => {
+      if (!historyByLead[h.lead_id]) historyByLead[h.lead_id] = [];
+      historyByLead[h.lead_id].push(h);
+    });
+
+    const currentLeadsByColumn = {};
+    currentLeads.forEach(lead => {
+      if (!currentLeadsByColumn[lead.column_id]) currentLeadsByColumn[lead.column_id] = [];
+      currentLeadsByColumn[lead.column_id].push(lead);
+    });
+
+    // 🚀 OTIMIZAÇÃO 4: Processar métricas no JavaScript (sem queries adicionais)
     const stageMetrics = [];
 
     for (const column of columns) {
       const timeInStage = [];
+      const leadsInThisColumn = currentLeadsByColumn[column.id] || [];
 
-      // 📊 PARTE 1: Leads atualmente nesta coluna (com filtro de data)
-      const currentLeadsWhere = {
-        account_id: accountId,
-        column_id: column.id,
-        is_customer: false, // Excluir leads marcados como clientes
-        ...(startDate && endDate && {
-          created_at: {
-            [Op.between]: [startDate, endDate]
-          }
-        })
-      };
-
-      const currentLeads = await Lead.findAll({
-        where: currentLeadsWhere,
-        attributes: ['id'],
-        raw: true
-      });
-
-      for (const lead of currentLeads) {
-        // Buscar quando este lead entrou nesta coluna (último movimento para cá)
-        const entryHistory = await LeadHistory.findOne({
-          where: {
-            account_id: accountId,
-            lead_id: lead.id,
-            to_column_id: column.id
-          },
-          order: [['moved_at', 'DESC']]
-        });
-
+      // PARTE 1: Leads atualmente nesta coluna
+      for (const lead of leadsInThisColumn) {
+        const leadHistory = historyByLead[lead.id] || [];
+        const entryHistory = leadHistory
+          .filter(h => h.to_column_id === column.id)
+          .sort((a, b) => new Date(b.moved_at) - new Date(a.moved_at))[0];
 
         if (entryHistory) {
-          // Calcular tempo desde que entrou na coluna até agora
           const timeSpentSoFar = new Date() - new Date(entryHistory.moved_at);
           const days = Math.floor(timeSpentSoFar / (1000 * 60 * 60 * 24));
-
-
-          timeInStage.push(Math.max(0, days)); // Garantir que não seja negativo
-        } else {
-
-          // Se não há histórico de entrada, usar created_at (especialmente para primeira coluna)
-          const leadDetails = await Lead.findByPk(lead.id, { attributes: ['createdAt'] });
-          if (leadDetails) {
-            const timeSpentSoFar = new Date() - new Date(leadDetails.createdAt);
-            const days = Math.floor(timeSpentSoFar / (1000 * 60 * 60 * 24));
-
-
-            timeInStage.push(Math.max(0, days));
-          }
+          timeInStage.push(Math.max(0, days));
+        } else if (lead.createdAt) {
+          // Sem histórico = lead criado direto nesta coluna
+          const timeSpentSoFar = new Date() - new Date(lead.createdAt);
+          const days = Math.floor(timeSpentSoFar / (1000 * 60 * 60 * 24));
+          timeInStage.push(Math.max(0, days));
         }
       }
 
-      // 📊 PARTE 2: Leads que já saíram desta coluna (histórico completo)
-      const exitedLeads = await LeadHistory.findAll({
-        where: {
-          account_id: accountId,
-          from_column_id: column.id,
-          ...(startDate && endDate && {
-            moved_at: { [Op.between]: [startDate, endDate] }
-          })
-        },
-        order: [['moved_at', 'ASC']]
-      });
+      // PARTE 2: Leads que já saíram desta coluna
+      const exitHistories = allHistory.filter(h => h.from_column_id === column.id);
 
-      for (const exitHistory of exitedLeads) {
-        // Buscar quando entrou nesta coluna (movimento mais recente antes de sair)
-        const entryHistory = await LeadHistory.findOne({
-          where: {
-            account_id: accountId,
-            lead_id: exitHistory.lead_id,
-            to_column_id: column.id,
-            moved_at: { [Op.lt]: exitHistory.moved_at }
-          },
-          order: [['moved_at', 'DESC']]
-        });
+      for (const exitHistory of exitHistories) {
+        const leadHistory = historyByLead[exitHistory.lead_id] || [];
+        const entryHistory = leadHistory
+          .filter(h => h.to_column_id === column.id && new Date(h.moved_at) < new Date(exitHistory.moved_at))
+          .sort((a, b) => new Date(b.moved_at) - new Date(a.moved_at))[0];
 
         if (entryHistory) {
           const timeSpent = new Date(exitHistory.moved_at) - new Date(entryHistory.moved_at);
           const days = Math.floor(timeSpent / (1000 * 60 * 60 * 24));
-          timeInStage.push(Math.max(0, days)); // Garantir que não seja negativo
+          timeInStage.push(Math.max(0, days));
         }
       }
-
-      // Contar leads atualmente nesta coluna
-      const currentLeadsCount = currentLeads.length;
-
-      // Contar total de leads que passaram por esta coluna (incluindo os atuais)
-      const totalLeadsInStage = await LeadHistory.count({
-        where: {
-          account_id: accountId,
-          to_column_id: column.id,
-          ...(startDate && endDate && {
-            moved_at: { [Op.between]: [startDate, endDate] }
-          })
-        }
-      });
 
       const avgDays = timeInStage.length > 0
         ? Math.round(timeInStage.reduce((a, b) => a + b, 0) / timeInStage.length)
@@ -402,8 +451,8 @@ class DashboardService {
         columnId: column.id,
         columnName: column.name,
         columnColor: column.color,
-        currentLeadsCount,
-        totalLeadsProcessed: totalLeadsInStage,
+        currentLeadsCount: leadsInThisColumn.length,
+        totalLeadsProcessed: timeInStage.length,
         averageTimeInDays: avgDays,
         averageTimeFormatted: this.formatDays(avgDays)
       });

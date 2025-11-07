@@ -318,7 +318,14 @@ class PlanLimitChecker {
   // Endpoint para verificar status dos limites (para frontend)
   static async getLimitsStatus(req, res) {
     try {
-      const { accountId } = req.user;
+      const accountId = req.account?.id;
+
+      if (!accountId) {
+        return res.status(400).json({
+          success: false,
+          error: 'Conta não definida'
+        });
+      }
 
       const [userLimits, leadLimits] = await Promise.all([
         this.canAddUsers(accountId, 0),
