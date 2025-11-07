@@ -48,6 +48,22 @@ const performanceController = {
     const mqlColumnIds = mqlColumns.map(col => col.id);
     console.log(`🎯 IDs das colunas MQL:`, mqlColumnIds);
 
+    // Buscar colunas finalizadas (ganhos e perdidos) para excluir do cálculo
+    const finalizedColumns = await KanbanColumn.findAll({
+      where: {
+        account_id: accountId,
+        is_active: true,
+        [Op.or]: [
+          { is_won: true },
+          { is_lost: true }
+        ]
+      },
+      attributes: ['id', 'name', 'is_won', 'is_lost']
+    });
+
+    const finalizedColumnIds = finalizedColumns.map(col => col.id);
+    console.log(`🚫 Colunas finalizadas (excluídas do MQL): ${finalizedColumns.length}`, finalizedColumnIds);
+
     // Construir where clause com filtro de data se fornecido
     const whereClause = {
       account_id: accountId
@@ -59,8 +75,26 @@ const performanceController = {
       };
     }
 
-    // Contar total de leads
-    const totalLeads = await Lead.count({ where: whereClause });
+    // Contar total de leads ATIVOS (excluindo colunas finalizadas)
+    const whereActiveLeads = {
+      ...whereClause,
+      column_id: {
+        [Op.notIn]: finalizedColumnIds.length > 0 ? finalizedColumnIds : [-1] // -1 para não quebrar query se array vazio
+      }
+    };
+
+    const totalLeads = await Lead.count({ where: whereActiveLeads });
+
+    // Para fins de log, contar também leads finalizados
+    const finalizedLeads = await Lead.count({
+      where: {
+        ...whereClause,
+        column_id: {
+          [Op.in]: finalizedColumnIds.length > 0 ? finalizedColumnIds : [-1]
+        }
+      }
+    });
+    console.log(`📊 Leads ativos: ${totalLeads}, Leads finalizados (excluídos): ${finalizedLeads}`);
 
     // Contar leads em colunas MQL
     const mqlLeads = await Lead.count({

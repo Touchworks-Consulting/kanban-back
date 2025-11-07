@@ -23,6 +23,14 @@ function requireAdmin(req, res) {
   return true;
 }
 
+function requireOwner(req, res) {
+  if (!req.user || req.user.role !== 'owner') {
+    res.status(403).json({ success: false, message: 'Apenas owners podem realizar esta ação' });
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   list: async (req, res) => {
     try {
@@ -320,6 +328,86 @@ module.exports = {
       });
     } catch (e) {
       console.error('Verify phone error', e);
+      res.status(500).json({ success: false, message: 'Erro interno' });
+    }
+  },
+
+  changeUserRole: async (req, res) => {
+    try {
+      // Apenas owners podem mudar roles
+      if (!requireOwner(req, res)) return;
+
+      const { id } = req.params;
+      const { role: newRole } = req.body;
+
+      // Validar que newRole foi fornecido
+      if (!newRole) {
+        return res.status(400).json({
+          success: false,
+          message: 'Novo role é obrigatório'
+        });
+      }
+
+      // Validar que newRole é válido
+      const validRoles = ['member', 'admin', 'owner'];
+      if (!validRoles.includes(newRole)) {
+        return res.status(400).json({
+          success: false,
+          message: `Role inválido. Use: ${validRoles.join(', ')}`
+        });
+      }
+
+      // Verificar se não está tentando mudar o próprio role
+      if (id === req.user.id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Não é possível mudar seu próprio role'
+        });
+      }
+
+      // Buscar o usuário
+      const user = await User.findOne({ where: { id, account_id: req.account.id } });
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Guardar role antigo para log
+      const oldRole = user.role;
+
+      // Atualizar role na tabela users
+      user.role = newRole;
+      await user.save();
+
+      // Atualizar role na tabela user_accounts
+      const userAccount = await UserAccount.findOne({
+        where: {
+          user_id: id,
+          account_id: req.account.id
+        }
+      });
+
+      if (userAccount) {
+        userAccount.role = newRole;
+        await userAccount.save();
+      }
+
+      // Log da atividade
+      console.log(`Owner ${req.user.email} (${req.user.id}) alterou role de ${user.email} (${user.id}) de ${oldRole} para ${newRole}`);
+
+      // Invalidar cache após mudança de role
+      await cacheService.invalidateUsersCache(req.account.id);
+      console.log(`📦 Cache INVALIDATED: users para conta ${req.account.id} após mudança de role`);
+
+      res.json({
+        success: true,
+        message: `Role alterado de ${oldRole} para ${newRole} com sucesso`,
+        user
+      });
+    } catch (e) {
+      console.error('Change user role error', e);
       res.status(500).json({ success: false, message: 'Erro interno' });
     }
   }
