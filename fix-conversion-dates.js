@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { Lead } = require('./src/models');
+const { Op, Sequelize } = require('sequelize');
 
 async function fixConversionDates() {
   try {
@@ -8,36 +9,36 @@ async function fixConversionDates() {
     // Limpar lost_at de leads com status won
     const wonLeads = await Lead.update(
       { lost_at: null },
-      { 
-        where: { 
+      {
+        where: {
           status: 'won',
-          lost_at: { [require('sequelize').Op.not]: null }
+          lost_at: { [Op.not]: null }
         },
         returning: true
       }
     );
-    
+
     // Limpar won_at de leads com status lost
     const lostLeads = await Lead.update(
       { won_at: null },
-      { 
-        where: { 
+      {
+        where: {
           status: 'lost',
-          won_at: { [require('sequelize').Op.not]: null }
+          won_at: { [Op.not]: null }
         },
         returning: true
       }
     );
-    
+
     // Limpar ambos campos de leads com outros status
     const otherLeads = await Lead.update(
       { won_at: null, lost_at: null },
-      { 
-        where: { 
-          status: { [require('sequelize').Op.notIn]: ['won', 'lost'] },
-          [require('sequelize').Op.or]: [
-            { won_at: { [require('sequelize').Op.not]: null } },
-            { lost_at: { [require('sequelize').Op.not]: null } }
+      {
+        where: {
+          status: { [Op.notIn]: ['won', 'lost'] },
+          [Op.or]: [
+            { won_at: { [Op.not]: null } },
+            { lost_at: { [Op.not]: null } }
           ]
         },
         returning: true
@@ -53,9 +54,9 @@ async function fixConversionDates() {
     const stats = await Lead.findAll({
       attributes: [
         'status',
-        [Lead.sequelize.fn('COUNT', '*'), 'count'],
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('won_at')), 'won_at_count'],
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('lost_at')), 'lost_at_count']
+        [Sequelize.fn('COUNT', '*'), 'count'],
+        [Sequelize.fn('COUNT', Sequelize.col('won_at')), 'won_at_count'],
+        [Sequelize.fn('COUNT', Sequelize.col('lost_at')), 'lost_at_count']
       ],
       group: ['status'],
       raw: true

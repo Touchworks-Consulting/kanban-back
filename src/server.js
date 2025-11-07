@@ -68,10 +68,10 @@ const apiLimiter = rateLimit({
   message: "Muitas requisições. Tente novamente em alguns minutos.",
 });
 
-// Rate limiter específico para dashboard (mais permissivo)
+// Rate limiter específico para dashboard (altamente permissivo para 13+ requisições simultâneas)
 const dashboardLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 200, // Dobrar para múltiplas requisições simultâneas
+  max: 3000, // Permitir muitas requisições simultâneas (dashboard faz 13+ chamadas por load)
   standardHeaders: true,
   legacyHeaders: false,
   message: "Muitas requisições ao dashboard. Aguarde um momento.",

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { Feedback, User, Account, FeedbackVote } = require('../models');
 const { authenticateToken } = require('../middleware/auth');
 const requestIp = require('request-ip');
@@ -356,14 +356,14 @@ router.get('/admin/stats', verifyAdminToken, async (req, res) => {
       Feedback.findAll({
         attributes: [
           'type',
-          [Feedback.sequelize.fn('COUNT', Feedback.sequelize.col('id')), 'count']
+          [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
         ],
         group: ['type']
       }),
       Feedback.findAll({
         attributes: [
           'status',
-          [Feedback.sequelize.fn('COUNT', Feedback.sequelize.col('id')), 'count']
+          [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
         ],
         group: ['status']
       }),

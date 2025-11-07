@@ -1,6 +1,6 @@
 const { LeadActivity, Lead, User } = require('../models');
 const { asyncHandler } = require('../middleware/errorHandler');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { processSequelizeResponse } = require('../utils/dateSerializer');
 
 const activityController = {
@@ -610,7 +610,7 @@ const activityController = {
       LeadActivity.findAll({
         attributes: [
           'lead_id',
-          [LeadActivity.sequelize.fn('COUNT', LeadActivity.sequelize.col('id')), 'count']
+          [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
         ],
         where: {
           account_id: req.account.id,
@@ -625,7 +625,7 @@ const activityController = {
       LeadActivity.findAll({
         attributes: [
           'lead_id',
-          [LeadActivity.sequelize.fn('COUNT', LeadActivity.sequelize.col('id')), 'count']
+          [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
         ],
         where: {
           account_id: req.account.id,
@@ -644,7 +644,7 @@ const activityController = {
       LeadActivity.findAll({
         attributes: [
           'lead_id',
-          [LeadActivity.sequelize.fn('COUNT', LeadActivity.sequelize.col('id')), 'count']
+          [Sequelize.fn('COUNT', Sequelize.col('id')), 'count']
         ],
         where: {
           account_id: req.account.id,

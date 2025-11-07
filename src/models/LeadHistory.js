@@ -66,6 +66,15 @@ const LeadHistory = sequelize.define('LeadHistory', {
     },
     {
       fields: ['to_column_id', 'moved_at']
+    },
+    // Critical indexes for performance (stage timing queries)
+    {
+      fields: ['lead_id', 'to_column_id', 'moved_at'],
+      name: 'idx_lead_history_lead_to_moved'
+    },
+    {
+      fields: ['from_column_id', 'moved_at'],
+      name: 'idx_lead_history_from_moved'
     }
   ]
 });

@@ -35,6 +35,11 @@ const KanbanColumn = sequelize.define('KanbanColumn', {
   is_active: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  is_mql: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    comment: 'Indica se esta coluna representa MQL (Marketing Qualified Lead)'
   }
 });
 

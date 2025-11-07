@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Lead } = require('./src/models');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 async function fixWonAtDates() {
   console.log('🔧 Iniciando correção dos campos won_at...');
@@ -45,15 +45,15 @@ async function fixWonAtDates() {
       },
       attributes: [
         'campaign',
-        [Lead.sequelize.fn('COUNT', Lead.sequelize.col('id')), 'total_conversions'],
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'total_conversions'],
         [
-          Lead.sequelize.fn(
-            'AVG', 
-            Lead.sequelize.fn(
+          Sequelize.fn(
+            'AVG',
+            Sequelize.fn(
               'EXTRACT',
-              Lead.sequelize.literal("EPOCH FROM (won_at - created_at)")
+              Sequelize.literal("EPOCH FROM (won_at - created_at)")
             )
-          ), 
+          ),
           'avg_seconds_to_conversion'
         ]
       ],

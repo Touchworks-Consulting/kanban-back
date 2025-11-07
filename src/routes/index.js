@@ -21,6 +21,7 @@ const feedbackRoutes = require('./feedbackRoutes');
 const activityRoutes = require('./activityRoutes');
 const embedRoutes = require('./embedRoutes');
 const docsRoutes = require('./docsRoutes');
+const performanceRoutes = require('./performanceRoutes');
 
 const router = express.Router();
 
@@ -36,6 +37,7 @@ router.get('/', (req, res) => {
       leadModal: '/api/lead-modal',
       kanban: '/api/kanban',
       dashboard: '/api/dashboard',
+      performance: '/api/dashboard/performance',
       webhooks: '/api/webhooks',
       cronJobs: '/api/cron-jobs',
       automations: '/api/automations',
@@ -62,6 +64,7 @@ router.use('/lead-modal', leadModalRoutes);
 router.use('/kanban', kanbanRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', optimizedDashboardRoutes); // Rotas otimizadas
+router.use('/dashboard/performance', performanceRoutes); // Métricas de performance (MQL, perdas, distribuição)
 router.use('/webhooks', webhookRoutes);
 router.use('/cron-jobs', cronJobRoutes);
 router.use('/automations', automationRoutes);
