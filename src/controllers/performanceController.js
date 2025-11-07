@@ -76,24 +76,29 @@ const performanceController = {
     }
 
     // Contar total de leads ATIVOS (excluindo colunas finalizadas)
-    const whereActiveLeads = {
-      ...whereClause,
-      column_id: {
-        [Op.notIn]: finalizedColumnIds.length > 0 ? finalizedColumnIds : [-1] // -1 para não quebrar query se array vazio
-      }
-    };
+    const whereActiveLeads = { ...whereClause };
+
+    // Só adicionar filtro de column_id se houver colunas finalizadas
+    if (finalizedColumnIds.length > 0) {
+      whereActiveLeads.column_id = {
+        [Op.notIn]: finalizedColumnIds
+      };
+    }
 
     const totalLeads = await Lead.count({ where: whereActiveLeads });
 
     // Para fins de log, contar também leads finalizados
-    const finalizedLeads = await Lead.count({
-      where: {
-        ...whereClause,
-        column_id: {
-          [Op.in]: finalizedColumnIds.length > 0 ? finalizedColumnIds : [-1]
+    let finalizedLeads = 0;
+    if (finalizedColumnIds.length > 0) {
+      finalizedLeads = await Lead.count({
+        where: {
+          ...whereClause,
+          column_id: {
+            [Op.in]: finalizedColumnIds
+          }
         }
-      }
-    });
+      });
+    }
     console.log(`📊 Leads ativos: ${totalLeads}, Leads finalizados (excluídos): ${finalizedLeads}`);
 
     // Contar leads em colunas MQL
