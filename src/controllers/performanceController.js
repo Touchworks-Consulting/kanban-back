@@ -49,20 +49,36 @@ const performanceController = {
     console.log(`🎯 IDs das colunas MQL:`, mqlColumnIds);
 
     // Buscar colunas finalizadas (ganhos e perdidos) para excluir do cálculo
-    const finalizedColumns = await KanbanColumn.findAll({
-      where: {
-        account_id: accountId,
-        is_active: true,
-        [Op.or]: [
-          { is_won: true },
-          { is_lost: true }
-        ]
-      },
-      attributes: ['id', 'name', 'is_won', 'is_lost']
+    // Primeiro, buscar a conta para obter custom_statuses
+    const account = await Account.findByPk(accountId, {
+      attributes: ['custom_statuses']
     });
 
-    const finalizedColumnIds = finalizedColumns.map(col => col.id);
-    console.log(`🚫 Colunas finalizadas (excluídas do MQL): ${finalizedColumns.length}`, finalizedColumnIds);
+    // Identificar quais status são finalizados (won ou lost) no custom_statuses
+    const finalizedStatuses = (account?.custom_statuses || [])
+      .filter(s => s.is_won === true || s.is_lost === true)
+      .map(s => s.value);
+
+    console.log(`🚫 Status finalizados identificados:`, finalizedStatuses);
+
+    // Buscar os column_id dos leads que estão nesses status finalizados
+    let finalizedColumnIds = [];
+    if (finalizedStatuses.length > 0) {
+      const leadsInFinalizedStatuses = await Lead.findAll({
+        where: {
+          account_id: accountId,
+          status: { [Op.in]: finalizedStatuses }
+        },
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('column_id')), 'column_id']],
+        raw: true
+      });
+
+      finalizedColumnIds = leadsInFinalizedStatuses
+        .map(lead => lead.column_id)
+        .filter(id => id !== null);
+    }
+
+    console.log(`🚫 Colunas finalizadas (excluídas do MQL): ${finalizedColumnIds.length}`, finalizedColumnIds);
 
     // Construir where clause com filtro de data se fornecido
     const whereClause = {

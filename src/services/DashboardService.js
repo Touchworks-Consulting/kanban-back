@@ -120,24 +120,33 @@ class DashboardService {
       const customStatuses = account.custom_statuses || [];
       console.log(`📊 [FUNIL] Custom statuses raw:`, JSON.stringify(customStatuses, null, 2));
 
-      // Se não houver custom statuses, usar fallback hardcoded
-      const funnelSteps = customStatuses.length > 0
-        ? customStatuses
-            .filter(s => !s.is_won && !s.is_lost && s.value) // Filtrar apenas status ativos (não finalizados)
-            .map(s => ({
-              value: s.value,
-              label: s.label,
-              color: s.color
-            }))
-        : [
-            { value: 'new', label: 'Novo', color: '#gray' },
-            { value: 'contacted', label: 'Contatado', color: '#blue' },
-            { value: 'qualified', label: 'Qualificado', color: '#green' },
-            { value: 'proposal', label: 'Proposta', color: '#orange' },
-            { value: 'won', label: 'Ganho', color: '#green' }
-          ];
+      // Filtrar apenas status ativos (não finalizados) dos custom_statuses
+      let funnelSteps = [];
 
-      console.log(`📊 [FUNIL] Funil usando ${funnelSteps.length} status customizados:`, funnelSteps);
+      if (customStatuses.length > 0) {
+        funnelSteps = customStatuses
+          .filter(s => !s.is_won && !s.is_lost && s.value) // Filtrar apenas status ativos
+          .map(s => ({
+            value: s.value,
+            label: s.label,
+            color: s.color
+          }));
+
+        console.log(`📊 [FUNIL] Filtrados ${funnelSteps.length} status ativos de ${customStatuses.length} custom_statuses`);
+      }
+
+      // Se não houver custom statuses ou se o filtro removeu todos, usar fallback hardcoded
+      if (funnelSteps.length === 0) {
+        console.log(`⚠️ [FUNIL] Nenhum status ativo encontrado, usando fallback padrão`);
+        funnelSteps = [
+          { value: 'new', label: 'Novo', color: '#94a3b8' },
+          { value: 'contacted', label: 'Contactado', color: '#3b82f6' },
+          { value: 'qualified', label: 'Qualificado', color: '#f59e0b' },
+          { value: 'proposal', label: 'Proposta', color: '#8b5cf6' }
+        ];
+      }
+
+      console.log(`📊 [FUNIL] Funil usando ${funnelSteps.length} etapas:`, funnelSteps);
 
       // Executar queries em paralelo para melhor performance
       const countPromises = funnelSteps.map(status =>

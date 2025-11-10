@@ -209,7 +209,7 @@ const dashboardController = {
       endDate: end_date
     });
 
-    res.json({ chartData });
+    res.json({ data: chartData });
   }),
 
   // Dados para gráfico de dispersão (atividades vs conversão)
@@ -229,7 +229,7 @@ const dashboardController = {
       endDate: end_date
     });
 
-    res.json({ scatterData });
+    res.json({ data: scatterData });
   }),
 
   // ===============================
