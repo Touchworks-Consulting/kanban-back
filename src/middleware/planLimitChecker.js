@@ -1,32 +1,31 @@
-const Plan = require('../models/Plan');
-const Subscription = require('../models/Subscription');
-const Account = require('../models/Account');
-const User = require('../models/User');
-const Lead = require('../models/Lead');
-const { Op } = require('sequelize');
+const Plan = require("../models/Plan");
+const Subscription = require("../models/Subscription");
+const Account = require("../models/Account");
+const User = require("../models/User");
+const Lead = require("../models/Lead");
+const { Op } = require("sequelize");
 
 class PlanLimitChecker {
-
   // Obter dados da assinatura atual com plano
   static async getCurrentSubscription(accountId) {
     try {
       const subscription = await Subscription.findOne({
         where: {
           account_id: accountId,
-          status: { [Op.in]: ['trial', 'active'] }
+          status: { [Op.in]: ["trial", "active"] },
         },
         include: [
           {
             model: Plan,
-            as: 'plan'
-          }
+            as: "plan",
+          },
         ],
-        order: [['created_at', 'DESC']]
+        order: [["created_at", "DESC"]],
       });
 
       return subscription;
     } catch (error) {
-      console.error('Erro ao buscar assinatura:', error);
+      console.error("Erro ao buscar assinatura:", error);
       return null;
     }
   }
@@ -35,18 +34,18 @@ class PlanLimitChecker {
   static async countCurrentUsers(accountId) {
     try {
       // Se existe tabela separada de usuários
-      const User = require('../models/User');
+      const User = require("../models/User");
       const userCount = await User.count({
         where: {
           account_id: accountId,
-          is_active: true
-        }
+          is_active: true,
+        },
       });
 
       // Se não existir, contamos como 1 (owner da conta)
       return userCount || 1;
     } catch (error) {
-      console.error('Erro ao contar usuários:', error);
+      console.error("Erro ao contar usuários:", error);
       // Fallback: considera apenas o owner
       return 1;
     }
@@ -68,14 +67,14 @@ class PlanLimitChecker {
         where: {
           account_id: accountId,
           created_at: {
-            [Op.between]: [startOfMonth, endOfMonth]
-          }
-        }
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+        },
       });
 
       return leadCount;
     } catch (error) {
-      console.error('Erro ao contar leads do mês:', error);
+      console.error("Erro ao contar leads do mês:", error);
       return 0;
     }
   }
@@ -86,13 +85,17 @@ class PlanLimitChecker {
       const subscription = await this.getCurrentSubscription(accountId);
 
       // Durante beta ou sem plano = ilimitado
-      if (!subscription || !subscription.plan || subscription.plan.max_users === null) {
+      if (
+        !subscription ||
+        !subscription.plan ||
+        subscription.plan.max_users === null
+      ) {
         return {
           allowed: true,
           current: await this.countCurrentUsers(accountId),
           limit: null,
           remaining: null,
-          message: 'Usuários ilimitados'
+          message: "Usuários ilimitados",
         };
       }
 
@@ -105,16 +108,16 @@ class PlanLimitChecker {
         current: currentUsers,
         limit: maxUsers,
         remaining: maxUsers - currentUsers,
-        message: newTotal > maxUsers
-          ? `Limite de ${maxUsers} usuários atingido. Considere fazer upgrade do plano.`
-          : `${maxUsers - newTotal} usuários restantes no plano.`
+        message:
+          newTotal > maxUsers
+            ? `Limite de ${maxUsers} usuários atingido. Considere fazer upgrade do plano.`
+            : `${maxUsers - newTotal} usuários restantes no plano.`,
       };
-
     } catch (error) {
-      console.error('Erro ao verificar limite de usuários:', error);
+      console.error("Erro ao verificar limite de usuários:", error);
       return {
         allowed: false,
-        error: 'Erro ao verificar limite'
+        error: "Erro ao verificar limite",
       };
     }
   }
@@ -125,13 +128,17 @@ class PlanLimitChecker {
       const subscription = await this.getCurrentSubscription(accountId);
 
       // Durante beta ou sem plano = ilimitado
-      if (!subscription || !subscription.plan || subscription.plan.max_leads === null) {
+      if (
+        !subscription ||
+        !subscription.plan ||
+        subscription.plan.max_leads === null
+      ) {
         return {
           allowed: true,
           current: await this.countCurrentMonthLeads(accountId),
           limit: null,
           remaining: null,
-          message: 'Leads ilimitados'
+          message: "Leads ilimitados",
         };
       }
 
@@ -144,16 +151,16 @@ class PlanLimitChecker {
         current: currentLeads,
         limit: maxLeads,
         remaining: maxLeads - currentLeads,
-        message: newTotal > maxLeads
-          ? `Limite de ${maxLeads} leads mensais atingido. Considere fazer upgrade do plano.`
-          : `${maxLeads - newTotal} leads restantes neste mês.`
+        message:
+          newTotal > maxLeads
+            ? `Limite de ${maxLeads} leads mensais atingido. Considere fazer upgrade do plano.`
+            : `${maxLeads - newTotal} leads restantes neste mês.`,
       };
-
     } catch (error) {
-      console.error('Erro ao verificar limite de leads:', error);
+      console.error("Erro ao verificar limite de leads:", error);
       return {
         allowed: false,
-        error: 'Erro ao verificar limite'
+        error: "Erro ao verificar limite",
       };
     }
   }
@@ -170,14 +177,14 @@ class PlanLimitChecker {
         if (!limitCheck.allowed) {
           return res.status(403).json({
             success: false,
-            error: limitCheck.message || 'Limite de usuários atingido',
-            code: 'USER_LIMIT_EXCEEDED',
+            error: limitCheck.message || "Limite de usuários atingido",
+            code: "USER_LIMIT_EXCEEDED",
             limits: {
               current: limitCheck.current,
               limit: limitCheck.limit,
-              remaining: limitCheck.remaining
+              remaining: limitCheck.remaining,
             },
-            upgrade_required: true
+            upgrade_required: true,
           });
         }
 
@@ -186,12 +193,11 @@ class PlanLimitChecker {
         req.planLimits.users = limitCheck;
 
         next();
-
       } catch (error) {
-        console.error('Erro no middleware de limite de usuários:', error);
+        console.error("Erro no middleware de limite de usuários:", error);
         return res.status(500).json({
           success: false,
-          error: 'Erro interno do servidor'
+          error: "Erro interno do servidor",
         });
       }
     };
@@ -209,14 +215,14 @@ class PlanLimitChecker {
         if (!limitCheck.allowed) {
           return res.status(403).json({
             success: false,
-            error: limitCheck.message || 'Limite de leads mensais atingido',
-            code: 'LEAD_LIMIT_EXCEEDED',
+            error: limitCheck.message || "Limite de leads mensais atingido",
+            code: "LEAD_LIMIT_EXCEEDED",
             limits: {
               current: limitCheck.current,
               limit: limitCheck.limit,
-              remaining: limitCheck.remaining
+              remaining: limitCheck.remaining,
             },
-            upgrade_required: true
+            upgrade_required: true,
           });
         }
 
@@ -225,12 +231,11 @@ class PlanLimitChecker {
         req.planLimits.leads = limitCheck;
 
         next();
-
       } catch (error) {
-        console.error('Erro no middleware de limite de leads:', error);
+        console.error("Erro no middleware de limite de leads:", error);
         return res.status(500).json({
           success: false,
-          error: 'Erro interno do servidor'
+          error: "Erro interno do servidor",
         });
       }
     };
@@ -244,7 +249,7 @@ class PlanLimitChecker {
 
         const [userLimits, leadLimits] = await Promise.all([
           this.canAddUsers(accountId, 0),
-          this.canAddLeads(accountId, 0)
+          this.canAddLeads(accountId, 0),
         ]);
 
         const subscription = await this.getCurrentSubscription(accountId);
@@ -252,22 +257,23 @@ class PlanLimitChecker {
         req.planLimits = {
           users: userLimits,
           leads: leadLimits,
-          subscription: subscription ? {
-            id: subscription.id,
-            status: subscription.status,
-            plan_name: subscription.plan?.name,
-            expires_at: subscription.current_period_end
-          } : null
+          subscription: subscription
+            ? {
+                id: subscription.id,
+                status: subscription.status,
+                plan_name: subscription.plan?.name,
+                expires_at: subscription.current_period_end,
+              }
+            : null,
         };
 
         next();
-
       } catch (error) {
-        console.error('Erro ao obter informações de limite:', error);
+        console.error("Erro ao obter informações de limite:", error);
         req.planLimits = {
-          users: { allowed: true, error: 'Erro ao verificar limites' },
-          leads: { allowed: true, error: 'Erro ao verificar limites' },
-          subscription: null
+          users: { allowed: true, error: "Erro ao verificar limites" },
+          leads: { allowed: true, error: "Erro ao verificar limites" },
+          subscription: null,
         };
         next();
       }
@@ -283,33 +289,33 @@ class PlanLimitChecker {
 
         // Durante beta = todas as features liberadas
         if (!subscription || !subscription.plan) {
-          req.featureAccess = { allowed: true, reason: 'beta_period' };
+          req.featureAccess = { allowed: true, reason: "beta_period" };
           return next();
         }
 
         const planFeatures = subscription.plan.features || [];
-        const hasFeature = planFeatures.some(feature =>
-          feature.name === featureName || feature.slug === featureName
+        const hasFeature = planFeatures.some(
+          (feature) =>
+            feature.name === featureName || feature.slug === featureName
         );
 
         if (!hasFeature) {
           return res.status(403).json({
             success: false,
             error: `Feature "${featureName}" não disponível no seu plano atual`,
-            code: 'FEATURE_NOT_AVAILABLE',
+            code: "FEATURE_NOT_AVAILABLE",
             upgrade_required: true,
-            current_plan: subscription.plan.name
+            current_plan: subscription.plan.name,
           });
         }
 
-        req.featureAccess = { allowed: true, reason: 'plan_includes' };
+        req.featureAccess = { allowed: true, reason: "plan_includes" };
         next();
-
       } catch (error) {
-        console.error('Erro ao verificar acesso à feature:', error);
+        console.error("Erro ao verificar acesso à feature:", error);
         return res.status(500).json({
           success: false,
-          error: 'Erro interno do servidor'
+          error: "Erro interno do servidor",
         });
       }
     };
@@ -318,64 +324,102 @@ class PlanLimitChecker {
   // Endpoint para verificar status dos limites (para frontend)
   static async getLimitsStatus(req, res) {
     try {
-      const accountId = req.account?.id;
+      // Use req.user.accountId como padrão, fallback para req.account?.id
+      const accountId = req.user?.accountId || req.account?.id;
 
       if (!accountId) {
         return res.status(400).json({
           success: false,
-          error: 'Conta não definida'
+          error: "Conta não definida",
         });
       }
 
-      const [userLimits, leadLimits] = await Promise.all([
-        this.canAddUsers(accountId, 0),
-        this.canAddLeads(accountId, 0)
+      // Always use the class directly to avoid Express context issues
+      const [userLimitsRaw, leadLimitsRaw] = await Promise.all([
+        PlanLimitChecker.canAddUsers(accountId, 0),
+        PlanLimitChecker.canAddLeads(accountId, 0),
       ]);
 
-      const subscription = await this.getCurrentSubscription(accountId);
+      // Robust fallback: always return a safe object
+      const safeUserLimits =
+        userLimitsRaw && typeof userLimitsRaw === "object" ? userLimitsRaw : {};
+      const safeLeadLimits =
+        leadLimitsRaw && typeof leadLimitsRaw === "object" ? leadLimitsRaw : {};
+
+      const userCurrent =
+        typeof safeUserLimits.current === "number" ? safeUserLimits.current : 0;
+      const userLimit =
+        typeof safeUserLimits.limit === "number" ? safeUserLimits.limit : null;
+      const userRemaining =
+        typeof safeUserLimits.remaining === "number"
+          ? safeUserLimits.remaining
+          : null;
+
+      const leadCurrent =
+        typeof safeLeadLimits.current === "number" ? safeLeadLimits.current : 0;
+      const leadLimit =
+        typeof safeLeadLimits.limit === "number" ? safeLeadLimits.limit : null;
+      const leadRemaining =
+        typeof safeLeadLimits.remaining === "number"
+          ? safeLeadLimits.remaining
+          : null;
+
+      const subscription = await PlanLimitChecker.getCurrentSubscription(
+        accountId
+      );
 
       return res.json({
         success: true,
         limits: {
           users: {
-            current: userLimits.current,
-            limit: userLimits.limit,
-            remaining: userLimits.remaining,
-            percentage: userLimits.limit
-              ? Math.round((userLimits.current / userLimits.limit) * 100)
-              : 0
+            current: userCurrent,
+            limit: userLimit,
+            remaining: userRemaining,
+            percentage:
+              userLimit && userCurrent != null
+                ? Math.round((userCurrent / userLimit) * 100)
+                : 0,
           },
           leads: {
-            current: leadLimits.current,
-            limit: leadLimits.limit,
-            remaining: leadLimits.remaining,
-            percentage: leadLimits.limit
-              ? Math.round((leadLimits.current / leadLimits.limit) * 100)
-              : 0
-          }
+            current: leadCurrent,
+            limit: leadLimit,
+            remaining: leadRemaining,
+            percentage:
+              leadLimit && leadCurrent != null
+                ? Math.round((leadCurrent / leadLimit) * 100)
+                : 0,
+          },
         },
-        subscription: subscription ? {
-          id: subscription.id,
-          status: subscription.status,
-          plan_name: subscription.plan?.name || 'Beta',
-          plan_price: subscription.plan?.price || 0,
-          expires_at: subscription.current_period_end,
-          is_beta: !subscription.plan || subscription.plan.price == 0
-        } : {
-          plan_name: 'Beta',
-          is_beta: true
-        },
+        subscription: subscription
+          ? {
+              id: subscription.id,
+              status: subscription.status,
+              plan_name: subscription.plan?.name || "Beta",
+              plan_price: subscription.plan?.price || 0,
+              expires_at: subscription.current_period_end,
+              is_beta: !subscription.plan || subscription.plan.price == 0,
+            }
+          : {
+              plan_name: "Beta",
+              is_beta: true,
+            },
         warnings: {
-          users_near_limit: userLimits.limit && userLimits.remaining <= 2,
-          leads_near_limit: leadLimits.limit && leadLimits.remaining <= 100
-        }
+          users_near_limit:
+            typeof userLimit === "number" &&
+            typeof userRemaining === "number" &&
+            userRemaining <= 2,
+          leads_near_limit:
+            typeof leadLimit === "number" &&
+            typeof leadRemaining === "number" &&
+            leadRemaining <= 100,
+        },
       });
-
     } catch (error) {
-      console.error('Erro ao buscar status dos limites:', error);
+      console.error("Erro ao buscar status dos limites:", error);
       return res.status(500).json({
         success: false,
-        error: 'Erro interno do servidor'
+        error: "Erro interno do servidor",
+        details: error?.message || error,
       });
     }
   }
