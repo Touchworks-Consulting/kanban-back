@@ -1,5 +1,6 @@
 const { verifyToken: verifyJWT } = require('../utils/jwtUtils');
 const { Account, User, UserAccount } = require('../models');
+const { isPlatformAdmin } = require('../utils/platformAdmin');
 
 const authenticateToken = async (req, res, next) => {
   try {
@@ -58,6 +59,36 @@ const authenticateToken = async (req, res, next) => {
     let userRole = 'member';
     let userPermissions = {};
 
+    // Platform admin (super admin) tem acesso total a qualquer conta
+    if (isPlatformAdmin(user.email)) {
+      console.log(`🔑 Platform admin detectado no auth middleware: ${user.email}`);
+      userRole = 'owner';
+      userPermissions = {};
+
+      if (!currentAccount || !user.current_account_id) {
+        // Buscar primeira conta ativa do sistema para o platform admin
+        const firstAccount = await Account.findOne({
+          where: { is_active: true },
+          order: [['created_at', 'ASC']]
+        });
+
+        if (firstAccount) {
+          console.log(`✅ Platform admin: definindo conta ${firstAccount.name} como atual`);
+          await user.update({ current_account_id: firstAccount.id });
+          currentAccount = firstAccount;
+        } else {
+          return res.status(500).json({ error: 'Nenhuma conta ativa no sistema' });
+        }
+      }
+
+      req.user = user;
+      req.account = currentAccount;
+      req.userRole = userRole;
+      req.userPermissions = userPermissions;
+      req.isPlatformAdmin = true;
+      return next();
+    }
+
     // Se não há conta atual definida, buscar a primeira conta ativa do usuário
     if (!currentAccount || !user.current_account_id) {
       console.log(`🔍 Usuário ${user.email} sem conta atual definida, buscando primeira conta ativa...`);
@@ -104,6 +135,7 @@ const authenticateToken = async (req, res, next) => {
     req.account = currentAccount;
     req.userRole = userRole;
     req.userPermissions = userPermissions;
+    req.isPlatformAdmin = false;
     next();
   } catch (error) {
     if (error.message.includes('Token expired')) {

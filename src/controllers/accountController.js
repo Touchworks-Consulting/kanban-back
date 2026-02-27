@@ -1,13 +1,39 @@
 const { Account, User, UserAccount } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
+const { isPlatformAdmin } = require('../utils/platformAdmin');
 
 // Listar todas as contas do usuário logado
 const getUserAccounts = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     if (!userId) {
       return res.status(401).json({ error: 'Usuário não autenticado' });
+    }
+
+    // Platform admin (super admin) pode ver TODAS as contas
+    if (isPlatformAdmin(userEmail)) {
+      console.log(`🔑 Platform admin detectado: ${userEmail} - retornando todas as contas`);
+      const allAccounts = await Account.findAll({
+        where: { is_active: true },
+        attributes: ['id', 'name', 'display_name', 'description', 'avatar_url', 'plan', 'is_active'],
+        order: [['created_at', 'ASC']]
+      });
+
+      const accounts = allAccounts.map(acc => ({
+        id: acc.id,
+        name: acc.name,
+        display_name: acc.display_name || acc.name,
+        description: acc.description,
+        avatar_url: acc.avatar_url,
+        plan: acc.plan,
+        role: 'owner', // Platform admin tem role owner em todas as contas
+        permissions: {},
+        is_active: acc.is_active
+      }));
+
+      return res.json({ accounts });
     }
 
     const userAccounts = await UserAccount.findAll({
@@ -54,6 +80,39 @@ const switchAccount = async (req, res) => {
 
     if (!accountId) {
       return res.status(400).json({ error: 'ID da conta é obrigatório' });
+    }
+
+    const userEmail = req.user?.email;
+
+    // Platform admin pode acessar qualquer conta
+    if (isPlatformAdmin(userEmail)) {
+      console.log(`🔑 Platform admin ${userEmail} trocando para conta: ${accountId}`);
+      const account = await Account.findOne({
+        where: { id: accountId, is_active: true }
+      });
+
+      if (!account) {
+        return res.status(404).json({ error: 'Conta não encontrada ou inativa' });
+      }
+
+      await User.update(
+        { current_account_id: accountId },
+        { where: { id: userId } }
+      );
+
+      return res.json({
+        success: true,
+        account: {
+          id: account.id,
+          name: account.name,
+          display_name: account.display_name || account.name,
+          description: account.description,
+          avatar_url: account.avatar_url,
+          plan: account.plan,
+          role: 'owner',
+          permissions: {}
+        }
+      });
     }
 
     // Verificar se o usuário tem acesso à conta
