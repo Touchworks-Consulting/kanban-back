@@ -73,10 +73,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Debug endpoint - temporary
 app.get('/api/debug/env-check', (req, res) => {
   const adminEmails = process.env.PLATFORM_ADMIN_EMAILS || '';
+  const emails = adminEmails.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+  // Mask emails: show first 3 chars + domain
+  const masked = emails.map(e => {
+    const [local, domain] = e.split('@');
+    return local.substring(0, 3) + '***@' + domain;
+  });
   res.json({
     hasAdminEmails: !!adminEmails,
-    count: adminEmails ? adminEmails.split(',').filter(Boolean).length : 0,
-    nodeEnv: process.env.NODE_ENV
+    count: emails.length,
+    maskedEmails: masked,
+    nodeEnv: process.env.NODE_ENV,
+    rawLength: adminEmails.length
   });
 });
 
