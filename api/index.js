@@ -70,6 +70,16 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Debug endpoint - temporary
+app.get('/api/debug/env-check', (req, res) => {
+  const adminEmails = process.env.PLATFORM_ADMIN_EMAILS || '';
+  res.json({
+    hasAdminEmails: !!adminEmails,
+    count: adminEmails ? adminEmails.split(',').filter(Boolean).length : 0,
+    nodeEnv: process.env.NODE_ENV
+  });
+});
+
 // Health check endpoint (validates database connection)
 app.get('/api/health', async (req, res) => {
   const healthCheck = {
