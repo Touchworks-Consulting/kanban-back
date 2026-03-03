@@ -60,9 +60,7 @@ const authenticateToken = async (req, res, next) => {
     let userPermissions = {};
 
     // Platform admin (super admin) tem acesso total a qualquer conta
-    const adminCheck = isPlatformAdmin(user.email);
-    console.log(`🔐 Platform admin check: email="${user.email}", result=${adminCheck}, envVar="${(process.env.PLATFORM_ADMIN_EMAILS || '').substring(0, 10)}..."`);
-    if (adminCheck) {
+    if (isPlatformAdmin(user.email)) {
       console.log(`🔑 Platform admin detectado no auth middleware: ${user.email}`);
       userRole = 'owner';
       userPermissions = {};

@@ -24,6 +24,7 @@ function requireAdmin(req, res) {
 }
 
 function requireOwner(req, res) {
+  if (req.isPlatformAdmin) return true;
   if (!req.user || req.user.role !== 'owner') {
     res.status(403).json({ success: false, message: 'Apenas owners podem realizar esta ação' });
     return false;

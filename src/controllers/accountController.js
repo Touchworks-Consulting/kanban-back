@@ -257,17 +257,23 @@ const updateAccount = async (req, res) => {
       return res.status(401).json({ error: 'Usuário não autenticado' });
     }
 
-    // Verificar se o usuário tem permissão para editar a conta
-    const userAccount = await UserAccount.findOne({
-      where: { 
-        user_id: userId,
-        account_id: accountId,
-        is_active: true 
-      }
-    });
+    // Platform admin pode editar qualquer conta
+    let role = 'owner';
+    let permissions = {};
+    if (!isPlatformAdmin(req.user?.email)) {
+      const userAccount = await UserAccount.findOne({
+        where: { 
+          user_id: userId,
+          account_id: accountId,
+          is_active: true 
+        }
+      });
 
-    if (!userAccount || (userAccount.role !== 'owner' && userAccount.role !== 'admin')) {
-      return res.status(403).json({ error: 'Sem permissão para editar esta conta' });
+      if (!userAccount || (userAccount.role !== 'owner' && userAccount.role !== 'admin')) {
+        return res.status(403).json({ error: 'Sem permissão para editar esta conta' });
+      }
+      role = userAccount.role;
+      permissions = userAccount.permissions || {};
     }
 
     // Atualizar conta
@@ -286,8 +292,8 @@ const updateAccount = async (req, res) => {
         description: updatedAccount.description,
         avatar_url: updatedAccount.avatar_url,
         plan: updatedAccount.plan,
-        role: userAccount.role,
-        permissions: userAccount.permissions,
+        role: role,
+        permissions: permissions,
         is_active: updatedAccount.is_active
       }
     });
@@ -341,6 +347,44 @@ const getCurrentAccount = async (req, res) => {
     if (!user) {
       console.log(`❌ Usuário ${userId} não encontrado`);
       return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Platform admin: se tem conta atual, retornar direto
+    if (isPlatformAdmin(user.email)) {
+      if (user.currentAccount) {
+        return res.json({
+          account: {
+            id: user.currentAccount.id,
+            name: user.currentAccount.name,
+            display_name: user.currentAccount.display_name || user.currentAccount.name,
+            description: user.currentAccount.description,
+            avatar_url: user.currentAccount.avatar_url,
+            plan: user.currentAccount.plan,
+            role: 'owner',
+            permissions: {},
+            is_active: user.currentAccount.is_active
+          }
+        });
+      }
+      // Buscar primeira conta ativa do sistema
+      const firstAccount = await Account.findOne({ where: { is_active: true }, order: [['created_at', 'ASC']] });
+      if (firstAccount) {
+        await user.update({ current_account_id: firstAccount.id });
+        return res.json({
+          account: {
+            id: firstAccount.id,
+            name: firstAccount.name,
+            display_name: firstAccount.display_name || firstAccount.name,
+            description: firstAccount.description,
+            avatar_url: firstAccount.avatar_url,
+            plan: firstAccount.plan,
+            role: 'owner',
+            permissions: {},
+            is_active: firstAccount.is_active
+          }
+        });
+      }
+      return res.status(404).json({ error: 'Nenhuma conta ativa encontrada' });
     }
 
     // Se não tem conta atual, buscar primeira conta ativa
@@ -437,17 +481,19 @@ const getApiKey = async (req, res) => {
       return res.status(404).json({ error: 'Conta não encontrada' });
     }
 
-    // Verificar se usuário tem acesso à conta
-    const userAccount = await UserAccount.findOne({
-      where: {
-        user_id: req.user.id,
-        account_id: accountId,
-        is_active: true
-      }
-    });
+    // Platform admin tem acesso a qualquer conta
+    if (!isPlatformAdmin(req.user?.email)) {
+      const userAccount = await UserAccount.findOne({
+        where: {
+          user_id: req.user.id,
+          account_id: accountId,
+          is_active: true
+        }
+      });
 
-    if (!userAccount) {
-      return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+      if (!userAccount) {
+        return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+      }
     }
 
     if (!account.api_key) {
@@ -495,17 +541,19 @@ const generateApiKey = async (req, res) => {
       return res.status(404).json({ error: 'Conta não encontrada' });
     }
 
-    // Verificar se usuário tem acesso à conta
-    const userAccount = await UserAccount.findOne({
-      where: {
-        user_id: req.user.id,
-        account_id: accountId,
-        is_active: true
-      }
-    });
+    // Platform admin tem acesso a qualquer conta
+    if (!isPlatformAdmin(req.user?.email)) {
+      const userAccount = await UserAccount.findOne({
+        where: {
+          user_id: req.user.id,
+          account_id: accountId,
+          is_active: true
+        }
+      });
 
-    if (!userAccount) {
-      return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+      if (!userAccount) {
+        return res.status(403).json({ error: 'Você não tem acesso a esta conta' });
+      }
     }
 
     // Gerar nova API key (UUID v4)
