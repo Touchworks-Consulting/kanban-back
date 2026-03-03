@@ -302,6 +302,35 @@ const authenticateFlexible = async (req, res, next) => {
     let userRole = 'member';
     let userPermissions = {};
 
+    // Platform admin (super admin) tem acesso total a qualquer conta
+    if (isPlatformAdmin(user.email)) {
+      console.log(`🔑 Platform admin detectado no auth flexible: ${user.email}`);
+      userRole = 'owner';
+      userPermissions = {};
+
+      if (!currentAccount || !user.current_account_id) {
+        const firstAccount = await Account.findOne({
+          where: { is_active: true },
+          order: [['created_at', 'ASC']]
+        });
+
+        if (firstAccount) {
+          await user.update({ current_account_id: firstAccount.id });
+          currentAccount = firstAccount;
+        } else {
+          return res.status(500).json({ error: 'Nenhuma conta ativa no sistema' });
+        }
+      }
+
+      req.user = user;
+      req.account = currentAccount;
+      req.userRole = userRole;
+      req.userPermissions = userPermissions;
+      req.isPlatformAdmin = true;
+      req.authMode = 'jwt';
+      return next();
+    }
+
     if (!currentAccount || !user.current_account_id) {
       const firstUserAccount = await UserAccount.findOne({
         where: { user_id: user.id, is_active: true },
